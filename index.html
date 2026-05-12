@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Handynabon — Ski</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #f5f1ea; --warm-white: #faf8f4; --sand: #e8e0d0; --taupe: #c4b8a4;
+    --stone: #8a7d6e; --bark: #4a3f32; --charcoal: #2a2420; --ink: #1a1512; --gold: #b8965a;
+  }
+  /* CUSTOM CALENDAR */
+  .datepicker-wrap { position: relative; }
+  .datepicker-input { cursor: pointer; }
+  .cal-popup {
+    display: none; position: absolute; z-index: 300; background: var(--warm-white);
+    border: 1px solid var(--sand); padding: 1.5rem; width: 300px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    top: calc(100% + 8px); left: 0;
+  }
+  .cal-popup.open { display: block; }
+  .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+  .cal-nav { background: none; border: none; cursor: pointer; font-size: 1rem; color: var(--stone); padding: 0.2rem 0.5rem; }
+  .cal-nav:hover { color: var(--ink); }
+  .cal-month { font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: var(--ink); }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .cal-day-name { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); text-align: center; padding: 0.3rem 0; }
+  .cal-day {
+    font-size: 0.78rem; text-align: center; padding: 0.4rem; cursor: pointer;
+    border: 1px solid transparent; transition: all 0.2s; color: var(--charcoal);
+  }
+  .cal-day:hover { background: var(--cream); border-color: var(--taupe); }
+  .cal-day.selected { background: var(--bark); color: var(--warm-white); }
+  .cal-day.today { border-color: var(--gold); }
+  .cal-day.empty { cursor: default; }
+  .cal-day.past { color: var(--taupe); cursor: default; pointer-events: none; }
+  .cal-time { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--sand); }
+  .cal-time-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--stone); margin-bottom: 0.5rem; }
+  .cal-time-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cal-time-btn {
+    font-size: 0.72rem; padding: 0.3rem 0.6rem; border: 1px solid var(--sand);
+    background: none; cursor: pointer; color: var(--charcoal); transition: all 0.2s;
+    font-family: 'Jost', sans-serif;
+  }
+  .cal-time-btn:hover { background: var(--cream); border-color: var(--taupe); }
+  .cal-time-btn.selected { background: var(--bark); color: var(--warm-white); border-color: var(--bark); }
+  .cal-confirm {
+    width: 100%; margin-top: 1rem; font-family: 'Jost', sans-serif; font-size: 0.72rem;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--warm-white);
+    background: var(--bark); border: none; padding: 0.7rem; cursor: pointer; transition: background 0.2s;
+  }
+  .cal-confirm:hover { background: var(--ink); }
+  body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--warm-white); color: var(--charcoal); letter-spacing: 0.02em; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.8rem 4rem; background: rgba(250,248,244,0.94); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--sand); gap: 2rem;
+  }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink); text-decoration: none; }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--stone); text-decoration: none; transition: color 0.3s; cursor: pointer; }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-cta { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--warm-white); background: var(--ink); padding: 0.65rem 1.8rem; text-decoration: none; transition: background 0.3s; cursor: pointer; border: none; font-family: 'Jost', sans-serif; }
+  .nav-cta:hover { background: var(--bark); }
+
+  .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; padding-top: 5rem; }
+  .hero-left { background: var(--cream); display: flex; flex-direction: column; justify-content: center; padding: 8rem 4rem 8rem 6rem; }
+  .hero-eyebrow { font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--bark); margin-bottom: 2rem; white-space: normal; overflow: visible; padding-top: 0.5rem; line-height: 1.8; font-weight: 400; }
+  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(3rem,5vw,5rem); font-weight: 300; line-height: 1.1; color: var(--ink); margin-bottom: 2rem; }
+  .hero-title em { font-style: italic; color: var(--bark); }
+  .hero-desc { font-size: 0.88rem; line-height: 1.9; color: var(--stone); max-width: 34ch; margin-bottom: 3.5rem; }
+  .hero-actions { display: flex; gap: 1.5rem; align-items: center; }
+  .btn-primary { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--warm-white); background: var(--bark); padding: 1rem 2.5rem; text-decoration: none; transition: background 0.3s; cursor: pointer; border: none; font-family: 'Jost', sans-serif; display: inline-block; }
+  .btn-primary:hover { background: var(--ink); }
+  .btn-secondary { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--stone); text-decoration: none; border-bottom: 1px solid var(--taupe); padding-bottom: 2px; transition: color 0.3s, border-color 0.3s; }
+  .btn-secondary:hover { color: var(--ink); border-color: var(--ink); }
+  .hero-right { background: var(--charcoal); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+
+  .strip { background: var(--ink); padding: 1.2rem 6rem; display: flex; gap: 4rem; align-items: center; overflow: hidden; }
+  .strip-item { font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--taupe); white-space: nowrap; flex-shrink: 0; }
+  .strip-dot { width: 3px; height: 3px; background: var(--gold); border-radius: 50%; flex-shrink: 0; }
+
+  section { padding: 8rem 6rem; }
+  .section-eyebrow { font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.5rem; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem,3.5vw,3.2rem); font-weight: 300; line-height: 1.2; color: var(--ink); margin-bottom: 1.5rem; }
+  .section-title em { font-style: italic; color: var(--bark); }
+
+  .services { background: var(--warm-white); display: grid; grid-template-columns: 1fr 2fr; gap: 6rem; align-items: start; }
+  .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .service-card { padding: 3rem; border: 1px solid var(--sand); transition: background 0.3s; cursor: pointer; }
+  .service-card:hover { background: var(--cream); }
+  .service-number { font-family: 'Cormorant Garamond', serif; font-size: 0.9rem; color: var(--gold); margin-bottom: 1.5rem; letter-spacing: 0.1em; }
+  .service-name { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 400; color: var(--ink); margin-bottom: 0.8rem; line-height: 1.2; }
+  .service-desc { font-size: 0.82rem; line-height: 1.8; color: var(--stone); margin-bottom: 1.5rem; }
+  .service-price { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--bark); }
+
+  .about { background: var(--cream); display: grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 0; }
+  .about-visual { background: var(--charcoal); min-height: 480px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  .about-content { padding: 8rem 5rem; display: flex; flex-direction: column; justify-content: center; }
+  .about-content p { font-size: 0.88rem; line-height: 1.9; color: var(--stone); margin-bottom: 1.5rem; max-width: 42ch; }
+
+  .process { background: var(--ink); color: var(--cream); }
+  .process .section-title { color: var(--cream); }
+  .process-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: 5rem; border-top: 1px solid rgba(255,255,255,0.1); }
+  .process-step { padding: 3rem 2.5rem 3rem 0; border-right: 1px solid rgba(255,255,255,0.1); }
+  .process-step:last-child { border-right: none; padding-right: 0; }
+  .process-step:not(:first-child) { padding-left: 2.5rem; padding-right: 2.5rem; }
+  .step-num { font-family: 'Cormorant Garamond', serif; font-size: 3rem; font-weight: 300; color: rgba(255,255,255,0.15); line-height: 1; margin-bottom: 1.5rem; }
+  .step-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--cream); margin-bottom: 0.8rem; }
+  .step-desc { font-size: 0.82rem; line-height: 1.8; color: var(--stone); }
+
+  .booking-section { background: var(--warm-white); display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: start; }
+  .booking-info p { font-size: 0.88rem; line-height: 1.9; color: var(--stone); max-width: 36ch; margin-top: 1.5rem; }
+  .info-block { margin-top: 2.5rem; }
+  .info-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem; }
+  .info-text { font-size: 0.82rem; color: var(--stone); line-height: 1.9; }
+
+  .booking-form { display: flex; flex-direction: column; gap: 1.4rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+  .form-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--stone); }
+  .checkbox-group { display: flex; flex-direction: column; gap: 0.7rem; margin-top: 0.3rem; }
+  .checkbox-label { display: flex; align-items: center; gap: 0.8rem; cursor: pointer; font-size: 0.88rem; color: var(--charcoal); }
+  .checkbox-label input[type="checkbox"] { appearance: none; -webkit-appearance: none; width: 16px; height: 16px; border: 1px solid var(--taupe); background: transparent; cursor: pointer; flex-shrink: 0; transition: background 0.2s, border-color 0.2s; position: relative; }
+  .checkbox-label input[type="checkbox"]:checked { background: var(--bark); border-color: var(--bark); }
+  .checkbox-label input[type="checkbox"]:checked::after { content: ''; position: absolute; left: 4px; top: 1px; width: 5px; height: 9px; border: 2px solid var(--warm-white); border-top: none; border-left: none; transform: rotate(45deg); }
+  .checkbox-label:hover input[type="checkbox"] { border-color: var(--bark); } font-family: 'Jost', sans-serif; font-weight: 300; font-size: 0.88rem; color: var(--ink); background: transparent; border: none; border-bottom: 1px solid var(--taupe); padding: 0.7rem 0; outline: none; transition: border-color 0.3s; appearance: none; -webkit-appearance: none; width: 100%; }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--bark); }
+  .form-textarea { resize: none; height: 80px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .form-submit { font-family: 'Jost', sans-serif; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--warm-white); background: var(--bark); border: none; padding: 1rem 2.5rem; cursor: pointer; transition: background 0.3s; align-self: flex-start; margin-top: 0.5rem; }
+  .form-submit:hover { background: var(--ink); }
+
+  .form-success { display: none; padding: 3rem; border: 1px solid var(--sand); background: var(--cream); text-align: center; }
+  .form-success.visible { display: block; }
+  .form-success h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 300; color: var(--ink); margin-bottom: 1rem; }
+  .form-success p { font-size: 0.85rem; color: var(--stone); line-height: 1.8; }
+
+  .modal-overlay { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(26,21,18,0.75); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 2rem; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--warm-white); max-width: 560px; width: 100%; padding: 3.5rem; position: relative; max-height: 90vh; overflow-y: auto; }
+  .modal-close { position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none; cursor: pointer; font-size: 1.3rem; color: var(--stone); line-height: 1; padding: 0.3rem; transition: color 0.2s; }
+  .modal-close:hover { color: var(--ink); }
+  .modal-eyebrow { font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+  .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; color: var(--ink); margin-bottom: 2rem; line-height: 1.2; }
+  .modal-title em { font-style: italic; color: var(--bark); }
+
+  .testimonials { background: var(--cream); }
+  .testimonial-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem; margin-top: 4rem; }
+  .testimonial-card { padding: 2.5rem; border: 1px solid var(--sand); background: var(--warm-white); }
+  .testimonial-quote { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-style: italic; font-weight: 300; line-height: 1.7; color: var(--bark); margin-bottom: 1.5rem; }
+  .testimonial-author { font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--stone); }
+  .testimonial-divider { width: 24px; height: 1px; background: var(--gold); margin-bottom: 0.6rem; }
+
+  footer { background: var(--ink); padding: 5rem 6rem 3rem; color: var(--taupe); }
+  .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; padding-bottom: 4rem; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 3rem; }
+  .footer-brand { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--cream); margin-bottom: 1rem; letter-spacing: 0.1em; }
+  .footer-tagline { font-size: 0.82rem; line-height: 1.8; color: var(--stone); max-width: 28ch; }
+  .footer-col-title { font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.5rem; }
+  .footer-links { list-style: none; }
+  .footer-links li { margin-bottom: 0.7rem; }
+  .footer-links a { font-size: 0.82rem; color: var(--stone); text-decoration: none; transition: color 0.3s; }
+  .footer-links a:hover { color: var(--cream); }
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; }
+  .footer-copy { font-size: 0.72rem; color: var(--stone); letter-spacing: 0.08em; }
+
+  @media (max-width: 1024px) {
+    nav { padding: 1.5rem 2rem; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { min-height: 45vh; }
+    .hero-left { padding: 5rem 2.5rem; }
+    section { padding: 5rem 2.5rem; }
+    .services { grid-template-columns: 1fr; gap: 3rem; }
+    .services-grid { grid-template-columns: 1fr; }
+    .about { grid-template-columns: 1fr; }
+    .about-visual { min-height: 300px; }
+    .about-content { padding: 4rem 2.5rem; }
+    .process-steps { grid-template-columns: 1fr; }
+    .booking-section { grid-template-columns: 1fr; gap: 3rem; padding: 5rem 2.5rem; }
+    .testimonial-grid { grid-template-columns: 1fr; }
+    footer { padding: 4rem 2.5rem 2rem; }
+    .footer-top { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+    .strip { padding: 1.2rem 2rem; gap: 2rem; }
+    .modal { padding: 2rem; }
+  }
+  @media (max-width: 600px) {
+    .footer-top { grid-template-columns: 1fr; }
+    .hero-actions { flex-direction: column; align-items: flex-start; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">Handynabon</a>
+  <ul class="nav-links">
+    <li><a href="#tjenester">Tjenester</a></li>
+    <li><a href="#om-oss">Om oss</a></li>
+    <li><a href="#prosess">Prosess</a></li>
+    <li><a href="#kontakt">Kontakt</a></li>
+  </ul>
+  <button class="nav-cta" onclick="openModal()">Bestill time</button>
+</nav>
+
+<section class="hero" style="padding:0;">
+  <div class="hero-left">
+    <p class="hero-eyebrow" style="white-space:normal; margin-bottom:1rem;">Ski — Kolbotn — Vinterbro — Kråkstad — Ås og omegn</p>
+    <h1 class="hero-title">Praktisk hjelp<br><em>når du trenger det.</em></h1>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="openModal()">Bestill time</button>
+      <a href="#tjenester" class="btn-secondary">Se tjenester</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <svg viewBox="0 0 600 700" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;position:absolute;inset:0;opacity:0.15;">
+      <circle cx="300" cy="350" r="280" fill="none" stroke="#b8965a" stroke-width="0.5"/>
+      <circle cx="300" cy="350" r="200" fill="none" stroke="#b8965a" stroke-width="0.5"/>
+      <line x1="20" y1="350" x2="580" y2="350" stroke="#b8965a" stroke-width="0.5"/>
+      <line x1="300" y1="70" x2="300" y2="630" stroke="#b8965a" stroke-width="0.5"/>
+    </svg>
+    <!-- Bil -->
+    <svg viewBox="0 0 520 580" xmlns="http://www.w3.org/2000/svg" style="width:min(420px,85%);position:relative;z-index:1;">
+      <!-- Hus -->
+      <polygon points="160,160 260,80 360,160" fill="none" stroke="#b8965a" stroke-width="2" opacity="0.9"/>
+      <rect x="185" y="160" width="150" height="100" fill="none" stroke="#b8965a" stroke-width="2" opacity="0.9"/>
+      <rect x="240" y="200" width="40" height="60" fill="none" stroke="#c4b8a4" stroke-width="1.5" opacity="0.7"/>
+      <rect x="195" y="170" width="30" height="28" fill="none" stroke="#c4b8a4" stroke-width="1.2" opacity="0.6"/>
+      <rect x="295" y="170" width="30" height="28" fill="none" stroke="#c4b8a4" stroke-width="1.2" opacity="0.6"/>
+
+      <!-- Bil -->
+      <rect x="100" y="360" width="200" height="70" rx="12" fill="none" stroke="#b8965a" stroke-width="2" opacity="0.9"/>
+      <path d="M130,360 L155,320 L245,320 L270,360" fill="none" stroke="#b8965a" stroke-width="2" opacity="0.9"/>
+      <circle cx="145" cy="432" r="22" fill="none" stroke="#c4b8a4" stroke-width="8" opacity="0.7"/>
+      <circle cx="145" cy="432" r="8" fill="#8a7d6e" opacity="0.5"/>
+      <circle cx="255" cy="432" r="22" fill="none" stroke="#c4b8a4" stroke-width="8" opacity="0.7"/>
+      <circle cx="255" cy="432" r="8" fill="#8a7d6e" opacity="0.5"/>
+      <rect x="160" y="330" width="80" height="30" rx="4" fill="none" stroke="#c4b8a4" stroke-width="1.2" opacity="0.5"/>
+
+      <!-- Gressklipping -->
+      <rect x="340" y="370" width="80" height="40" rx="6" fill="none" stroke="#b8965a" stroke-width="2" opacity="0.9"/>
+      <circle cx="355" cy="415" r="12" fill="none" stroke="#c4b8a4" stroke-width="6" opacity="0.7"/>
+      <circle cx="405" cy="415" r="12" fill="none" stroke="#c4b8a4" stroke-width="6" opacity="0.7"/>
+      <line x1="380" y1="370" x2="380" y2="345" stroke="#b8965a" stroke-width="2" opacity="0.8"/>
+      <line x1="380" y1="345" x2="420" y2="310" stroke="#b8965a" stroke-width="2" opacity="0.8"/>
+
+      <!-- Gress -->
+      <line x1="300" y1="460" x2="520" y2="460" stroke="#8a7d6e" stroke-width="1" opacity="0.4"/>
+      <line x1="310" y1="460" x2="308" y2="445" stroke="#8a7d6e" stroke-width="2" opacity="0.6"/>
+      <line x1="325" y1="460" x2="322" y2="442" stroke="#8a7d6e" stroke-width="2" opacity="0.6"/>
+      <line x1="340" y1="460" x2="338" y2="447" stroke="#8a7d6e" stroke-width="2" opacity="0.6"/>
+      <line x1="460" y1="460" x2="458" y2="444" stroke="#8a7d6e" stroke-width="2" opacity="0.6"/>
+      <line x1="475" y1="460" x2="472" y2="441" stroke="#8a7d6e" stroke-width="2" opacity="0.6"/>
+      <line x1="490" y1="460" x2="488" y2="446" stroke="#8a7d6e" stroke-width="2" opacity="0.6"/>
+
+      <!-- Hekk -->
+      <rect x="60" y="290" width="30" height="80" rx="4" fill="none" stroke="#8a7d6e" stroke-width="2" opacity="0.7"/>
+      <ellipse cx="75" cy="290" rx="20" ry="16" fill="none" stroke="#8a7d6e" stroke-width="2" opacity="0.7"/>
+      <rect x="100" y="300" width="30" height="70" rx="4" fill="none" stroke="#8a7d6e" stroke-width="2" opacity="0.6"/>
+      <ellipse cx="115" cy="300" rx="20" ry="16" fill="none" stroke="#8a7d6e" stroke-width="2" opacity="0.6"/>
+
+      <!-- Dekorative prikker -->
+      <circle cx="260" cy="200" r="3" fill="#b8965a" opacity="0.4"/>
+      <circle cx="380" cy="280" r="2" fill="#b8965a" opacity="0.3"/>
+    </svg>
+  </div>
+</section>
+
+<div class="strip">
+  <span class="strip-item">Hjulskift</span>
+  <span class="strip-dot"></span>
+  <span class="strip-item">Bilvask</span>
+  <span class="strip-dot"></span>
+  <span class="strip-item">Gressklipping</span>
+  <span class="strip-dot"></span>
+  <span class="strip-item">Hekkeklipp</span>
+  <span class="strip-dot"></span>
+  <span class="strip-item">Huspass</span>
+  <span class="strip-dot"></span>
+  <span class="strip-item">Ski, Akershus</span>
+  <span class="strip-dot"></span>
+  <span class="strip-item">Etter avtale</span>
+</div>
+
+<section class="services" id="tjenester">
+  <div>
+    <p class="section-eyebrow">Våre tjenester</p>
+    <h2 class="section-title">Praktisk<br><em>hjelp</em></h2>
+    <p style="font-size:0.88rem;line-height:1.9;color:var(--stone);max-width:32ch;margin-top:1.5rem;">Vi hjelper med alt fra bil til hage og huspass — alt etter avtale.</p>
+    <button class="btn-primary" onclick="openModal()" style="margin-top:2.5rem;">Bestill time</button>
+  </div>
+  <div class="services-grid">
+    <div class="service-card" onclick="openModal('Hjulskift')">
+      <p class="service-number">01</p>
+      <h3 class="service-name">Hjulskift</h3>
+      <p class="service-desc">Rask og presis montering av sommer- og vinterdekk. Vi kan hente bilen hjemme hos deg hvis forsikringen er i orden.</p>
+      <p class="service-price">400 kr</p>
+    </div>
+    <div class="service-card" onclick="openModal('Utvendig bilvask')">
+      <p class="service-number">02</p>
+      <h3 class="service-name">Bilvask</h3>
+      <p class="service-desc">Utvendig vask av bilen din — med omsorg for detaljene.</p>
+      <p class="service-price">500 kr</p>
+    </div>
+    <div class="service-card" onclick="openModal('Gressklipping')">
+      <p class="service-number">03</p>
+      <h3 class="service-name">Gressklipping</h3>
+      <p class="service-desc">Vi klipper gresset ditt med din gressklipping. Oppgi antall kvadratmeter i skjemaet så gir vi deg et nøyaktig tilbud.</p>
+      <p class="service-price">2,50 kr/m²</p>
+    </div>
+    <div class="service-card" onclick="openModal('Hekkeklipp')">
+      <p class="service-number">04</p>
+      <h3 class="service-name">Hekkeklipp</h3>
+      <p class="service-desc">Vi klipper og former hekken din med ditt utstyr. Pris gjelder gjennomsnittlig hekk — større hekker prises etter avtale.</p>
+      <p class="service-price">500 kr</p>
+    </div>
+    <div class="service-card" onclick="openModal('Bortkjøring av hageavfall')">
+      <p class="service-number">05</p>
+      <h3 class="service-name">Bortkjøring av hageavfall</h3>
+      <p class="service-desc">Vi kjører hageavfallet ditt til gjenvinningsstasjonen. Vi bruker kundens inngang på Bølstad. Pris per tur.</p>
+      <p class="service-price">600 kr / tur</p>
+    </div>
+    <div class="service-card" onclick="openModal('Huspass i ferien')">
+      <p class="service-number">06</p>
+      <h3 class="service-name">Huspass i ferien</h3>
+      <p class="service-desc">Vi passer på huset ditt mens du er bortreist — henter post, vanner planter og sjekker at alt er i orden.</p>
+      <p class="service-price">200 kr / dag</p>
+    </div>
+    <div class="service-card" onclick="openModal('Vindusvask')">
+      <p class="service-number">07</p>
+      <h3 class="service-name">Vindusvask</h3>
+      <p class="service-desc">Vi vasker vinduene dine utvendig med din utstyr. Pris gjelder gjennomsnittlig vindu.</p>
+      <p class="service-price">60 kr / vindu</p>
+    </div>
+    <div class="service-card" onclick="openModal('Annet')">
+      <p class="service-number">08</p>
+      <h3 class="service-name">Andre tjenester</h3>
+      <p class="service-desc">Vi kan utføre andre tjenester etter etterspørsel. Ta kontakt og beskriv hva du trenger, så finner vi en løsning.</p>
+      <p class="service-price">Pris etter avtale</p>
+    </div>
+  </div>
+</section>
+
+<section class="about" id="om-oss" style="padding:0;">
+  <div class="about-visual">
+    <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" style="width:260px;opacity:0.22;">
+      <rect x="80" y="80" width="240" height="340" fill="none" stroke="#b8965a" stroke-width="0.8"/>
+      <rect x="110" y="110" width="180" height="280" fill="none" stroke="#c4b8a4" stroke-width="0.5"/>
+      <line x1="80" y1="250" x2="320" y2="250" stroke="#b8965a" stroke-width="0.5"/>
+      <circle cx="200" cy="250" r="60" fill="none" stroke="#b8965a" stroke-width="0.8"/>
+      <circle cx="200" cy="250" r="20" fill="#b8965a" opacity="0.3"/>
+      <path d="M120 290 L140 240 L180 220 L220 220 L260 240 L280 290 Z" fill="none" stroke="#8a7d6e" stroke-width="1.5"/>
+      <path d="M155 240 L165 225 L215 225 L245 240" fill="none" stroke="#8a7d6e" stroke-width="1.5"/>
+      <circle cx="155" cy="292" r="15" fill="none" stroke="#8a7d6e" stroke-width="1.5"/>
+      <circle cx="245" cy="292" r="15" fill="none" stroke="#8a7d6e" stroke-width="1.5"/>
+    </svg>
+    <div style="position:absolute;bottom:3rem;left:3rem;">
+      <p style="font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:300;color:rgba(255,255,255,0.1);line-height:1;"></p>
+    </div>
+  </div>
+  <div class="about-content">
+    <p class="section-eyebrow">Om oss</p>
+    <h2 class="section-title">Lidenskap for<br><em>å hjelpe!</em></h2>
+    <p>En engasjert ungdom fra Ski som elsker å hjelpe naboer med det praktiske. Enten det er bilvask, hekkeklipp eller huspass — jeg stiller opp og gjør jobben skikkelig.</p>
+    <p>Alt skjer etter avtale, slik at du alltid kan stole på at vi er klare når du er det.</p>
+    <div class="info-block" style="margin-top:2rem;">
+      <p class="info-label" style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">Serviceområde</p>
+      <p style="font-size:0.82rem;color:var(--stone);line-height:1.9;">Ski — Kolbotn — Vinterbro<br>Kråkstad — Ås og omegn</p>
+    </div>
+  </div>
+</section>
+
+<section class="process" id="prosess">
+  <p class="section-eyebrow">Slik fungerer det</p>
+  <h2 class="section-title" style="max-width:20ch;">Enkelt og<br><em>sømløst</em></h2>
+  <div class="process-steps">
+    <div class="process-step">
+      <p class="step-num">01</p>
+      <h3 class="step-title">Ta kontakt</h3>
+      <p class="step-desc">Fyll ut bestillingsskjemaet med ønsket tjeneste og tidspunkt. Vi svarer deg så raskt som mulig.</p>
+    </div>
+    <div class="process-step">
+      <p class="step-num">02</p>
+      <h3 class="step-title">Vi avtaler tid</h3>
+      <p class="step-desc">Vi bekrefter tidspunkt som passer for begge parter. Henting er mulig om forsikringen din dekker det.</p>
+    </div>
+    <div class="process-step">
+      <p class="step-num">03</p>
+      <h3 class="step-title">Ferdig levert</h3>
+      <p class="step-desc">Du får bilen tilbake i topp stand. Betaling avtales direkte.</p>
+    </div>
+  </div>
+</section>
+
+<section class="booking-section" id="kontakt">
+  <div class="booking-info">
+    <p class="section-eyebrow">Bestilling</p>
+    <h2 class="section-title">Book din<br><em>time</em></h2>
+    <p>Send inn forespørsel så tar vi kontakt for å avtale tidspunkt som passer. Vi henter bilen hos deg dersom forsikringen din dekker det.</p>
+    <div class="info-block">
+      <p class="info-label">Sted</p>
+      <p class="info-text">Ski, Akershus</p>
+    </div>
+    <div class="info-block">
+      <p class="info-label">Priser</p>
+      <p class="info-text">Hjulskift — 400 kr<br>Utvendig vask — 500 kr<br>Gressklipping — 2,50 kr/m²<br>Hekkeklipp — 500 kr<br>Hageavfall — 600 kr/tur<br>Huspass — 200 kr/dag<br>Andre tjenester — etter avtale</p>
+    </div>
+    <div class="info-block">
+      <p class="info-label">Tidspunkt</p>
+      <p class="info-text">Etter avtale</p>
+    </div>
+  </div>
+  <div id="inline-wrap">
+    <div class="booking-form" id="inline-form">
+      <form id="form-inline" style="display:flex;flex-direction:column;gap:1.4rem;">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Fornavn</label>
+            <input type="text" name="Fornavn" class="form-input" placeholder="Ola" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Etternavn</label>
+            <input type="text" name="Etternavn" class="form-input" placeholder="Nordmann">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Telefon</label>
+          <input type="tel" name="Telefon" class="form-input" placeholder="+47 000 00 000" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">E-post</label>
+          <input type="email" name="Epost" class="form-input" placeholder="ola@epost.no">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tjeneste (velg én eller flere)</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Hjulskift — 400 kr" onchange="toggleHenting('if-henting')"> Hjulskift — 400 kr</label>
+            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Utvendig bilvask — 500 kr" onchange="toggleHenting('if-henting')"> Utvendig bilvask — 500 kr</label>
+            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Gressklipping — 2,50 kr/m²" class="gress-check" onchange="toggleSqm('if-sqm', this)"> Gressklipping — 2,50 kr/m²</label>
+            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Hekkeklipp — 500 kr"> Hekkeklipp — 500 kr</label>
+            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Bortkjøring av hageavfall — 600 kr/tur"> Bortkjøring av hageavfall — 600 kr/tur</label>
+            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Huspass i ferien — 200 kr/dag"> Huspass i ferien — 200 kr/dag</label>
+            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Vindusvask — 60 kr/vindu"> Vindusvask — 60 kr/vindu</label>
+            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Annet"> Annet</label>
+          </div>
+        </div>
+        <div class="form-group" id="if-sqm" style="display:none;">
+          <label class="form-label">Tomtestørrelse (m²)</label>
+          <input type="number" name="Kvadratmeter" class="form-input" placeholder="F.eks. 450" min="0">
+          <span style="font-size:0.75rem;color:var(--stone);margin-top:0.4rem;">Vi beregner nøyaktig pris basert på dette</span>
+        </div>
+        <div class="form-group" id="if-bil" style="display:none;">
+          <label class="form-label">Biltype og reg.nr.</label>
+          <input type="text" name="Bil" class="form-input" placeholder="VW Golf, AB 12345">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ønsket dato og klokkeslett</label>
+          <input type="text" name="Dato og klokkeslett" class="form-input" placeholder="F.eks. 15.06.2025 kl. 14:00">
+        </div>
+        <div class="form-group" id="if-henting" style="display:none;">
+          <label class="form-label">Ønsker du henting? (krever forsikringsdekning)</label>
+          <select name="Henting" class="form-select">
+            <option value="" disabled selected>Velg</option>
+            <option>Ja — ønsker henting</option>
+            <option>Nei — leverer selv</option>
+            <option>Vet ikke ennå</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Melding (valgfritt)</label>
+          <textarea name="Melding" class="form-textarea" placeholder="Andre spørsmål eller ønsker..."></textarea>
+        </div>
+        <button type="submit" class="form-submit">Send forespørsel</button>
+      </form>
+    </div>
+    <div class="form-success" id="inline-success">
+      <h3>Takk for din bestilling!</h3>
+      <p>Vi tar kontakt så snart som mulig for å bekrefte tidspunkt. Vi gleder oss til å ta hånd om bilen din.</p>
+    </div>
+  </div>
+</section>
+
+
+
+<footer>
+  <div class="footer-top">
+    <div>
+      <p class="footer-brand">Handynabon</p>
+      <p class="footer-tagline">Praktisk hjelp i Ski — bil, hage, huspass og annet etter forespørsel.</p>
+    </div>
+    <div>
+      <p class="footer-col-title">Tjenester</p>
+      <ul class="footer-links">
+        <li><a href="#tjenester">Hjulskift</a></li>
+        <li><a href="#tjenester">Bilvask</a></li>
+        <li><a href="#tjenester">Gressklipping</a></li>
+        <li><a href="#tjenester">Hekkeklipp</a></li>
+        <li><a href="#tjenester">Bortkjøring av hageavfall</a></li>
+        <li><a href="#tjenester">Huspass i ferien</a></li>
+        <li><a href="#tjenester">Vindusvask</a></li>
+        <li><a href="#tjenester">Andre tjenester</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer-col-title">Kontakt</p>
+      <ul class="footer-links">
+        <li><a href="mailto:Handynabon@outlook.com">Handynabon@outlook.com</a></li>
+        <li><a href="#kontakt" onclick="openModal(); return false;">Bestill time</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer-col-title">Område</p>
+      <ul class="footer-links">
+        <li><a href="#om-oss">Ski</a></li>
+        <li><a href="#om-oss">Kolbotn</a></li>
+        <li><a href="#om-oss">Vinterbro</a></li>
+        <li><a href="#om-oss">Kråkstad</a></li>
+        <li><a href="#om-oss">Ås</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2025 Handynabon. Alle rettigheter forbeholdt.</p>
+    <p class="footer-copy">Ski, Akershus</p>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&#x2715;</button>
+    <p class="modal-eyebrow">Bestilling</p>
+    <h2 class="modal-title">Book din<br><em>time</em></h2>
+    <div class="booking-form" id="modal-form">
+      <form id="form-modal" style="display:flex;flex-direction:column;gap:1.4rem;">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Fornavn</label>
+            <input type="text" name="Fornavn" class="form-input" placeholder="Ola" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Etternavn</label>
+            <input type="text" name="Etternavn" class="form-input" placeholder="Nordmann">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Telefon</label>
+          <input type="tel" name="Telefon" class="form-input" placeholder="+47 000 00 000" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">E-post</label>
+          <input type="email" name="Epost" class="form-input" placeholder="ola@epost.no">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tjeneste (velg én eller flere)</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Hjulskift — 400 kr" id="mf-hjul" onchange="toggleHenting('mf-henting')"> Hjulskift — 400 kr</label>
+            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Utvendig bilvask — 500 kr" onchange="toggleHenting('mf-henting')"> Utvendig bilvask — 500 kr</label>
+            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Gressklipping — 2,50 kr/m²" onchange="toggleSqm('mf-sqm', this)"> Gressklipping — 2,50 kr/m²</label>
+            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Hekkeklipp — 500 kr"> Hekkeklipp — 500 kr</label>
+            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Bortkjøring av hageavfall — 600 kr/tur"> Bortkjøring av hageavfall — 600 kr/tur</label>
+            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Huspass i ferien — 200 kr/dag"> Huspass i ferien — 200 kr/dag</label>
+            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Vindusvask — 60 kr/vindu"> Vindusvask — 60 kr/vindu</label>
+            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Annet"> Annet</label>
+          </div>
+        </div>
+        <div class="form-group" id="mf-sqm" style="display:none;">
+          <label class="form-label">Tomtestørrelse (m²)</label>
+          <input type="number" name="Kvadratmeter" class="form-input" placeholder="F.eks. 450" min="0">
+          <span style="font-size:0.75rem;color:var(--stone);margin-top:0.4rem;">Vi beregner nøyaktig pris basert på dette</span>
+        </div>
+        <div class="form-group" id="mf-bil" style="display:none;">
+          <label class="form-label">Biltype og reg.nr.</label>
+          <input type="text" name="Bil" class="form-input" placeholder="VW Golf, AB 12345">
+        </div>
+        <div class="form-group datepicker-wrap">
+          <label class="form-label">Ønsket dato og klokkeslett</label>
+          <input type="text" name="Dato og klokkeslett" class="form-input datepicker-input" id="mf-datepicker" placeholder="Velg dato og tid" readonly style="cursor:pointer;">
+          <div class="cal-popup" id="mf-cal"></div>
+        </div>
+        <div class="form-group" id="mf-henting" style="display:none;">
+          <label class="form-label">Ønsker du henting? (krever forsikringsdekning)</label>
+          <select name="Henting" class="form-select">
+            <option value="" disabled selected>Velg</option>
+            <option>Ja — ønsker henting</option>
+            <option>Nei — leverer selv</option>
+            <option>Vet ikke ennå</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Melding (valgfritt)</label>
+          <textarea name="Melding" class="form-textarea" placeholder="Andre spørsmål eller ønsker..."></textarea>
+        </div>
+        <button type="submit" class="form-submit">Send forespørsel</button>
+      </form>
+    </div>
+    <div class="form-success" id="modal-success">
+      <h3>Takk for din bestilling!</h3>
+      <p>Vi tar kontakt så snart som mulig for å bekrefte tidspunkt. Vi gleder oss til å ta hånd om bilen din.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('a[href^="#"]').forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    var target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+});
+
+function toggleHenting(id) {
+  var prefix = id.split('-')[0];
+  var formEl = document.getElementById(id).closest('form');
+  var bilChecked = formEl.querySelectorAll('input[value="Hjulskift — 400 kr"]:checked, input[value="Utvendig bilvask — 500 kr"]:checked').length > 0;
+  var display = bilChecked ? 'flex' : 'none';
+  var flexDir = bilChecked ? 'column' : '';
+  document.getElementById(id).style.display = display;
+  document.getElementById(id).style.flexDirection = flexDir;
+  document.getElementById(prefix + '-bil').style.display = display;
+  document.getElementById(prefix + '-bil').style.flexDirection = flexDir;
+}
+
+function toggleSqm(id, checkbox) {
+  document.getElementById(id).style.display = checkbox.checked ? 'flex' : 'none';
+  document.getElementById(id).style.flexDirection = 'column';
+}
+
+function openModal(service) {
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  if (service) {
+    var checkboxes = document.querySelectorAll('#form-modal input[name="Tjeneste"]');
+    checkboxes.forEach(function(cb) {
+      if (cb.value.indexOf(service) !== -1) {
+        cb.checked = true;
+        toggleHenting('mf-henting');
+        if (cb.value.indexOf('Gressklipping') !== -1) toggleSqm('mf-sqm', cb);
+      }
+    });
+  }
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+
+function handleSubmit(e, formEl, successId, isModal) {
+  e.preventDefault();
+
+  var checked = Array.from(formEl.querySelectorAll('input[name="Tjeneste"]:checked')).map(function(c) { return c.value; });
+  if (checked.length === 0) { alert('Vennligst velg minst én tjeneste.'); return; }
+
+  var btn = formEl.querySelector('button[type="submit"]');
+  btn.textContent = 'Sender...';
+  btn.disabled = true;
+
+  var data = {};
+  new FormData(formEl).forEach(function(val, key) { if (key !== 'Tjeneste') data[key] = val; });
+  data['Tjeneste'] = checked.join(', ');
+
+  fetch('https://formspree.io/f/xaqaeoke', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(function(res) {
+    if (res.ok) {
+      formEl.style.display = 'none';
+      document.getElementById(successId).classList.add('visible');
+      if (isModal) setTimeout(closeModal, 3000);
+    } else {
+      alert('Noe gikk galt. Prøv igjen.');
+      btn.textContent = 'Send forespørsel';
+      btn.disabled = false;
+    }
+  })
+  .catch(function() {
+    alert('Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.');
+    btn.textContent = 'Send forespørsel';
+    btn.disabled = false;
+  });
+}
+
+// CALENDAR
+var calState = {};
+var months = ['Januar','Februar','Mars','April','Mai','Juni','Juli','August','September','Oktober','November','Desember'];
+var days = ['Ma','Ti','On','To','Fr','Lø','Sø'];
+var times = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00'];
+
+function initCal(inputId, calId) {
+  var input = document.getElementById(inputId);
+  var cal = document.getElementById(calId);
+  var now = new Date();
+  calState[calId] = { year: now.getFullYear(), month: now.getMonth(), selDate: null, selTime: null };
+  input.addEventListener('click', function(e) {
+    e.stopPropagation();
+    document.querySelectorAll('.cal-popup').forEach(function(c) { if (c.id !== calId) c.classList.remove('open'); });
+    renderCal(calId);
+    cal.classList.toggle('open');
+  });
+  document.addEventListener('click', function(e) {
+    if (!cal.contains(e.target) && e.target !== input) cal.classList.remove('open');
+  });
+}
+
+function renderCal(calId) {
+  var s = calState[calId];
+  var cal = document.getElementById(calId);
+  var now = new Date(); now.setHours(0,0,0,0);
+  var first = new Date(s.year, s.month, 1);
+  var firstDay = (first.getDay() + 6) % 7;
+  var daysInMonth = new Date(s.year, s.month + 1, 0).getDate();
+
+  var html = '<div class="cal-header">';
+  html += '<button class="cal-nav" onclick="moveCal(\'' + calId + '\',-1)">&#8249;</button>';
+  html += '<span class="cal-month">' + months[s.month] + ' ' + s.year + '</span>';
+  html += '<button class="cal-nav" onclick="moveCal(\'' + calId + '\',1)">&#8250;</button>';
+  html += '</div><div class="cal-grid">';
+  days.forEach(function(d) { html += '<div class="cal-day-name">' + d + '</div>'; });
+  for (var i = 0; i < firstDay; i++) html += '<div class="cal-day empty"></div>';
+  for (var d = 1; d <= daysInMonth; d++) {
+    var date = new Date(s.year, s.month, d);
+    var isPast = date < now;
+    var isSelected = s.selDate && s.selDate.getDate() === d && s.selDate.getMonth() === s.month && s.selDate.getFullYear() === s.year;
+    var isToday = date.getTime() === now.getTime();
+    var cls = 'cal-day' + (isPast ? ' past' : '') + (isSelected ? ' selected' : '') + (isToday ? ' today' : '');
+    html += '<div class="' + cls + '" onclick="selectDate(\'' + calId + '\',' + s.year + ',' + s.month + ',' + d + ')">' + d + '</div>';
+  }
+  html += '</div>';
+  html += '<div class="cal-time"><p class="cal-time-label">Klokkeslett</p>';
+  html += '<input type="text" class="form-input" id="' + calId + '-timeinput" placeholder="F.eks. 14:00" value="' + (s.selTime || '') + '" oninput="calState[\'' + calId + '\'].selTime=this.value" style="margin-top:0.3rem;">';
+  html += '</div>';
+  html += '<button class="cal-confirm" onclick="confirmCal(\'' + calId + '\')">Velg</button>';
+  cal.innerHTML = html;
+}
+
+function moveCal(calId, dir) {
+  var s = calState[calId];
+  s.month += dir;
+  if (s.month > 11) { s.month = 0; s.year++; }
+  if (s.month < 0) { s.month = 11; s.year--; }
+  renderCal(calId);
+}
+
+function selectDate(calId, y, m, d) {
+  calState[calId].selDate = new Date(y, m, d);
+  renderCal(calId);
+}
+
+function selectTime(calId, t) {
+  calState[calId].selTime = t;
+  renderCal(calId);
+}
+
+function confirmCal(calId) {
+  var s = calState[calId];
+  var inputId = calId === 'if-cal' ? 'if-datepicker' : 'mf-datepicker';
+  var input = document.getElementById(inputId);
+  if (!s.selDate) { alert('Velg en dato'); return; }
+  var d = s.selDate;
+  var dateStr = String(d.getDate()).padStart(2,'0') + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + d.getFullYear();
+  input.value = dateStr + (s.selTime ? ' kl. ' + s.selTime : '');
+  input.dispatchEvent(new Event('change'));
+  document.getElementById(calId).classList.remove('open');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  initCal('mf-datepicker', 'mf-cal');
+  var formInline = document.getElementById('form-inline');
+  if (formInline) {
+    formInline.addEventListener('submit', function(e) {
+      handleSubmit(e, formInline, 'inline-success', false);
+    });
+  }
+  var formModal = document.getElementById('form-modal');
+  if (formModal) {
+    formModal.addEventListener('submit', function(e) {
+      handleSubmit(e, formModal, 'modal-success', true);
+    });
+  }
+});
+</script>
+</body>
+</html>
