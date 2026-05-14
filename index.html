@@ -16,9 +16,10 @@
   .datepicker-wrap { position: relative; }
   .datepicker-input { cursor: pointer; }
   .cal-popup {
-    display: none; position: absolute; z-index: 300; background: var(--warm-white);
-    border: 1px solid var(--sand); padding: 1.5rem; width: 300px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-    top: calc(100% + 8px); left: 0;
+    display: none; position: fixed; z-index: 300; background: var(--warm-white);
+    border: 1px solid var(--sand); padding: 1.5rem; width: 90vw; max-width: 340px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
   }
   .cal-popup.open { display: block; }
   .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
@@ -69,7 +70,7 @@
 
   .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; padding-top: 5rem; }
   .hero-left { background: var(--cream); display: flex; flex-direction: column; justify-content: center; padding: 8rem 4rem 8rem 6rem; }
-  .hero-eyebrow { font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--bark); margin-bottom: 2rem; white-space: normal; overflow: visible; padding-top: 0.5rem; line-height: 1.8; font-weight: 400; }
+  .hero-eyebrow { font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--bark); margin-bottom: 2rem; line-height: 1.8; }
   .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(3rem,5vw,5rem); font-weight: 300; line-height: 1.1; color: var(--ink); margin-bottom: 2rem; }
   .hero-title em { font-style: italic; color: var(--bark); }
   .hero-desc { font-size: 0.88rem; line-height: 1.9; color: var(--stone); max-width: 34ch; margin-bottom: 3.5rem; }
@@ -127,7 +128,8 @@
   .checkbox-label input[type="checkbox"] { appearance: none; -webkit-appearance: none; width: 16px; height: 16px; border: 1px solid var(--taupe); background: transparent; cursor: pointer; flex-shrink: 0; transition: background 0.2s, border-color 0.2s; position: relative; }
   .checkbox-label input[type="checkbox"]:checked { background: var(--bark); border-color: var(--bark); }
   .checkbox-label input[type="checkbox"]:checked::after { content: ''; position: absolute; left: 4px; top: 1px; width: 5px; height: 9px; border: 2px solid var(--warm-white); border-top: none; border-left: none; transform: rotate(45deg); }
-  .checkbox-label:hover input[type="checkbox"] { border-color: var(--bark); } font-family: 'Jost', sans-serif; font-weight: 300; font-size: 0.88rem; color: var(--ink); background: transparent; border: none; border-bottom: 1px solid var(--taupe); padding: 0.7rem 0; outline: none; transition: border-color 0.3s; appearance: none; -webkit-appearance: none; width: 100%; }
+  .checkbox-label:hover input[type="checkbox"] { border-color: var(--bark); }
+  .form-input, .form-select, .form-textarea { font-family: 'Jost', sans-serif; font-weight: 300; font-size: 16px; color: var(--ink); background: transparent; border: none; border-bottom: 1px solid var(--taupe); padding: 0.7rem 0; outline: none; transition: border-color 0.3s; appearance: none; -webkit-appearance: none; width: 100%; }
   .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--bark); }
   .form-textarea { resize: none; height: 80px; }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
@@ -172,13 +174,13 @@
     .nav-links { display: none; }
     .hero { grid-template-columns: 1fr; }
     .hero-right { min-height: 45vh; }
-    .hero-left { padding: 5rem 2.5rem; }
+    .hero-left { padding: 9rem 2.5rem 5rem; }
     section { padding: 5rem 2.5rem; }
     .services { grid-template-columns: 1fr; gap: 3rem; }
     .services-grid { grid-template-columns: 1fr; }
     .about { grid-template-columns: 1fr; }
     .about-visual { min-height: 300px; }
-    .about-content { padding: 4rem 2.5rem; }
+    .about-content { padding: 6rem 2.5rem 4rem; }
     .process-steps { grid-template-columns: 1fr; }
     .booking-section { grid-template-columns: 1fr; gap: 3rem; padding: 5rem 2.5rem; }
     .testimonial-grid { grid-template-columns: 1fr; }
@@ -209,7 +211,7 @@
 
 <section class="hero" style="padding:0;">
   <div class="hero-left">
-    <p class="hero-eyebrow" style="white-space:normal; margin-bottom:1rem;">Ski — Kolbotn — Vinterbro — Kråkstad — Ås og omegn</p>
+    <p class="hero-eyebrow">Ski — Kolbotn — Vinterbro<br>Kråkstad — Ås og omegn</p>
     <h1 class="hero-title">Praktisk hjelp<br><em>når du trenger det.</em></h1>
     <div class="hero-actions">
       <button class="btn-primary" onclick="openModal()">Bestill time</button>
@@ -365,7 +367,7 @@
   <div class="about-content">
     <p class="section-eyebrow">Om oss</p>
     <h2 class="section-title">Lidenskap for<br><em>å hjelpe!</em></h2>
-    <p>En engasjert ungdom fra Ski som elsker å hjelpe naboer med det praktiske. Enten det er bilvask, hekkeklipp eller huspass — jeg stiller opp og gjør jobben skikkelig.</p>
+    <p>Engasjert ungdom fra Ski som elsker å hjelpe naboer med det praktiske. Enten det er bilvask, hekkeklipp eller huspass — vi stiller opp og gjør jobben.</p>
     <p>Alt skjer etter avtale, slik at du alltid kan stole på at vi er klare når du er det.</p>
     <div class="info-block" style="margin-top:2rem;">
       <p class="info-label" style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">Serviceområde</p>
@@ -407,7 +409,7 @@
     </div>
     <div class="info-block">
       <p class="info-label">Priser</p>
-      <p class="info-text">Hjulskift — 400 kr<br>Utvendig vask — 500 kr<br>Gressklipping — 2,50 kr/m²<br>Hekkeklipp — 500 kr<br>Hageavfall — 600 kr/tur<br>Huspass — 200 kr/dag<br>Andre tjenester — etter avtale</p>
+      <p class="info-text">Hjulskift — 400 kr<br>Utvendig vask — 500 kr<br>Gressklipping — 2,50 kr/m²<br>Hekkeklipp — 500 kr<br>Hageavfall — 600 kr/tur<br>Huspass — 200 kr/dag<br>Vindusvask — 60 kr/vindu<br>Andre tjenester — etter avtale</p>
     </div>
     <div class="info-block">
       <p class="info-label">Tidspunkt</p>
