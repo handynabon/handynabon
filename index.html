@@ -723,9 +723,9 @@ function renderCal(calId) {
   var daysInMonth = new Date(s.year, s.month + 1, 0).getDate();
 
   var html = '<div class="cal-header">';
-  html += '<button class="cal-nav" onclick="moveCal(\'' + calId + '\',-1)">&#8249;</button>';
+  html += '<button class="cal-nav" onclick="moveCal(\'' + calId + '\',-1,event)">&#8249;</button>';
   html += '<span class="cal-month">' + months[s.month] + ' ' + s.year + '</span>';
-  html += '<button class="cal-nav" onclick="moveCal(\'' + calId + '\',1)">&#8250;</button>';
+  html += '<button class="cal-nav" onclick="moveCal(\'' + calId + '\',1,event)">&#8250;</button>';
   html += '</div><div class="cal-grid">';
   days.forEach(function(d) { html += '<div class="cal-day-name">' + d + '</div>'; });
   for (var i = 0; i < firstDay; i++) html += '<div class="cal-day empty"></div>';
@@ -745,7 +745,8 @@ function renderCal(calId) {
   cal.innerHTML = html;
 }
 
-function moveCal(calId, dir) {
+function moveCal(calId, dir, event) {
+  if (event) { event.preventDefault(); event.stopPropagation(); }
   var s = calState[calId];
   s.month += dir;
   if (s.month > 11) { s.month = 0; s.year++; }
