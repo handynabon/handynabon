@@ -709,6 +709,9 @@ function initCal(inputId, calId) {
     renderCal(calId);
     cal.classList.toggle('open');
   });
+  cal.addEventListener('click', function(e) {
+    e.stopPropagation();
+  });
   document.addEventListener('click', function(e) {
     if (!cal.contains(e.target) && e.target !== input) cal.classList.remove('open');
   });
