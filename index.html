@@ -182,6 +182,8 @@
     .about-visual { min-height: 300px; }
     .about-content { padding: 6rem 2.5rem 4rem; }
     .process-steps { grid-template-columns: 1fr; }
+    .process-step { padding: 3rem 2.5rem; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .process-step:last-child { border-bottom: none; }
     .booking-section { grid-template-columns: 1fr; gap: 3rem; padding: 5rem 2.5rem; }
     .testimonial-grid { grid-template-columns: 1fr; }
     footer { padding: 4rem 2.5rem 2rem; }
@@ -305,25 +307,25 @@
     <div class="service-card" onclick="openModal('Utvendig bilvask')">
       <p class="service-number">02</p>
       <h3 class="service-name">Bilvask</h3>
-      <p class="service-desc">Utvendig vask av bilen din — med omsorg for detaljene.</p>
+      <p class="service-desc">Utvendig vask av bilen din.</p>
       <p class="service-price">500 kr</p>
     </div>
     <div class="service-card" onclick="openModal('Gressklipping')">
       <p class="service-number">03</p>
       <h3 class="service-name">Gressklipping</h3>
-      <p class="service-desc">Vi klipper gresset ditt med din gressklipping. Oppgi antall kvadratmeter i skjemaet så gir vi deg et nøyaktig tilbud.</p>
+      <p class="service-desc">Vi klipper gresset ditt med din gressklipper. Oppgi antall kvadratmeter i skjemaet så gir vi deg et nøyaktig tilbud.</p>
       <p class="service-price">2,50 kr/m²</p>
     </div>
     <div class="service-card" onclick="openModal('Hekkeklipp')">
       <p class="service-number">04</p>
       <h3 class="service-name">Hekkeklipp</h3>
-      <p class="service-desc">Vi klipper og former hekken din med ditt utstyr. Pris gjelder gjennomsnittlig hekk — større hekker prises etter avtale.</p>
-      <p class="service-price">500 kr</p>
+      <p class="service-desc">Vi klipper hekken din med ditt utstyr. Pris settes etter størrelse på hekken.</p>
+      <p class="service-price">Pris etter størrelse</p>
     </div>
     <div class="service-card" onclick="openModal('Bortkjøring av hageavfall')">
       <p class="service-number">05</p>
       <h3 class="service-name">Bortkjøring av hageavfall</h3>
-      <p class="service-desc">Vi kjører hageavfallet ditt til gjenvinningsstasjonen. Vi bruker kundens inngang på Bølstad. Pris per tur.</p>
+      <p class="service-desc">Vi kjører hageavfallet ditt til gjenvinningsstasjonen på kundens kvote. Pris per tur.</p>
       <p class="service-price">600 kr / tur</p>
     </div>
     <div class="service-card" onclick="openModal('Huspass i ferien')">
@@ -335,7 +337,7 @@
     <div class="service-card" onclick="openModal('Vindusvask')">
       <p class="service-number">07</p>
       <h3 class="service-name">Vindusvask</h3>
-      <p class="service-desc">Vi vasker vinduene dine utvendig med din utstyr. Pris gjelder gjennomsnittlig vindu.</p>
+      <p class="service-desc">Vi vasker vinduene dine utvendig — kjeller og første etasje. Utstyr er medbrakt.</p>
       <p class="service-price">60 kr / vindu</p>
     </div>
     <div class="service-card" onclick="openModal('Annet')">
@@ -388,12 +390,12 @@
     <div class="process-step">
       <p class="step-num">02</p>
       <h3 class="step-title">Vi avtaler tid</h3>
-      <p class="step-desc">Vi bekrefter tidspunkt som passer for begge parter. Henting er mulig om forsikringen din dekker det.</p>
+      <p class="step-desc">Vi bekrefter tidspunkt som passer for begge parter.</p>
     </div>
     <div class="process-step">
       <p class="step-num">03</p>
       <h3 class="step-title">Ferdig levert</h3>
-      <p class="step-desc">Du får bilen tilbake i topp stand. Betaling avtales direkte.</p>
+      <p class="step-desc">Jobben blir gjort.</p>
     </div>
   </div>
 </section>
@@ -402,86 +404,14 @@
   <div class="booking-info">
     <p class="section-eyebrow">Bestilling</p>
     <h2 class="section-title">Book din<br><em>time</em></h2>
-    <p>Send inn forespørsel så tar vi kontakt for å avtale tidspunkt som passer. Vi henter bilen hos deg dersom forsikringen din dekker det.</p>
+    <p>Send inn forespørsel via knappen øverst så tar vi kontakt for å avtale tidspunkt som passer.</p>
     <div class="info-block">
       <p class="info-label">Sted</p>
       <p class="info-text">Ski, Akershus</p>
     </div>
     <div class="info-block">
-      <p class="info-label">Priser</p>
-      <p class="info-text">Hjulskift — 400 kr<br>Utvendig vask — 500 kr<br>Gressklipping — 2,50 kr/m²<br>Hekkeklipp — 500 kr<br>Hageavfall — 600 kr/tur<br>Huspass — 200 kr/dag<br>Vindusvask — 60 kr/vindu<br>Andre tjenester — etter avtale</p>
-    </div>
-    <div class="info-block">
       <p class="info-label">Tidspunkt</p>
       <p class="info-text">Etter avtale</p>
-    </div>
-  </div>
-  <div id="inline-wrap">
-    <div class="booking-form" id="inline-form">
-      <form id="form-inline" style="display:flex;flex-direction:column;gap:1.4rem;">
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Fornavn</label>
-            <input type="text" name="Fornavn" class="form-input" placeholder="Ola" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Etternavn</label>
-            <input type="text" name="Etternavn" class="form-input" placeholder="Nordmann">
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Telefon</label>
-          <input type="tel" name="Telefon" class="form-input" placeholder="+47 000 00 000" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label">E-post</label>
-          <input type="email" name="Epost" class="form-input" placeholder="ola@epost.no">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Tjeneste (velg én eller flere)</label>
-          <div class="checkbox-group">
-            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Hjulskift — 400 kr" onchange="toggleHenting('if-henting')"> Hjulskift — 400 kr</label>
-            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Utvendig bilvask — 500 kr" onchange="toggleHenting('if-henting')"> Utvendig bilvask — 500 kr</label>
-            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Gressklipping — 2,50 kr/m²" class="gress-check" onchange="toggleSqm('if-sqm', this)"> Gressklipping — 2,50 kr/m²</label>
-            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Hekkeklipp — 500 kr"> Hekkeklipp — 500 kr</label>
-            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Bortkjøring av hageavfall — 600 kr/tur"> Bortkjøring av hageavfall — 600 kr/tur</label>
-            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Huspass i ferien — 200 kr/dag"> Huspass i ferien — 200 kr/dag</label>
-            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Vindusvask — 60 kr/vindu"> Vindusvask — 60 kr/vindu</label>
-            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Annet"> Annet</label>
-          </div>
-        </div>
-        <div class="form-group" id="if-sqm" style="display:none;">
-          <label class="form-label">Tomtestørrelse (m²)</label>
-          <input type="number" name="Kvadratmeter" class="form-input" placeholder="F.eks. 450" min="0">
-          <span style="font-size:0.75rem;color:var(--stone);margin-top:0.4rem;">Vi beregner nøyaktig pris basert på dette</span>
-        </div>
-        <div class="form-group" id="if-bil" style="display:none;">
-          <label class="form-label">Biltype og reg.nr.</label>
-          <input type="text" name="Bil" class="form-input" placeholder="VW Golf, AB 12345">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Ønsket dato og klokkeslett</label>
-          <input type="text" name="Dato og klokkeslett" class="form-input" placeholder="F.eks. 15.06.2025 kl. 14:00">
-        </div>
-        <div class="form-group" id="if-henting" style="display:none;">
-          <label class="form-label">Ønsker du henting? (krever forsikringsdekning)</label>
-          <select name="Henting" class="form-select">
-            <option value="" disabled selected>Velg</option>
-            <option>Ja — ønsker henting</option>
-            <option>Nei — leverer selv</option>
-            <option>Vet ikke ennå</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Melding (valgfritt)</label>
-          <textarea name="Melding" class="form-textarea" placeholder="Andre spørsmål eller ønsker..."></textarea>
-        </div>
-        <button type="submit" class="form-submit">Send forespørsel</button>
-      </form>
-    </div>
-    <div class="form-success" id="inline-success">
-      <h3>Takk for din bestilling!</h3>
-      <p>Vi tar kontakt så snart som mulig for å bekrefte tidspunkt. Vi gleder oss til å ta hånd om bilen din.</p>
     </div>
   </div>
 </section>
@@ -563,7 +493,7 @@
             <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Hjulskift — 400 kr" id="mf-hjul" onchange="toggleHenting('mf-henting')"> Hjulskift — 400 kr</label>
             <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Utvendig bilvask — 500 kr" onchange="toggleHenting('mf-henting')"> Utvendig bilvask — 500 kr</label>
             <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Gressklipping — 2,50 kr/m²" onchange="toggleSqm('mf-sqm', this)"> Gressklipping — 2,50 kr/m²</label>
-            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Hekkeklipp — 500 kr"> Hekkeklipp — 500 kr</label>
+            <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Hekkeklipp — pris etter størrelse"> Hekkeklipp — pris etter størrelse</label>
             <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Bortkjøring av hageavfall — 600 kr/tur"> Bortkjøring av hageavfall — 600 kr/tur</label>
             <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Huspass i ferien — 200 kr/dag"> Huspass i ferien — 200 kr/dag</label>
             <label class="checkbox-label"><input type="checkbox" name="Tjeneste" value="Vindusvask — 60 kr/vindu"> Vindusvask — 60 kr/vindu</label>
@@ -775,7 +705,6 @@ function confirmCal(calId) {
   var d = s.selDate;
   var dateStr = String(d.getDate()).padStart(2,'0') + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + d.getFullYear();
   input.value = dateStr + (s.selTime ? ' kl. ' + s.selTime : '');
-  input.dispatchEvent(new Event('change'));
   document.getElementById(calId).classList.remove('open');
 }
 
