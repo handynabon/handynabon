@@ -23,6 +23,8 @@ create table if not exists public.profiler (
   pris            numeric check (pris is null or (pris >= 0 and pris < 1000000)),                          -- kr/t
   rating          numeric check (rating is null or (rating >= 0 and rating <= 5)),                          -- null = ingen vurderinger ennå (steg for seg selv, ikke bygget her)
   antall_oppdrag  integer not null default 0,       -- oppdatert av trigger under
+  er_admin        boolean not null default false,   -- kan kun settes via SQL (se bunnen av fila) eller admin_* -funksjonene
+  sperret         boolean not null default false,   -- sperret bruker kan ikke legge ut/melde interesse/sende meldinger
   created_at      timestamptz not null default now(),
   updated_at      timestamptz not null default now()
 );
@@ -44,6 +46,41 @@ create policy "en bruker kan endre sin egen profil"
   on public.profiler for update
   using (auth.uid() = id)
   with check (auth.uid() = id);
+
+-- Brukes i policyer på tvers av tabeller under (oppdrag, interesse, meldinger).
+create or replace function public.er_jeg_admin()
+returns boolean language sql security definer set search_path = public stable as $$
+  select coalesce((select er_admin from public.profiler where id = auth.uid()), false);
+$$;
+create or replace function public.er_sperret()
+returns boolean language sql security definer set search_path = public stable as $$
+  select coalesce((select sperret from public.profiler where id = auth.uid()), false);
+$$;
+
+-- VIKTIG: policyen "en bruker kan endre sin egen profil" over lar en bruker
+-- oppdatere sin EGEN rad, men RLS sjekker bare hvilken RAD som endres, ikke
+-- hvilke KOLONNER. Uten sperren under kunne hvem som helst sendt
+-- {er_admin:true} i sin egen profil-oppdatering og gjort seg selv til admin.
+-- Denne triggeren tvinger er_admin/sperret tilbake til det de var (eller
+-- false ved ny rad), med mindre den som utfører endringen allerede er admin.
+create or replace function public.profiler_beskytt_adminfelter()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  if not public.er_jeg_admin() then
+    if TG_OP = 'UPDATE' then
+      new.er_admin := old.er_admin;
+      new.sperret := old.sperret;
+    else
+      new.er_admin := false;
+      new.sperret := false;
+    end if;
+  end if;
+  return new;
+end;
+$$;
+drop trigger if exists profiler_beskytt_admin on public.profiler;
+create trigger profiler_beskytt_admin before insert or update on public.profiler
+  for each row execute function public.profiler_beskytt_adminfelter();
 
 -- Oppretter automatisk en profiler-rad når noen bekrefter e-posten sin,
 -- med navn/tlf/roller fra user_metadata (satt av sb.auth.signUp i nobon.html).
@@ -121,18 +158,22 @@ create policy "apne oppdrag er offentlig lesbare"
     status = 'apen'
     or bruker_id = auth.uid()
     or hjelper_id = auth.uid()
+    or public.er_jeg_admin()
   );
 
 drop policy if exists "en innlogget bruker kan legge ut oppdrag" on public.oppdrag;
 create policy "en innlogget bruker kan legge ut oppdrag"
   on public.oppdrag for insert
-  with check (auth.uid() = bruker_id);
+  with check (auth.uid() = bruker_id and not public.er_sperret());
 
 drop policy if exists "eier eller tildelt hjelper kan endre oppdraget" on public.oppdrag;
 create policy "eier eller tildelt hjelper kan endre oppdraget"
   on public.oppdrag for update
   using (auth.uid() = bruker_id or auth.uid() = hjelper_id)
   with check (auth.uid() = bruker_id or auth.uid() = hjelper_id);
+
+-- Sletting går kun via admin_slett_oppdrag(...) under (en SECURITY DEFINER-
+-- funksjon), ikke direkte DELETE fra klienten - derfor ingen delete-policy her.
 
 -- Teller opp antall_oppdrag på hjelperens profil når et oppdrag merkes ferdig.
 create or replace function public.oppdrag_ferdig_teller()
@@ -174,7 +215,7 @@ create policy "eier av oppdraget eller hjelperen selv kan se interesse"
 drop policy if exists "en hjelper kan melde interesse for seg selv" on public.interesse;
 create policy "en hjelper kan melde interesse for seg selv"
   on public.interesse for insert
-  with check (hjelper_id = auth.uid());
+  with check (hjelper_id = auth.uid() and not public.er_sperret());
 
 drop policy if exists "en hjelper kan trekke egen interesse" on public.interesse;
 create policy "en hjelper kan trekke egen interesse"
@@ -210,6 +251,7 @@ create policy "begge parter kan sende melding i egen samtale"
   on public.meldinger for insert
   with check (
     avsender_id = auth.uid()
+    and not public.er_sperret()
     and (
       hjelper_id = auth.uid()
       or exists (select 1 from public.oppdrag o where o.id = oppdrag_id and o.bruker_id = auth.uid())
@@ -369,3 +411,47 @@ drop trigger if exists vurdering_oppdater_rating on public.vurderinger;
 create trigger vurdering_oppdater_rating
   after insert or update or delete on public.vurderinger
   for each row execute function public.oppdater_rating();
+
+
+-- =========================================================
+-- 8. ADMIN — moderasjon (oppdrag slettes, brukere kan sperres)
+--
+-- Ingen egne RLS-policyer for dette - handlingene går gjennom disse to
+-- SECURITY DEFINER-funksjonene, som selv sjekker public.er_jeg_admin() før
+-- de gjør noe. Kalles fra nobon.html via sb.rpc('admin_slett_oppdrag', ...)
+-- og sb.rpc('admin_sperr_bruker', ...). Se profiler_beskytt_adminfelter()
+-- over for hvorfor er_admin/sperret ikke bare kan settes med en vanlig
+-- UPDATE fra klienten.
+-- =========================================================
+create or replace function public.admin_slett_oppdrag(mal_id bigint)
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  if not public.er_jeg_admin() then
+    raise exception 'Ikke admin';
+  end if;
+  delete from public.oppdrag where id = mal_id;
+end;
+$$;
+
+create or replace function public.admin_sperr_bruker(mal_id uuid, sperret_verdi boolean)
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  if not public.er_jeg_admin() then
+    raise exception 'Ikke admin';
+  end if;
+  if mal_id = auth.uid() then
+    raise exception 'Kan ikke sperre din egen konto';
+  end if;
+  update public.profiler set sperret = sperret_verdi where id = mal_id;
+end;
+$$;
+
+-- Ingen har admin-tilgang som standard - ingen vei til det via appen heller
+-- (se profiler_beskytt_adminfelter over), med vilje. Gjør DEG selv til den
+-- første admin ved å kjøre denne linja manuelt i SQL Editor, med din egen
+-- e-post, ETTER at du har registrert en konto i appen:
+--
+--   update public.profiler set er_admin = true where epost = 'din@epost.no';
+--
+-- Nye admin-brukere etter det må også settes med denne SQL-linja - det
+-- finnes ingen "gjør til admin"-knapp i grensesnittet, med vilje.

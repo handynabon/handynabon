@@ -94,8 +94,38 @@ brukere eller ekte penger.
   (`supabase/functions/slett-konto`) siden en vanlig klient ikke kan slette
   sin egen `auth.users`-rad selv — det krever `service_role`. Krever at
   brukeren skriver "SLETT" for å bekrefte (destruktiv handling).
+- **Admin-panel**: en «Admin»-knapp i Min konto (kun synlig for admin-
+  kontoer) åpner en side med to lister — alle oppdrag (med sletteknapp) og
+  alle brukere (med sperr/opphev sperring). Sperrede brukere kan ikke
+  legge ut oppdrag, melde interesse eller sende meldinger — håndhevet av
+  RLS-policyene, ikke bare skjult i grensesnittet. Se punkt 3 under for
+  hvordan du gjør en bruker til admin.
 
-## 3. Kjent begrensning: ekte avstand
+## 3. Bli admin (kreves manuelt, med vilje)
+
+Ingen har admin-tilgang som standard, og det finnes ingen «gjør til
+admin»-knapp noe sted i appen — bevisst, siden det ville vært en alvorlig
+sikkerhetsbrist om en vanlig bruker kunne gjøre seg selv til admin. For å
+gjøre en konto til admin:
+
+1. Registrer en vanlig bruker i appen som normalt.
+2. Kjør i Supabase sin SQL Editor:
+   ```sql
+   update public.profiler set er_admin = true where epost = 'din@epost.no';
+   ```
+3. Logg ut og inn igjen (eller last siden på nytt) — «Admin»-knappen dukker
+   opp i Min konto.
+
+`er_admin`/`sperret`-feltene på `profiler` kan ikke settes gjennom en vanlig
+`update`-forespørsel fra klienten, selv om RLS i utgangspunktet lar deg
+oppdatere din egen rad — en database-trigger
+(`profiler_beskytt_adminfelter`) tilbakestiller de to feltene med mindre den
+som gjør endringen allerede er admin. Selve admin-handlingene (slette et
+oppdrag, sperre en bruker) går gjennom to egne databasefunksjoner
+(`admin_slett_oppdrag`, `admin_sperr_bruker`) som sjekker admin-status på
+serveren før de gjør noe, uansett hva klienten sender.
+
+## 4. Kjent begrensning: ekte avstand
 
 Avstand (`km`) er ikke ekte for database-baserte rader —
 prototypens faste avstandstall var uansett bare pynt, og ekte geografisk
@@ -104,7 +134,7 @@ denne oppgaven. Avstandsfilteret virker fortsatt for demodata; for ekte
 rader vises ikke avstand, og "uansett avstand" må velges for å se dem i
 avstandsfiltrerte lister.
 
-## 4. Vipps (steg 4) — skisse, ikke en ferdig løsning
+## 5. Vipps (steg 4) — skisse, ikke en ferdig løsning
 
 Betalingskallet går nå via tre Supabase Edge Functions i stedet for
 direkte fra nettleseren (`client_secret` kan aldri ligge i `nobon.html`):
@@ -147,7 +177,7 @@ penger:**
    mellomledd) — ikke bygget her. Få betaling *inn* til å virke først, som
    overleveringsnotatet sier.
 
-## 5. Automatisk røyktest
+## 6. Automatisk røyktest
 
 `tests/smoke.cjs` er ikke en fullverdig testsuite, men en rask sjekk som
 fanger opp nøyaktig den feilklassen overleveringsnotatet advarer mot: en død
@@ -167,7 +197,7 @@ Kjør den etter enhver endring i `nobon.html`, spesielt etter å ha lagt til
 eller fjernet et element med en `id` — det er nøyaktig den typen feil den
 er laget for å fange.
 
-## 6. Bevisst ikke bygget
+## 7. Bevisst ikke bygget
 
 - **Ingen utbetaling til hjelperen.** Nobon ville blitt et mellomledd for
   ekte pengeoverføringer til tredjepart, som typisk krever egen
@@ -175,17 +205,17 @@ er laget for å fange.
   alene dekker). Jeg har latt være å dikte opp en utbetalingsflyt for det
   uten et klart mandat til det — få betaling *inn* til å virke og verifisert
   først, som overleveringsnotatet selv sier.
-- **Ingen admin-/moderasjonsverktøy** for å fjerne upassende oppdrag eller
-  meldinger — det finnes ingen admin-side i prototypen å bygge videre på,
-  og omfanget (hvem er admin, hva skal de kunne gjøre) er ikke definert.
 - **Ingen paginering utover `.limit(...)`** — lista viser alt den får i ett
   jafs opp til den øvre grensen, ikke side for side. Fint på prototype-skala.
 - **`nobon.html` er ikke hostet noe sted** — du må selv publisere den
   (Vercel, Netlify, et vanlig webhotell, e.l.; den trenger ikke noe
   byggesteg) og sette `SITE_URL` i Edge Function-secrets deretter.
-- Alt merket "ikke testet" i punkt 1 og 4: jeg har ikke hatt tilgang til et
+- Alt merket "ikke testet" i punkt 1 og 5: jeg har ikke hatt tilgang til et
   ekte Supabase- eller Vipps-miljø for å faktisk kjøre noe av dette.
-  Røyktesten i punkt 5 dekker bare demo-modus (uten Supabase konfigurert).
+  Røyktesten i punkt 6 dekker bare demo-modus (uten Supabase konfigurert),
+  og fanger ikke opp feil i selve databasepolicyene/RPC-funksjonene
+  (`admin_slett_oppdrag`, `admin_sperr_bruker`, `oppdater_rating` osv.) —
+  test admin-panelet og vurderingene manuelt mot et ekte prosjekt før bruk.
 
 ## Filoversikt
 
@@ -197,4 +227,4 @@ er laget for å fange.
 | `supabase/functions/vipps-status` | Henter autoritativ betalingsstatus fra Vipps |
 | `supabase/functions/vipps-webhook` | Mottar hendelser fra Vipps |
 | `supabase/functions/slett-konto` | Sletter en brukers konto (krever service_role) |
-| `tests/smoke.cjs` | Røyktest, se punkt 5 |
+| `tests/smoke.cjs` | Røyktest, se punkt 6 |

@@ -62,6 +62,7 @@ async function main() {
     ['min-konto', 'Min konto'],
     ['logg-inn', 'Logg inn'],
     ['lag-bruker', 'Lag bruker'],
+    ['admin', 'Admin'],
   ];
   for (const [id, navn] of sider) {
     await page.evaluate((sideId) => window.visSide(sideId), id);
