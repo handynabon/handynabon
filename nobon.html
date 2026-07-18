@@ -1,0 +1,3481 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="only light">
+<meta name="supported-color-schemes" content="light">
+<title>Finn hjelper i ditt område | Nobon</title>
+<meta name="description" content="Søk blant hjelpere i hele Norge, se erfaring og omtaler, og inviter direkte til oppdrag. Filtrer på kategori, sted og avstand.">
+<meta name="theme-color" content="#3FBCB5">
+<link rel="canonical" href="/finn-hjelp">
+<meta property="og:title" content="Finn hjelper i ditt område | Nobon">
+<meta property="og:description" content="Søk blant hjelpere i hele Norge, se erfaring og omtaler, og inviter direkte til oppdrag.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="nb_NO">
+<meta property="og:url" content="/finn-hjelp">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%233FBCB5'/%3E%3Ctext x='50' y='72' font-family='Arial,sans-serif' font-size='62' font-weight='700' fill='%23fff' text-anchor='middle'%3EN%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  color-scheme:only light;
+  --sk1:0 1px 2px rgba(6,49,46,.05), 0 1px 3px rgba(6,49,46,.04);   /* hviler */
+  --sk2:0 4px 16px rgba(6,49,46,.10);                               /* løftet */
+  --teal:#3FBCB5; --teal-d:#1F8E88; --ink:#12211F; --muted:#5C6B69;
+  --line:#E2E8E6; --line-d:#16302D; --mint:#EDF7F6; --white:#fff;
+  --a1:#C9E5E2; --a2:#CFD8EC; --a3:#D8E5C7; --a4:#F3DBC7; --a5:#E7D6E9; --a6:#F0DCD3;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+[hidden]{display:none !important}   /* .btn m.fl. setter display og slår ellers [hidden] */
+html{scroll-behavior:smooth;background:#fff;color-scheme:only light;overflow-x:clip}
+body{
+  overflow-x:clip;max-width:100%;color-scheme:only light;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  background:#fff;color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;
+  font-synthesis-weight:none;
+}
+@media (prefers-color-scheme:dark){
+  /* Nobon er en lys flate. Lås fargene så ingen nettleser gjør den mørk på egen hånd. */
+  html,body{background:#fff !important;color:var(--ink) !important}
+  h1,h2,h3,.navn,.brand,.res-tell,.jkort h3,.fane,.kvitt-rad b{color:var(--ink) !important}
+  .kort,.jkort,.trad,.soker,.sam-topp,.kvitt,.vkort,.inn,.uk,.pill,.tile{background:#fff !important}
+  .peach,.mint,.godta-boks{background:var(--mint) !important}
+  .dash{color:#fff !important}
+  .dash h2,.rute{color:#fff !important}
+  .boble.meg{background:var(--ink) !important;color:#fff !important}
+  .boble.dem{background:var(--mint) !important;color:var(--ink) !important}
+  a,button{color:inherit}
+  .tilbake{color:var(--teal-d) !important}
+}
+h1,h2,h3{font-weight:800;line-height:1.08;letter-spacing:-.025em}
+::selection{background:var(--teal);color:#fff}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+a{color:inherit}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{
+  outline:2.5px solid var(--ink);outline-offset:2px;border-radius:6px
+}
+.skip{position:absolute;left:8px;top:-60px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:8px;z-index:99;font-weight:700;text-decoration:none;transition:top .2s}
+.skip:focus{top:8px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--ink);color:#fff;
+  text-decoration:none;padding:13px 24px;border-radius:999px;font-weight:700;font-size:.95rem;border:none;
+  cursor:pointer;font-family:inherit;transition:opacity .15s,transform .15s}
+.btn:hover{opacity:.88;transform:translateY(-1px)}
+.btn.sm{padding:10px 18px;font-size:.87rem}
+.btn.teal{background:var(--teal);color:#06312E}
+.btn.teal:hover{background:var(--teal-d);color:#fff}
+.btn.ghost{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:#fff}
+
+/* tilbakeknapp i headeren */
+.hjem{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--line);background:#fff;
+  display:grid;place-items:center;cursor:pointer;flex-shrink:0;padding:0;transition:.15s;font:inherit}
+.hjem:hover{border-color:var(--ink);background:var(--mint)}
+.hjem svg{width:19px;height:19px;stroke:var(--ink);stroke-width:2.1;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.hjem[hidden]{display:none}
+header.pa-dash .hjem{border-color:rgba(255,255,255,.55);background:rgba(255,255,255,.14)}
+header.pa-dash .hjem svg{stroke:#fff}
+header.pa-dash .hjem:hover{background:rgba(255,255,255,.28)}
+
+/* header */
+header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 24px;max-width:1080px;margin:0 auto}
+.nav-ve{display:flex;align-items:center;gap:11px;min-width:0}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:1.15rem;letter-spacing:-.03em;text-decoration:none;white-space:nowrap}
+.brand .mk{width:26px;height:26px;border-radius:8px;background:var(--teal);display:grid;place-items:center;color:#fff;font-size:.85rem}
+.nav-links{display:flex;gap:22px;list-style:none;font-size:.9rem;font-weight:600}
+.nav-links a{text-decoration:none}
+.nav-links a:hover{color:var(--teal-d)}
+.nav-act{display:flex;gap:10px;align-items:center}
+.d-kort{display:none}
+@media (max-width:520px){.d-full{display:none}.d-kort{display:inline}}
+
+/* hero + søk */
+.hero{background:var(--mint);border-bottom:1px solid var(--line);padding:30px 0 30px}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:.78rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--teal-d);margin-bottom:14px}
+.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 4px rgba(63,188,181,.25)}
+.hero h1{font-size:clamp(1.5rem,3.6vw,2.1rem);max-width:20ch;margin-bottom:16px;letter-spacing:-.03em}
+.hero p.lead{color:var(--muted);font-size:1.08rem;max-width:46ch;font-weight:500;margin-bottom:28px}
+
+.sok{background:#fff;border:1.5px solid var(--line-d);border-radius:20px;padding:8px;display:flex;gap:8px;align-items:stretch;flex-wrap:wrap}
+.felt{flex:1 1 200px;display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;min-width:0}
+.felt + .felt{border-left:1px solid var(--line)}
+.felt svg{width:19px;height:19px;flex-shrink:0;color:var(--muted)}
+.felt label{display:block;font-size:.7rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.felt input,.felt select{border:none;background:none;font:inherit;font-weight:600;font-size:16px;color:var(--ink);width:100%;padding:1px 0;outline:none}
+.felt select{cursor:pointer;-webkit-appearance:none;appearance:none}
+.sok .btn{flex:0 0 auto;margin:2px}
+.hint{font-size:.85rem;color:var(--muted);font-weight:500;margin-top:12px}
+.hint b{color:var(--ink);font-weight:700}
+
+/* kategorier */
+section{padding:64px 0}
+.head{margin-bottom:32px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.head h2{font-size:clamp(1.6rem,3vw,2.3rem);margin-bottom:8px}
+.head p{color:var(--muted);font-weight:500;max-width:52ch}
+.kat-rad{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.kat{text-decoration:none;color:var(--ink);border:1.5px solid var(--line-d);border-radius:16px;overflow:hidden;
+  background:#fff;cursor:pointer;font-family:inherit;padding:0;text-align:center;transition:transform .15s}
+.kat:hover{transform:translateY(-4px)}
+.kat[aria-pressed="true"]{box-shadow:0 0 0 3px var(--teal)}
+.kat .arch{height:104px;border-radius:80px 80px 0 0;display:grid;place-items:center;border-bottom:1.5px solid var(--line-d)}
+.kat .arch svg{width:34px;height:34px;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.kat .lab{padding:11px 6px;font-weight:700;font-size:.83rem;line-height:1.25}
+.kat .n{display:block;font-size:.72rem;font-weight:600;color:var(--muted);margin-top:2px}
+.k1 .arch{background:var(--a1)} .k2 .arch{background:var(--a2)} .k3 .arch{background:var(--a3)}
+.k4 .arch{background:var(--a4)} .k5 .arch{background:var(--a5)} .k6 .arch{background:var(--a6)}
+
+/* resultatlinje */
+.res-bar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+  padding-bottom:16px;border-bottom:1.5px solid var(--ink);margin-bottom:4px}
+#resultat{scroll-margin-top:76px}
+.res-tell{font-weight:800;font-size:1.05rem}
+.res-tell span{color:var(--muted);font-weight:600;font-size:.9rem}
+.styr{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pill{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 15px;font:inherit;
+  font-size:.83rem;font-weight:700;cursor:pointer;color:var(--muted);transition:.15s}
+.pill:hover{border-color:var(--ink);color:var(--ink)}
+.pill[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.sorter{display:flex;align-items:center;gap:6px;font-size:.83rem;font-weight:700;color:var(--muted)}
+.sorter select{font:inherit;font-weight:800;font-size:16px;color:var(--ink);border:none;background:none;cursor:pointer;outline:none;padding:4px}
+
+/* hjelperkort */
+.liste{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:22px}
+.kort{min-width:0;border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;gap:15px;align-items:flex-start;
+  background:#fff;box-shadow:var(--sk1);transition:border-color .15s,box-shadow .15s,transform .15s}
+.kort:hover{border-color:#C8D2D0;box-shadow:var(--sk2);transform:translateY(-1px)}
+.av{width:52px;height:52px;border-radius:12px;flex-shrink:0;display:grid;place-items:center;
+  font-weight:800;font-size:1.05rem;color:#06312E;letter-spacing:-.02em}
+.kort-inn{flex:1;min-width:0}
+.navn-rad{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:2px}
+.navn{font-weight:800;font-size:1.02rem;letter-spacing:-.02em}
+.merke{font-size:.63rem;font-weight:800;letter-spacing:.06em;padding:2px 6px;border-radius:6px;background:var(--ink);color:#fff}
+.merke.pro{background:var(--teal);color:#06312E}
+.meta{font-size:.83rem;color:var(--muted);font-weight:600;margin-bottom:9px}
+.meta .pr{color:var(--ink);font-weight:800}
+.stjerne{color:#E8A33D;letter-spacing:.5px}
+.stj{display:inline-block;position:relative;white-space:nowrap;vertical-align:-1px;line-height:1}
+.stj::before{content:"★★★★★";color:#DEE5E3;letter-spacing:.5px}
+.stj::after{content:"★★★★★";position:absolute;left:0;top:0;width:var(--p);overflow:hidden;
+  color:#E8A33D;letter-spacing:.5px}
+.tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:13px}
+.tag{font-size:.72rem;font-weight:700;background:var(--mint);color:var(--teal-d);padding:3px 9px;border-radius:999px}
+.kort-cta{display:flex;gap:8px;align-items:center}
+.txt-btn{background:none;border:none;font:inherit;font-size:.83rem;font-weight:700;color:var(--muted);cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0}
+.txt-btn:hover{color:var(--ink)}
+.tom{grid-column:1/-1;border:1.5px dashed var(--line);border-radius:16px;padding:44px 24px;text-align:center}
+.tom h3{font-size:1.1rem;margin-bottom:6px}
+.tom p{color:var(--muted);font-weight:500;font-size:.92rem;margin-bottom:18px}
+
+/* slik */
+.mint{background:var(--mint)}
+.steg{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;counter-reset:s}
+.st{background:#fff;border:1.5px solid var(--line-d);border-radius:16px;padding:24px}
+.st .nr{width:30px;height:30px;border-radius:50%;background:var(--teal);color:#06312E;display:grid;place-items:center;
+  font-weight:800;font-size:.85rem;margin-bottom:14px}
+.st h3{font-size:1.08rem;margin-bottom:6px}
+.st p{color:var(--muted);font-weight:500;font-size:.92rem}
+
+/* Forsiden: headeren legger seg oppå turkisen, ingen hvit stripe */
+header.pa-dash{position:absolute;top:0;left:0;right:0;background:none;backdrop-filter:none;border-bottom:none}
+header.pa-dash .brand{color:#fff}
+header.pa-dash .mk{background:rgba(255,255,255,.24)}
+header.pa-dash .nav-links a{color:#fff}
+header.pa-dash .nav-links a:hover{color:rgba(255,255,255,.75)}
+header.pa-dash .btn.ghost{background:none;color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.7)}
+header.pa-dash .btn.ghost:hover{background:rgba(255,255,255,.16);color:#fff}
+header.pa-dash .btn.teal{background:#fff;color:var(--teal-d)}
+header.pa-dash .btn.teal:hover{background:rgba(255,255,255,.86)}
+header.pa-dash a:focus-visible,header.pa-dash button:focus-visible{outline-color:#fff}
+
+/* Hjelperkort: to i bredden på mobil -> stående oppsett */
+@media (max-width:700px){
+  .liste{gap:10px}
+  .kort{flex-direction:column;align-items:center;text-align:center;padding:16px 12px;gap:0}
+  .kort .av{width:46px;height:46px;border-radius:12px;font-size:.95rem;margin-bottom:9px}
+  .kort-inn{width:100%}
+  .kort .navn-rad{justify-content:center;gap:5px;margin-bottom:4px}
+  .kort .navn{font-size:.92rem;line-height:1.25}
+  .kort .merke{font-size:.58rem;padding:2px 5px}
+  .kort .meta{font-size:.76rem;margin-bottom:8px;line-height:1.45}
+  .kort .stjerne{letter-spacing:0}
+  .kort .tags{justify-content:center;gap:4px;margin-bottom:11px}
+  .kort .tag{font-size:.66rem;padding:2px 7px}
+  .kort-cta{flex-direction:column;gap:7px;width:100%}
+  .kort-cta .btn{width:100%;padding:10px 8px;font-size:.8rem}
+  .kort .txt-btn{font-size:.78rem}
+  .kort .kort-inn > .meta:last-child{margin:8px 0 0;font-size:.7rem}
+  .kort-cta .d-full{display:none}
+  .kort-cta .d-kort{display:inline}
+}
+
+/* Metalinja på hjelperkort: én linje bredt, to smalt */
+.k-meta{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.k-meta .m-r b{font-weight:800;color:var(--ink)}
+.k-meta .m-r i{font-style:normal;font-weight:600}
+.k-meta .m-p{font-weight:800;color:var(--ink)}
+.k-meta .m-p::before{content:"·";margin-right:6px;color:var(--muted);font-weight:600}
+.k-meta .m-km::before{content:"·";margin-right:6px;color:var(--muted);font-weight:600}
+@media (max-width:700px){
+  .k-meta{flex-direction:column;align-items:center;gap:1px}
+  .k-meta .m-p::before,.k-meta .m-km::before{content:none}
+  .k-meta .m-p{font-size:.86rem}
+  .k-meta .m-km{font-size:.72rem}
+}
+
+/* Søkere og samtale */
+.status{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:800;letter-spacing:.03em;
+  text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--mint);color:var(--teal-d)}
+.status.tildelt{background:var(--ink);color:#fff}
+.soker{border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;gap:13px;align-items:flex-start;background:#fff;margin-bottom:10px;box-shadow:var(--sk1);transition:box-shadow .15s,border-color .15s,transform .15s}
+.soker.valgt{border-color:var(--teal);box-shadow:0 0 0 2px var(--teal)}
+.soker-inn{flex:1;min-width:0}
+.soker .siste{font-size:.85rem;color:var(--muted);font-weight:500;margin:7px 0 11px;
+  overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.soker-cta{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.uleste{background:var(--teal);color:#06312E;border-radius:999px;padding:1px 7px;font-size:.7rem;font-weight:800}
+
+/* samtale */
+.sam-topp{border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:flex;gap:12px;
+  align-items:center;margin-bottom:18px;background:#fff}
+.boble-liste{display:flex;flex-direction:column;gap:9px;margin-bottom:18px}
+.boble{max-width:82%;padding:11px 14px;border-radius:16px;font-size:.93rem;font-weight:500;line-height:1.45}
+.boble.dem{background:var(--mint);border-bottom-left-radius:5px;align-self:flex-start}
+.boble.meg{background:var(--ink);color:#fff;border-bottom-right-radius:5px;align-self:flex-end}
+.boble .tid{display:block;font-size:.68rem;font-weight:700;opacity:.6;margin-top:4px}
+.skriv{display:flex;gap:8px;align-items:flex-end}
+.skriv textarea{flex:1;border:1.5px solid var(--line);border-radius:12px;padding:11px 14px;font:inherit;
+  font-size:16px;font-weight:500;resize:none;min-height:46px;max-height:120px;outline:none;color:var(--ink)}
+.skriv textarea:focus{border-color:var(--ink)}
+.skriv .btn{flex-shrink:0;padding:13px 20px}
+.godta-boks{border:1.5px solid var(--line-d);border-radius:16px;padding:16px;margin-top:22px;background:var(--mint)}
+.godta-boks p{font-size:.88rem;font-weight:600;color:var(--ink);margin-bottom:12px}
+.godta-boks .btn{width:100%}
+
+/* Bunnlinje - kun mobil. Desktop har toppmenyen. */
+.bunn{display:none}
+@media (max-width:900px){
+  .bunn{
+    display:flex;position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));
+    z-index:70;background:rgba(255,255,255,.93);backdrop-filter:blur(14px);
+    border:1px solid var(--line);border-radius:999px;padding:6px;gap:2px;
+    box-shadow:0 6px 24px rgba(6,49,46,.13)
+  }
+  .bnav{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    background:none;border:none;font:inherit;font-size:.66rem;font-weight:700;color:var(--muted);
+    cursor:pointer;padding:8px 2px;border-radius:999px;min-width:0;position:relative;
+    -webkit-tap-highlight-color:transparent;transition:background .15s,color .15s
+  }
+  .bnav svg{width:22px;height:22px;stroke:currentColor;stroke-width:1.8;fill:none;
+    stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+  .bnav span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+  .bnav[aria-current="page"]{background:var(--mint);color:var(--teal-d)}
+  .bnav .bad{position:absolute;top:3px;right:calc(50% - 20px);background:var(--teal);color:#06312E;
+    border-radius:999px;min-width:17px;padding:0 5px;font-size:.62rem;font-weight:800;line-height:17px}
+  body{padding-bottom:86px}
+}
+
+/* Dashbord øverst på forsiden */
+.dash{background:linear-gradient(160deg,#4FC7C0,#3FBCB5 55%,#2FA9A2);color:#fff;padding:84px 0 30px;position:relative;overflow:hidden}
+.dash::before{content:"";position:absolute;right:-70px;top:-80px;width:300px;height:300px;border-radius:50%;
+  background:rgba(255,255,255,.07);pointer-events:none}
+.dash .wrap{position:relative;z-index:1}
+.dash h2{font-size:clamp(1.7rem,4.6vw,2.4rem);margin-bottom:20px;color:#fff;letter-spacing:-.03em}
+.rutenett{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.rute{position:relative;background:rgba(255,255,255,.16);border:1.5px solid rgba(255,255,255,.24);
+  border-radius:16px;padding:20px 12px;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:9px;cursor:pointer;font:inherit;color:#fff;font-weight:800;font-size:.92rem;
+  min-height:112px;transition:background .15s,transform .15s;text-align:center;-webkit-tap-highlight-color:transparent}
+.rute:hover{background:rgba(255,255,255,.27);transform:translateY(-2px)}
+.rute:active{transform:translateY(0)}
+.rute:focus-visible{outline:2.5px solid #fff;outline-offset:2px}
+.rute svg{width:30px;height:30px;stroke:#fff;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.rute .bad{position:absolute;top:9px;right:9px;background:#fff;color:var(--teal-d);border-radius:999px;
+  min-width:20px;padding:1px 6px;font-size:.7rem;font-weight:800;line-height:1.5}
+.rute.meg{background:rgba(255,255,255,.24)}
+.rute.meg .ini{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.3);display:grid;
+  place-items:center;font-size:1.15rem;font-weight:800}
+@media (min-width:760px){ .rutenett{grid-template-columns:repeat(3,1fr)} .dash{padding:92px 0 38px} }
+
+/* Min konto */
+.konto-topp{display:flex;align-items:center;gap:15px;margin-bottom:24px}
+.konto-av{position:relative;width:62px;height:62px;border-radius:16px;background:var(--a1);
+  display:grid;place-items:center;font-weight:800;font-size:1.35rem;color:#06312E;flex-shrink:0;
+  border:none;cursor:pointer;padding:0;overflow:visible;font-family:inherit;
+  -webkit-tap-highlight-color:transparent}
+.konto-av[disabled]{cursor:default}
+.konto-av img{width:100%;height:100%;border-radius:16px;object-fit:cover;display:block}
+.konto-av .av-kamera{position:absolute;right:-4px;bottom:-4px;width:24px;height:24px;border-radius:50%;
+  background:var(--teal);border:2px solid #fff;display:grid;place-items:center;box-shadow:var(--sk1)}
+.konto-av .av-kamera svg{width:12px;height:12px;stroke:#06312E;stroke-width:2;fill:none;
+  stroke-linecap:round;stroke-linejoin:round}
+.konto-av[disabled] .av-kamera{display:none}
+.konto-topp h2{font-size:1.45rem;margin-bottom:2px}
+.konto-topp .rolle-t{color:var(--muted);font-weight:600;font-size:.88rem}
+.mine{display:grid;gap:12px}
+
+/* Vipps-knapp. NB: bruk Vipps sine offisielle knappe-assets ved ekte integrasjon –
+   fargen #FF5B24 og formen her er en tilnærming, ikke godkjent merkevarebruk. */
+.vipps{background:#FF5B24;color:#fff;border:none;border-radius:999px;padding:14px 24px;font:inherit;
+  font-weight:800;font-size:1rem;cursor:pointer;width:100%;display:inline-flex;align-items:center;
+  justify-content:center;gap:9px;transition:filter .15s}
+.vipps:hover{filter:brightness(.93)}
+.vipps svg{height:19px;width:auto}
+.eller{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:.8rem;font-weight:700;margin:20px 0}
+.eller::before,.eller::after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* valg av kontotype */
+.velg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.vkort{border:1.5px solid var(--line);border-radius:16px;padding:16px;background:#fff;cursor:pointer;
+  font:inherit;text-align:left;transition:.15s}
+.vkort:hover{border-color:var(--ink)}
+.vkort[aria-pressed="true"]{border-color:var(--teal);box-shadow:0 0 0 2px var(--teal)}
+.vkort{position:relative;padding-right:44px}
+.vkort b{display:block;font-size:.98rem;font-weight:800;margin-bottom:3px}
+.vkort .vk-und{font-size:.83rem;color:var(--muted);font-weight:500;line-height:1.4}
+.vkort .hake{position:absolute;top:16px;right:16px;width:22px;height:22px;border-radius:7px;
+  border:1.5px solid var(--line);display:grid;place-items:center;transition:.15s}
+.vkort .hake::after{content:"";width:11px;height:6px;border-left:2.5px solid #fff;border-bottom:2.5px solid #fff;
+  transform:rotate(-45deg) translateY(-1px);opacity:0;transition:.15s}
+.vkort[aria-pressed="true"] .hake{background:var(--teal);border-color:var(--teal)}
+.vkort[aria-pressed="true"] .hake::after{opacity:1}
+
+/* avkrysning */
+.kryss{display:flex;gap:10px;align-items:flex-start;font-size:.86rem;font-weight:500;color:var(--muted);cursor:pointer;margin-bottom:6px}
+.kryss input{width:19px;height:19px;flex-shrink:0;margin-top:1px;accent-color:var(--teal)}
+.kryss a{color:var(--teal-d);font-weight:700}
+
+/* ikke-koblet-varsel */
+.ikke-koblet{background:#FFF8E6;border:1.5px solid #F0DFAE;border-radius:12px;padding:13px 15px;
+  font-size:.82rem;font-weight:600;color:#6B5518;margin-bottom:18px;line-height:1.5}
+.ikke-koblet b{font-weight:800}
+
+/* betaling */
+.kvitt{border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:20px}
+.kvitt-rad{display:flex;justify-content:space-between;gap:14px;padding:12px 16px;font-size:.9rem;font-weight:600}
+.kvitt-rad + .kvitt-rad{border-top:1px solid var(--line)}
+.kvitt-rad.sum{background:var(--mint);font-weight:800;font-size:1.02rem}
+@media (max-width:520px){.velg{grid-template-columns:1fr}}
+
+/* kategoriside */
+.faner{display:flex;gap:4px;border-bottom:1.5px solid var(--line);margin-bottom:26px}
+.fane{background:none;border:none;font:inherit;font-size:.98rem;font-weight:800;color:var(--muted);
+  cursor:pointer;padding:11px 16px;border-bottom:3px solid transparent;margin-bottom:-1.5px;
+  border-radius:8px 8px 0 0;transition:.15s;letter-spacing:-.01em}
+.fane:hover{color:var(--ink);background:var(--mint)}
+.fane span{display:inline-block;background:var(--line);color:var(--muted);border-radius:999px;
+  padding:1px 8px;font-size:.76rem;margin-left:5px;vertical-align:1px}
+.fane[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--teal)}
+.fane[aria-selected="true"] span{background:var(--teal);color:#06312E}
+.tilbake{display:inline-flex;align-items:center;font-size:.88rem;font-weight:700;color:var(--teal-d);
+  text-decoration:none;padding:4px 0}
+.tilbake:hover{text-decoration:underline;text-underline-offset:3px}
+.under-tit{font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:11px}
+.under{display:flex;flex-wrap:wrap;gap:6px}
+.uk{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font:inherit;
+  font-size:.79rem;font-weight:700;cursor:pointer;color:var(--muted);transition:.15s;line-height:1.35}
+.uk:hover{border-color:var(--ink);color:var(--ink)}
+.uk[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:#06312E}
+
+/* avstandsvelger */
+.avst{margin-top:22px;max-width:420px}
+.avst-topp{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px}
+.avst-verdi{font-size:.9rem;font-weight:800;color:var(--ink);white-space:nowrap}
+.avst input[type=range]{
+  -webkit-appearance:none;appearance:none;width:100%;height:26px;background:none;cursor:pointer;display:block;margin:0
+}
+.avst input[type=range]:focus{outline:none}
+.avst input[type=range]:focus-visible{outline:2.5px solid var(--ink);outline-offset:3px;border-radius:999px}
+.avst input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:999px;background:var(--line)}
+.avst input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;width:24px;height:24px;border-radius:50%;
+  background:var(--teal);border:2.5px solid #fff;box-shadow:0 1px 5px rgba(6,49,46,.3);margin-top:-9px
+}
+.avst input[type=range]::-moz-range-track{height:6px;border-radius:999px;background:var(--line)}
+.avst input[type=range]::-moz-range-thumb{
+  width:20px;height:20px;border-radius:50%;background:var(--teal);border:2.5px solid #fff;
+  box-shadow:0 1px 5px rgba(6,49,46,.3)
+}
+.avst-skala{display:flex;justify-content:space-between;font-size:.72rem;font-weight:700;color:var(--muted);margin-top:2px}
+
+
+/* Oppdragsside med bildegalleri */
+.jd-galleri{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;
+  margin:0 -4px;padding:4px;-webkit-overflow-scrolling:touch}
+.jd-galleri::-webkit-scrollbar{height:0}
+.jd-bilde{flex:0 0 auto;width:min(78%,300px);height:220px;border-radius:16px;overflow:hidden;
+  scroll-snap-align:center;background:var(--mint);display:grid;place-items:center}
+.jd-bilde img{width:100%;height:100%;object-fit:cover}
+.jd-bilde svg.katikon{width:56px;height:56px;stroke:#16302D;stroke-width:1.3;fill:none;opacity:.5}
+.jd-galleri.enkelt .jd-bilde{width:100%}
+.jd-fakta{display:flex;flex-direction:column;gap:10px}
+.jd-rad{display:flex;align-items:center;gap:10px;font-size:.98rem;font-weight:600}
+.jd-rad svg{width:19px;height:19px;flex-shrink:0;stroke:var(--muted);stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.jd-rad b{font-weight:800}
+
+/* Swipe i fullskjerm */
+body.bla-full #finn-oppdrag .hero,
+body.bla-full #finn-oppdrag .avst,
+body.bla-full #finn-oppdrag .res-bar,
+body.bla-full #finn-oppdrag .vis-veksle{display:none}
+body.bla-full #finn-oppdrag > section:last-of-type{padding:0}
+body.bla-full #finn-oppdrag > section:last-of-type > .wrap{max-width:none;padding:0}
+body.bla-full #o-bla{
+  position:fixed;inset:0;z-index:60;background:var(--mint);
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  padding:calc(52px + env(safe-area-inset-top)) 12px calc(80px + env(safe-area-inset-bottom));
+}
+body.bla-full .stabel{height:74svh !important;width:100% !important;max-width:520px !important;margin:0 auto 14px}
+body.bla-full .swipe-knapper{flex:0 0 auto;margin-top:0}
+body.bla-full #o-bla .hint{margin-top:10px}
+body.bla-full .sw-kort .sw-bilde{height:auto;flex:1;min-height:180px}
+/* topplinje i fullskjerm: tittel + lukk */
+.bla-topp{display:none}
+body.bla-full .bla-topp{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  position:fixed;top:0;left:0;right:0;z-index:61;padding:calc(12px + env(safe-area-inset-top)) 18px 12px;
+}
+.bla-topp h2{font-size:1.15rem;letter-spacing:-.02em}
+.bla-lukk{width:40px;height:40px;border-radius:50%;border:none;background:#fff;box-shadow:var(--sk1);
+  display:grid;place-items:center;cursor:pointer;flex-shrink:0}
+.bla-lukk svg{width:18px;height:18px;stroke:var(--ink);stroke-width:2.2;fill:none;stroke-linecap:round}
+.bla-teller{font-size:.82rem;font-weight:700;color:var(--muted)}
+
+/* Visningsveksler + swipe-stabel */
+.vis-veksle{display:inline-flex;gap:3px;background:var(--mint);border-radius:999px;padding:3px;margin-bottom:20px}
+.vv{display:inline-flex;align-items:center;gap:7px;border:none;background:none;font:inherit;
+  font-size:.88rem;font-weight:700;color:var(--muted);cursor:pointer;padding:8px 16px;border-radius:999px;
+  transition:.15s;-webkit-tap-highlight-color:transparent}
+.vv svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.vv[aria-selected="true"]{background:#fff;color:var(--ink);box-shadow:var(--sk1)}
+
+.stabel{position:relative;width:100%;max-width:380px;height:480px;margin:0 auto}
+.sw-kort{position:absolute;inset:0;background:#fff;border:1px solid var(--line);border-radius:22px;
+  box-shadow:var(--sk2);overflow:hidden;display:flex;flex-direction:column;
+  will-change:transform;touch-action:pan-y;cursor:grab;user-select:none}
+.sw-kort:active{cursor:grabbing}
+.sw-kort .sw-bilde{height:210px;flex-shrink:0;display:grid;place-items:center;position:relative}
+.sw-kort .sw-bilde img{width:100%;height:100%;object-fit:cover}
+.sw-kort .sw-bilde svg.katikon{width:64px;height:64px;stroke:#16302D;stroke-width:1.3;fill:none;opacity:.55}
+.sw-kort .sw-alder{position:absolute;left:12px;bottom:12px;background:rgba(18,33,31,.66);color:#fff;
+  font-size:.72rem;font-weight:800;padding:4px 10px;border-radius:999px}
+.sw-inn{padding:18px 20px;flex:1;overflow:hidden}
+.sw-inn h3{font-size:1.3rem;margin-bottom:10px;line-height:1.15}
+.sw-inn .sw-rad{display:flex;align-items:center;gap:8px;font-size:.92rem;font-weight:600;margin-bottom:6px}
+.sw-inn .sw-rad svg{width:16px;height:16px;flex-shrink:0;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.sw-inn .r-sted{color:var(--teal-d)} .sw-inn .r-sted svg{stroke:var(--teal)}
+.sw-inn .r-pris{color:var(--ink);font-weight:800} .sw-inn .r-pris svg{stroke:var(--ink)}
+.sw-inn .r-kat{color:var(--muted);font-weight:600} .sw-inn .r-kat svg{stroke:var(--muted)}
+.sw-inn p{color:var(--muted);font-weight:500;font-size:.9rem;margin-top:11px;line-height:1.5;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+/* stemplene som dukker opp mens du drar */
+.sw-stempel{position:absolute;top:22px;font-size:1.5rem;font-weight:900;letter-spacing:.05em;
+  padding:6px 16px;border:3px solid;border-radius:12px;opacity:0;transition:opacity .1s;pointer-events:none;text-transform:uppercase}
+.sw-stempel.ja{left:20px;color:var(--teal-d);border-color:var(--teal-d);transform:rotate(-14deg)}
+.sw-stempel.nei{right:20px;color:#C0392B;border-color:#C0392B;transform:rotate(14deg)}
+.stabel-tom{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:6px;padding:30px}
+.stabel-tom h3{font-size:1.15rem}
+.stabel-tom p{color:var(--muted);font-weight:500;font-size:.9rem}
+
+.swipe-knapper{display:flex;justify-content:center;gap:26px;margin-top:26px}
+.sw-btn{width:62px;height:62px;border-radius:50%;border:1.5px solid var(--line);background:#fff;
+  cursor:pointer;display:grid;place-items:center;box-shadow:var(--sk1);transition:transform .12s,box-shadow .12s;
+  -webkit-tap-highlight-color:transparent}
+.sw-btn:hover{box-shadow:var(--sk2)} .sw-btn:active{transform:scale(.9)}
+.sw-btn svg{width:26px;height:26px;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.sw-nei svg{stroke:#C0392B} .sw-nei:hover{border-color:#C0392B}
+.sw-ja svg{stroke:var(--teal-d)} .sw-ja:hover{border-color:var(--teal)}
+.sw-angre{width:50px;height:50px} .sw-angre svg{width:20px;stroke:#B8860B} .sw-angre:hover{border-color:#B8860B}
+.sw-angre[hidden]{display:none}
+/* "se detaljer"-knapp på swipe-kortet */
+.sw-detalj{position:absolute;top:12px;right:12px;z-index:2;width:38px;height:38px;border-radius:50%;
+  border:none;background:rgba(255,255,255,.92);box-shadow:var(--sk1);display:grid;place-items:center;cursor:pointer}
+.sw-detalj svg{width:20px;height:20px;stroke:var(--ink);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.sw-flere{position:absolute;right:12px;bottom:12px;background:rgba(18,33,31,.66);color:#fff;
+  font-size:.72rem;font-weight:800;padding:4px 10px;border-radius:999px;display:flex;align-items:center;gap:5px}
+.sw-flere svg{width:13px;height:13px;stroke:#fff;stroke-width:2;fill:none}
+
+/* Profilbilde i registrering */
+.reg-bilde{display:flex;flex-direction:column;align-items:center;gap:9px;margin-bottom:22px}
+.reg-av{position:relative;width:88px;height:88px;border-radius:50%;background:var(--mint);
+  border:none;cursor:pointer;padding:0;display:grid;place-items:center;overflow:visible;
+  -webkit-tap-highlight-color:transparent;transition:.15s}
+.reg-av:hover{background:var(--a1)}
+.reg-av img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+.reg-av #reg-av-ini svg{width:38px;height:38px;stroke:var(--teal-d);stroke-width:1.6;fill:none;
+  stroke-linecap:round;stroke-linejoin:round}
+.reg-av .av-kamera{position:absolute;right:2px;bottom:2px;width:28px;height:28px;border-radius:50%;
+  background:var(--teal);border:2.5px solid #fff;display:grid;place-items:center;box-shadow:var(--sk1)}
+.reg-av .av-kamera svg{width:14px;height:14px;stroke:#06312E;stroke-width:2;fill:none;
+  stroke-linecap:round;stroke-linejoin:round}
+
+/* Bildeopplasting */
+.bilder{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:9px}
+.bilder:empty{display:none}
+.bilde-mini{position:relative;width:80px;height:80px;border-radius:12px;overflow:hidden;
+  border:1px solid var(--line);background:var(--mint)}
+.bilde-mini img{width:100%;height:100%;object-fit:cover;display:block}
+.bilde-mini button{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;
+  border:none;background:rgba(6,49,46,.72);color:#fff;font-size:.9rem;line-height:1;cursor:pointer;
+  display:grid;place-items:center;padding:0}
+.bilde-mini button:hover{background:rgba(6,49,46,.9)}
+.last-opp{display:inline-flex;align-items:center;gap:8px;border:1.5px dashed var(--line);
+  border-radius:12px;padding:11px 16px;font:inherit;font-size:.9rem;font-weight:700;color:var(--teal-d);
+  cursor:pointer;transition:.15s;-webkit-tap-highlight-color:transparent}
+.last-opp:hover{border-color:var(--teal);background:var(--mint)}
+.last-opp svg{width:18px;height:18px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round}
+
+/* Bildeopplasting slutt */
+label.f{display:block;font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+/* skjema */
+.rad{margin-bottom:16px}
+.to-kol{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.inn{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;font:inherit;
+  font-size:16px;font-weight:600;color:var(--ink);outline:none;background:#fff;font-family:inherit}
+.inn:focus{border-color:var(--ink)}
+textarea.inn{resize:vertical;min-height:112px;font-weight:500}
+select.inn{cursor:pointer}
+.feil{background:#FDECEC;border:1.5px solid #F0BCBC;color:#8E2A2A;border-radius:12px;padding:11px 14px;
+  font-size:.88rem;font-weight:700;margin-bottom:14px}
+.inn[aria-invalid="true"]{border-color:#C34747}
+
+/* oppdragskort */
+.jkort{min-width:0;border:1px solid var(--line);border-radius:16px;padding:14px;background:#fff;
+  transition:border-color .15s;display:flex;gap:14px;align-items:flex-start;box-shadow:var(--sk1);transition:box-shadow .15s,border-color .15s,transform .15s}
+.jkort:hover{border-color:#C8D2D0;box-shadow:var(--sk2);transform:translateY(-1px)}
+.jbilde{position:relative;width:104px;height:104px;border-radius:12px;flex-shrink:0;overflow:hidden;
+  display:grid;place-items:center}
+.jbilde svg{width:42px;height:42px;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:.5}
+.jbilde .alder{position:absolute;left:0;right:0;bottom:0;background:rgba(18,33,31,.66);color:#fff;
+  font-size:.66rem;font-weight:800;padding:3px 4px;text-align:center;letter-spacing:.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jinn{flex:1;min-width:0}
+.jkort h3{font-size:1.02rem;margin-bottom:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jrad{display:flex;align-items:center;gap:7px;font-size:.86rem;font-weight:600;margin-bottom:3px;min-width:0}
+.jrad svg{width:15px;height:15px;flex-shrink:0;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.jrad span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jrad.j-sted{color:var(--teal-d)}
+.jrad.j-sted svg{stroke:var(--teal)}
+.jrad.j-pris{color:var(--ink);font-weight:800}
+.jrad.j-pris svg{stroke:var(--ink)}
+.j-und{font-size:.8rem;font-weight:600;color:var(--muted);margin-top:5px}
+.jrad.j-tid{color:var(--muted);font-weight:600}
+.jrad.j-tid svg{stroke:var(--muted)}
+.jkort .btn{margin-top:11px}
+@media (max-width:520px){
+  .jkort{padding:12px;gap:11px}
+  .jbilde{width:84px;height:84px;border-radius:12px}
+  .jbilde svg{width:34px;height:34px}
+  .jkort h3{font-size:.94rem}
+  .jrad{font-size:.78rem;gap:5px}
+  .jrad svg{width:13px;height:13px}
+}
+
+/* meldingstråd */
+.trad{border:1px solid var(--line);border-radius:16px;padding:18px 20px;display:flex;gap:14px;
+  align-items:flex-start;margin-bottom:12px;cursor:pointer;background:#fff;text-align:left;width:100%;
+  font-family:inherit;transition:border-color .15s;box-shadow:var(--sk1);transition:box-shadow .15s,border-color .15s,transform .15s}
+.trad:hover{border-color:#C8D2D0;box-shadow:var(--sk2)}
+.trad .prv{font-size:.88rem;color:var(--muted);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trad .tid{font-size:.76rem;color:var(--muted);font-weight:700;white-space:nowrap}
+.uled{width:9px;height:9px;border-radius:50%;background:var(--teal);flex-shrink:0;margin-top:6px}
+
+/* dialog */
+dialog{position:fixed;inset:0;margin:auto;border:none;padding:0;border-radius:20px;max-width:440px;
+  width:calc(100% - 32px);height:fit-content;max-height:calc(100vh - 40px);overflow:auto;
+  box-shadow:0 24px 60px rgba(6,49,46,.22);color:var(--ink)}
+dialog::backdrop{background:rgba(6,49,46,.45)}
+.dlg{padding:26px}
+.dlg-topp{display:flex;gap:14px;align-items:flex-start;margin-bottom:18px}
+.dlg h3{font-size:1.3rem;margin-bottom:3px}
+.lukk{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;border:none;
+  background:var(--mint);color:var(--ink);font-size:1.1rem;line-height:1;cursor:pointer;font-family:inherit}
+.lukk:hover{background:var(--line)}
+.fakta{list-style:none;border-top:1.5px solid var(--ink);margin:0 0 18px}
+.fakta li{display:flex;justify-content:space-between;gap:14px;padding:11px 2px;border-bottom:1px dashed #CFD9D7;font-size:.9rem;font-weight:600}
+.fakta li b{font-weight:800}
+.dlg textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:11px 13px;font:inherit;
+  font-size:16px;font-weight:500;resize:vertical;min-height:88px;outline:none;color:var(--ink)}
+.dlg textarea:focus{border-color:var(--ink)}
+.dlg-bunn{display:flex;gap:9px;margin-top:16px}
+.dlg-bunn .btn{flex:1;white-space:nowrap;padding-left:14px;padding-right:14px}
+.ok{text-align:center;padding:14px 0 4px}
+.ok .sirkel{width:52px;height:52px;border-radius:50%;background:var(--teal);display:grid;place-items:center;margin:0 auto 14px}
+.ok p{color:var(--muted);font-weight:500;font-size:.92rem;margin-bottom:18px}
+
+footer{padding:38px 24px;text-align:center;font-size:.85rem;color:var(--muted);font-weight:500;border-top:1px solid var(--line)}
+footer a{text-decoration:underline;text-underline-offset:2px}
+.demo{background:#FFF8E6;border-top:1px solid #F0DFAE;padding:11px 24px;text-align:center;font-size:.8rem;font-weight:600;color:#6B5518}
+
+@media (max-width:900px){
+  .liste.jobber{grid-template-columns:1fr}   /* liggende kort - full bredde */
+  .kat-rad{grid-template-columns:repeat(3,1fr)}
+  .steg{grid-template-columns:1fr}
+  .nav-links{display:none}
+  .felt + .felt{border-left:none;border-top:1px solid var(--line)}
+  .sok .btn{width:100%;margin-top:4px}
+}
+
+@media (max-width:520px){
+  .kat-rad{grid-template-columns:repeat(2,1fr)}
+  .to-kol{grid-template-columns:1fr}
+  .nav{padding:12px 16px;gap:10px}
+  .nav-act .ghost{display:none}
+  .brand{font-size:1.02rem}
+  .btn.sm{padding:9px 15px;white-space:nowrap}
+  .wrap{padding:0 16px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#resultat">Hopp til hjelperne</a>
+
+<header>
+  <nav class="nav" aria-label="Hovedmeny">
+    <div class="nav-ve">
+      <button class="hjem" type="button" id="hjem-knapp" aria-label="Tilbake" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <a class="brand" href="#" onclick="visSide('finn-hjelp');return false;"><span class="mk" aria-hidden="true">N</span>Nobon</a>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#" onclick="visSide('legg-ut');return false;">Legg ut oppdrag</a></li>
+      <li><a href="#" onclick="visSide('finn-oppdrag');return false;">Finn oppdrag</a></li>
+      <li><a href="#" id="nav-fh" onclick="visSide('finn-hjelper');return false;">Finn hjelper</a></li>
+      <li><a href="#" onclick="visSide('meldinger');return false;">Meldinger</a></li>
+    </ul>
+    <div class="nav-act">
+      <a class="btn sm ghost" href="#" onclick="visSide('logg-inn');return false;">Logg inn</a>
+      <a class="btn sm teal" href="#" onclick="visSide('legg-ut');return false;"><span class="d-full">Legg ut oppdrag</span><span class="d-kort">Legg ut</span></a>
+    </div>
+  </nav>
+</header>
+
+<main>
+<div id="finn-hjelp" class="side">
+<section class="dash">
+  <div class="wrap">
+    <h2 id="dash-hei">Velkommen til Nobon</h2>
+    <div class="rutenett">
+      <button class="rute meg" type="button" onclick="visSide('min-konto')">
+        <span class="ini" id="dash-ini" aria-hidden="true">N</span>
+        Min konto
+      </button>
+      <button class="rute" type="button" onclick="visSide('mine-oppdrag')">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 12h18"/></svg>
+        Mine oppdrag
+      </button>
+      <button class="rute" type="button" onclick="visSide('legg-ut')">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+        Legg ut oppdrag
+      </button>
+      <button class="rute" type="button" onclick="visSide('meldinger')">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l2-4.9A8.4 8.4 0 0 1 4.1 12a8.4 8.4 0 0 1 8.4-9 8.4 8.4 0 0 1 8.5 8.5z"/></svg>
+        Meldinger
+        <span class="bad" id="dash-ulest">2</span>
+      </button>
+      <button class="rute" type="button" onclick="visSide('finn-oppdrag')">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9"/><path d="M14 3l5 5v4"/><path d="M14 3v5h5"/><path d="M8 12h5M8 16h3"/><circle cx="17.5" cy="17.5" r="3"/><path d="M22 22l-2.2-2.2"/></svg>
+        Finn oppdrag
+      </button>
+      <button class="rute" type="button" onclick="visSide('finn-hjelper')">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.3-4.3"/></svg>
+        Søk hjelper
+      </button>
+    </div>
+  </div>
+</section>
+<section class="hero" id="sok-felt">
+  <div class="wrap">
+    <h1>Finn en jobb du kan ta.</h1>
+
+    <div class="sok" role="search">
+      <div class="felt">
+        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+        <div style="flex:1;min-width:0">
+          <label for="sted">Hvor er du</label>
+          <input id="sted" type="text" placeholder="Hele landet" autocomplete="postal-code">
+        </div>
+      </div>
+      <div class="felt">
+        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        <div style="flex:1;min-width:0">
+          <label for="hva">Hva slags jobb</label>
+          <select id="hva">
+            <option value="alle">Alle kategorier</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn teal" id="sok-btn" type="button">Søk jobber</button>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <h2>Bla i kategorier</h2>
+        <p>Velg en kategori for å se oppdrag og hjelpere.</p>
+      </div>
+    </div>
+    <div class="kat-rad" id="kat-rad"></div>
+  </div>
+</section>
+
+
+
+<section class="mint">
+  <div class="wrap">
+    <div class="head"><div><h2>Slik gjør du det</h2><p>Fra du finner en hjelper til jobben er gjort.</p></div></div>
+    <div class="steg">
+      <div class="st"><div class="nr">1</div><h3>Finn en hjelper</h3><p>Søk på sted og kategori. Se erfaring, omtaler og timepris før du tar kontakt.</p></div>
+      <div class="st"><div class="nr">2</div><h3>Inviter til oppdraget</h3><p>Send en invitasjon direkte. Hjelperen svarer i meldinger, og dere blir enige om tid og pris.</p></div>
+      <div class="st"><div class="nr">3</div><h3>Gjør opp etterpå</h3><p>Betal når jobben er ferdig. Legg igjen en omtale så neste person vet hva de får.</p></div>
+    </div>
+  </div>
+</section>
+</div><!-- /finn-hjelp -->
+
+<div id="finn-hjelper" class="side" style="display:none">
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot"></span>Trenger du hjelp?</span>
+    <h1>Finn en hjelper der du er.</h1>
+    <div class="sok" role="search">
+      <div class="felt">
+        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+        <div style="flex:1;min-width:0">
+          <label for="h-sted">Hvor er du</label>
+          <input id="h-sted" type="text" placeholder="Hele landet" autocomplete="postal-code">
+        </div>
+      </div>
+      <div class="felt">
+        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        <div style="flex:1;min-width:0">
+          <label for="h-hva">Hva trenger du hjelp til</label>
+          <select id="h-hva"><option value="alle">Alle kategorier</option></select>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="h-resultat" style="padding-top:34px">
+  <div class="wrap">
+    <div class="res-bar">
+      <div class="res-tell" id="h-tell">—</div>
+      <div class="styr">
+        <button class="pill" id="h-pro" type="button" aria-pressed="false">PRO hjelpere</button>
+        <button class="pill" id="h-priv" type="button" aria-pressed="false">Private hjelpere</button>
+        <div class="sorter"><label for="h-sort">Sorter</label>
+          <select id="h-sort">
+            <option value="avstand">Avstand</option>
+            <option value="karakter">Karakter</option>
+            <option value="sist">Sist sett</option>
+            <option value="oppdrag">Flest oppdrag</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="liste" id="h-liste"></div>
+    <div style="text-align:center;margin-top:26px">
+      <button class="btn ghost" id="h-flere" type="button" hidden>Vis alle hjelpere</button>
+    </div>
+  </div>
+</section>
+</div><!-- /finn-hjelper -->
+
+<div id="kategori" class="side" style="display:none">
+<section class="hero" style="padding:40px 0 34px">
+  <div class="wrap">
+    <a class="tilbake" href="#" onclick="visSide('finn-hjelp');return false;">← Alle kategorier</a>
+    <h1 id="k-tittel" style="font-size:clamp(1.9rem,4.4vw,3rem);margin:14px 0 12px">—</h1>
+  </div>
+</section>
+<section style="padding-top:34px">
+  <div class="wrap">
+    <div class="faner" role="tablist">
+      <button class="fane" id="fane-oppdrag" type="button" role="tab" aria-selected="true">Oppdrag <span id="n-oppdrag">0</span></button>
+      <button class="fane" id="fane-hjelpere" type="button" role="tab" aria-selected="false">Hjelpere <span id="n-hjelpere">0</span></button>
+    </div>
+    <p class="under-tit">Hva slags oppdrag?</p>
+    <div class="under" id="k-under"></div>
+    <div class="avst">
+      <div class="avst-topp">
+        <label class="under-tit" style="margin:0" for="k-avst" id="k-avst-fra">Avstand</label>
+        <span class="avst-verdi" id="k-avst-verdi">Hele landet</span>
+      </div>
+      <input type="range" id="k-avst" min="1" max="50" step="1" value="50" aria-describedby="k-avst-verdi">
+      <div class="avst-skala"><span>1 km</span><span>Alle</span></div>
+    </div>
+    <div class="res-bar" style="margin-top:30px">
+      <div class="res-tell" id="k-tell">—</div>
+      <div class="styr">
+        <button class="pill" id="k-pro" type="button" aria-pressed="false">PRO hjelpere</button>
+        <button class="pill" id="k-priv" type="button" aria-pressed="false">Private hjelpere</button>
+        <div class="sorter"><label for="k-sort">Sorter</label>
+          <select id="k-sort"></select>
+        </div>
+      </div>
+    </div>
+    <div class="liste" id="k-liste"></div>
+  </div>
+</section>
+</div><!-- /kategori -->
+
+<div id="finn-oppdrag" class="side" style="display:none">
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot"></span>For hjelpere</span>
+    <h1>Finn et oppdrag du kan gjøre.</h1>
+    <p class="lead">Ledige småjobber over hele landet. Meld interesse, så tar oppdragsgiver kontakt.</p>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <div class="avst" style="margin:0 0 26px">
+      <div class="avst-topp">
+        <label class="under-tit" style="margin:0" for="o-avst" id="o-avst-fra">Avstand</label>
+        <span class="avst-verdi" id="o-avst-verdi">Hele landet</span>
+      </div>
+      <input type="range" id="o-avst" min="1" max="50" step="1" value="50" aria-describedby="o-avst-verdi">
+      <div class="avst-skala"><span>1 km</span><span>Alle</span></div>
+    </div>
+    <div class="vis-veksle" role="tablist">
+      <button class="vv" id="vv-liste" type="button" role="tab" aria-selected="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+        Liste
+      </button>
+      <button class="vv" id="vv-bla" type="button" role="tab" aria-selected="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="M9 20l-3 2M15 20l3 2"/></svg>
+        Bla gjennom
+      </button>
+    </div>
+    <div class="res-bar">
+      <div class="res-tell" id="o-tell">—</div>
+      <div class="styr">
+        <div class="sorter"><label for="o-sort">Sorter</label>
+          <select id="o-sort">
+            <option value="ny">Nyeste</option>
+            <option value="pris">Høyest betaling</option>
+            <option value="avstand">Avstand</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="liste" id="o-liste"></div>
+    <div id="o-bla" hidden>
+      <div class="bla-topp">
+        <h2>Bla gjennom oppdrag</h2>
+        <span class="bla-teller" id="bla-teller"></span>
+        <button class="bla-lukk" type="button" id="bla-lukk" aria-label="Lukk">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="stabel" id="stabel"></div>
+      <div class="swipe-knapper">
+        <button class="sw-btn sw-angre" id="sw-angre" type="button" aria-label="Angre" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-1"/></svg>
+        </button>
+        <button class="sw-btn sw-nei" id="sw-nei" type="button" aria-label="Hopp over">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+        <button class="sw-btn sw-ja" id="sw-ja" type="button" aria-label="Meld interesse">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+        </button>
+      </div>
+      <p class="hint" style="text-align:center;margin-top:14px">Dra til høyre for å melde interesse, venstre for å hoppe over.</p>
+    </div>
+  </div>
+</section>
+</div><!-- /finn-oppdrag -->
+
+<div id="legg-ut" class="side" style="display:none">
+<section>
+  <div class="wrap" style="max-width:660px">
+    <div class="head" style="display:block"><h2>Legg ut et oppdrag</h2><p>Beskriv hva du trenger hjelp til. Hjelpere i nærheten melder seg, og du velger hvem du vil bruke.</p></div>
+    <form id="skjema" novalidate>
+      <div class="rad"><label class="f" for="j-tittel">Hva trenger du hjelp til</label>
+        <input class="inn" id="j-tittel" type="text" placeholder="F.eks. Montere kjøkkenskap" required></div>
+      <div class="rad"><label class="f" for="j-kat">Kategori</label>
+        <select class="inn" id="j-kat" required></select></div>
+      <div class="rad"><label class="f" for="j-sted">Hvor</label>
+        <input class="inn" id="j-sted" type="text" placeholder="Adresse eller sted" required></div>
+      <div class="to-kol">
+        <div class="rad"><label class="f" for="j-nar">Når passer det</label>
+          <input class="inn" id="j-nar" type="date"></div>
+        <div class="rad"><label class="f" for="j-pris">Hva vil du betale</label>
+          <input class="inn" id="j-pris" type="text" placeholder="F.eks. 1500 kr eller timepris"></div>
+      </div>
+      <div class="rad"><label class="f" for="j-tekst">Beskriv oppdraget</label>
+        <textarea class="inn" id="j-tekst" placeholder="Jo mer du skriver, jo bedre tilbud får du." required></textarea></div>
+      <div class="rad">
+        <label class="f">Bilder <span style="font-weight:600;text-transform:none;letter-spacing:0;color:var(--muted)">— gjør det lettere å gi pris</span></label>
+        <div class="bilder" id="j-bilder"></div>
+        <label class="last-opp" for="j-fil">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          Legg til bilder
+        </label>
+        <input id="j-fil" type="file" accept="image/*" multiple hidden>
+        <p class="hint" style="margin-top:7px">Vises mens fanen er åpen. Lagres ikke uten en server — se notatet.</p>
+      </div>
+      <p class="feil" id="j-feil" hidden></p>
+      <button class="btn teal" type="submit" style="width:100%;margin-top:6px">Legg ut oppdraget</button>
+      <p class="hint" style="text-align:center">Gratis å legge ut. Du velger selv hvem du svarer.</p>
+    </form>
+    <div id="j-ok" hidden>
+      <div class="ok" style="padding:44px 0">
+        <div class="sirkel"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#06312E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <h3 style="margin-bottom:6px">Oppdraget er lagt ut</h3>
+        <p id="j-ok-tekst">Hjelpere i nærheten ser det nå. Du får varsel når noen melder seg.</p>
+        <div style="display:flex;gap:9px;justify-content:center;flex-wrap:wrap">
+          <button class="btn teal" type="button" onclick="visSide('meldinger')">Gå til meldinger</button>
+          <button class="btn ghost" type="button" id="j-ny">Legg ut ett til</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div><!-- /legg-ut -->
+
+<div id="meldinger" class="side" style="display:none">
+<section>
+  <div class="wrap" style="max-width:760px">
+    <div class="head" style="display:block"><h2>Meldinger</h2><p>Samtaler om oppdrag – både dine egne og jobber du har fått.</p></div>
+    <div class="faner" role="tablist">
+      <button class="fane" id="mf-mine" type="button" role="tab" aria-selected="true">Oppdragene mine <span id="mn-mine">0</span></button>
+      <button class="fane" id="mf-fatt" type="button" role="tab" aria-selected="false">Jobber jeg har fått <span id="mn-fatt">0</span></button>
+    </div>
+    <div id="m-liste"></div>
+  </div>
+</section>
+</div><!-- /meldinger -->
+
+<div id="min-konto" class="side" style="display:none">
+<section>
+  <div class="wrap" style="max-width:520px">
+    <div class="konto-topp">
+      <button class="konto-av" id="mk-av" type="button" aria-label="Endre profilbilde">
+        <span id="mk-ini" aria-hidden="true">N</span>
+        <span class="av-kamera" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </span>
+      </button>
+      <input id="mk-fil" type="file" accept="image/*" hidden>
+      <div>
+        <h2 id="mk-navn">Ikke innlogget</h2>
+        <p class="rolle-t" id="mk-rolle">Lag en bruker for å ta i bruk Nobon</p>
+        <p class="hint" id="mk-hint" hidden>Trykk på bildet for å legge til et profilbilde</p>
+      </div>
+    </div>
+    <p class="ikke-koblet" id="konto-ikke-koblet"><b>Ingen ekte konto.</b> Nobon har ingen server ennå, så det som står her forsvinner når du laster siden på nytt.</p>
+    <ul class="fakta" id="mk-fakta"></ul>
+    <div style="display:flex;gap:9px;flex-wrap:wrap">
+      <button class="btn teal" type="button" id="mk-handling">Lag en bruker</button>
+      <button class="btn ghost" type="button" id="mk-hjelperprofil" hidden>Rediger hjelperprofil</button>
+      <button class="btn ghost" type="button" id="mk-passord" hidden>Endre passord</button>
+      <button class="btn ghost" type="button" id="mk-epost" hidden>Endre e-post</button>
+      <button class="btn ghost" type="button" id="mk-admin" hidden onclick="visSide('admin')">Admin</button>
+      <button class="btn ghost" type="button" onclick="visSide('finn-hjelp')">Til forsiden</button>
+    </div>
+    <div style="margin-top:22px" id="mk-fare" hidden>
+      <button class="txt-btn" type="button" id="mk-slett" style="color:#C0392B">Slett kontoen min</button>
+    </div>
+  </div>
+</section>
+</div><!-- /min-konto -->
+
+<dialog id="dlg-epost">
+  <div class="dlg">
+    <button class="lukk" type="button" data-lukk aria-label="Lukk">✕</button>
+    <h3 style="margin-bottom:6px">Endre e-post</h3>
+    <p style="color:var(--muted);font-weight:500;font-size:.88rem;margin-bottom:18px">Du må bekrefte den nye e-postadressen før den tas i bruk.</p>
+    <form id="ep-skjema" novalidate>
+      <div class="rad"><label class="f" for="ep-ny">Ny e-post</label>
+        <input class="inn" id="ep-ny" type="email" placeholder="ny@epost.no" autocomplete="email"></div>
+      <p class="feil" id="ep-feil" hidden></p>
+      <div class="dlg-bunn"><button class="btn teal" type="submit">Send bekreftelse</button>
+        <button class="btn ghost" type="button" data-lukk>Avbryt</button></div>
+    </form>
+  </div>
+</dialog>
+
+<dialog id="dlg-slett">
+  <div class="dlg">
+    <button class="lukk" type="button" data-lukk aria-label="Lukk">✕</button>
+    <h3 style="margin-bottom:6px">Slett kontoen din?</h3>
+    <p style="color:var(--muted);font-weight:500;font-size:.88rem;margin-bottom:18px">
+      Dette kan ikke angres. Kontoen din, profilen og oppdragene dine forsvinner.
+      Skriv <b>SLETT</b> for å bekrefte.</p>
+    <form id="slett-skjema" novalidate>
+      <div class="rad"><input class="inn" id="slett-bekreft" type="text" placeholder="Skriv SLETT" autocomplete="off"></div>
+      <p class="feil" id="slett-feil" hidden></p>
+      <div class="dlg-bunn"><button class="btn" type="submit" style="background:#C0392B">Slett for godt</button>
+        <button class="btn ghost" type="button" data-lukk>Avbryt</button></div>
+    </form>
+  </div>
+</dialog>
+
+<dialog id="dlg-hjelperprofil">
+  <div class="dlg">
+    <button class="lukk" type="button" data-lukk aria-label="Lukk">✕</button>
+    <h3 style="margin-bottom:3px">Rediger hjelperprofil</h3>
+    <p style="color:var(--muted);font-weight:500;font-size:.88rem;margin-bottom:18px">Dette er det andre ser når de søker etter hjelpere i «Finn hjelper».</p>
+    <form id="hp-skjema" novalidate>
+      <div class="rad"><label class="f" for="hp-kat">Kategori</label>
+        <select class="inn" id="hp-kat"><option value="">Velg kategori</option></select></div>
+      <div class="rad"><label class="f" for="hp-tags">Tjenester (kommaseparert)</label>
+        <input class="inn" id="hp-tags" type="text" placeholder="F.eks. Flyttehjelp, Bortkjøring"></div>
+      <div class="rad"><label class="f" for="hp-sted">Sted</label>
+        <input class="inn" id="hp-sted" type="text" placeholder="F.eks. Oslo"></div>
+      <div class="rad"><label class="f" for="hp-pris">Timepris (kr/t)</label>
+        <input class="inn" id="hp-pris" type="number" min="0" placeholder="F.eks. 450"></div>
+      <p class="feil" id="hp-feil" hidden></p>
+      <div class="dlg-bunn"><button class="btn teal" type="submit">Lagre</button>
+        <button class="btn ghost" type="button" data-lukk>Avbryt</button></div>
+    </form>
+  </div>
+</dialog>
+
+<dialog id="dlg-passord">
+  <div class="dlg">
+    <button class="lukk" type="button" data-lukk aria-label="Lukk">✕</button>
+    <h3 style="margin-bottom:6px" id="pw-tittel">Endre passord</h3>
+    <p style="color:var(--muted);font-weight:500;font-size:.88rem;margin-bottom:18px" id="pw-hjelp">Skriv inn et nytt passord for kontoen din.</p>
+    <form id="pw-skjema" novalidate>
+      <div class="rad"><label class="f" for="pw-nytt">Nytt passord</label>
+        <input class="inn" id="pw-nytt" type="password" placeholder="Minst 8 tegn" autocomplete="new-password"></div>
+      <div class="rad"><label class="f" for="pw-gjenta">Gjenta nytt passord</label>
+        <input class="inn" id="pw-gjenta" type="password" placeholder="Gjenta passordet" autocomplete="new-password"></div>
+      <p class="feil" id="pw-feil" hidden></p>
+      <div class="dlg-bunn"><button class="btn teal" type="submit">Lagre nytt passord</button>
+        <button class="btn ghost" type="button" data-lukk>Avbryt</button></div>
+    </form>
+  </div>
+</dialog>
+
+<div id="admin" class="side" style="display:none">
+<section>
+  <div class="wrap" style="max-width:760px">
+    <a class="tilbake" href="#" onclick="visSide('min-konto');return false;">← Min konto</a>
+    <div class="head" style="display:block;margin-top:14px">
+      <h2>Admin</h2>
+      <p>Fjern upassende oppdrag og sperr brukere som misbruker Nobon.</p>
+    </div>
+    <p class="under-tit">Oppdrag</p>
+    <div id="admin-oppdrag" style="display:grid;gap:10px;margin-bottom:32px"></div>
+    <p class="under-tit">Brukere</p>
+    <div id="admin-brukere" style="display:grid;gap:10px"></div>
+  </div>
+</section>
+</div><!-- /admin -->
+
+<div id="mine-oppdrag" class="side" style="display:none">
+<section>
+  <div class="wrap" style="max-width:760px">
+    <div class="head" style="display:block"><h2>Mine oppdrag</h2><p>Oppdrag du har lagt ut, og status på dem.</p></div>
+    <div class="mine" id="mine-liste"></div>
+  </div>
+</section>
+</div><!-- /mine-oppdrag -->
+
+<div id="jobb-detalj" class="side" style="display:none">
+<section>
+  <div class="wrap" style="max-width:640px">
+    <button class="tilbake" type="button" id="jd-tilbake" style="background:none;border:none;font:inherit;cursor:pointer;padding:0">← Tilbake</button>
+    <div class="jd-galleri" id="jd-galleri"></div>
+    <div style="margin-top:18px">
+      <span class="status" id="jd-alder">—</span>
+    </div>
+    <h2 id="jd-tittel" style="font-size:1.5rem;margin:8px 0 14px">—</h2>
+    <div class="jd-fakta">
+      <div class="jd-rad"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg><span id="jd-sted">—</span></div>
+      <div class="jd-rad"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/></svg><b id="jd-pris">—</b></div>
+      <div class="jd-rad"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg><span id="jd-kat">—</span></div>
+    </div>
+    <p class="under-tit" style="margin-top:22px">Beskrivelse</p>
+    <p id="jd-tekst" style="color:var(--muted);font-weight:500;line-height:1.6">—</p>
+    <div class="godta-boks" style="margin-top:26px">
+      <p>Passer dette for deg? Meld interesse, så tar oppdragsgiver kontakt.</p>
+      <button class="btn teal" type="button" id="jd-meld">Meld interesse</button>
+    </div>
+  </div>
+</section>
+</div><!-- /jobb-detalj -->
+
+<div id="oppdrag-detalj" class="side" style="display:none">
+<section>
+  <div class="wrap" style="max-width:640px">
+    <a class="tilbake" href="#" onclick="visSide('mine-oppdrag');return false;">← Mine oppdrag</a>
+    <div style="margin:14px 0 6px"><span class="status" id="od-status">Åpent</span></div>
+    <h2 id="od-tittel" style="font-size:1.5rem;margin-bottom:6px">—</h2>
+    <p class="meta" id="od-meta" style="margin-bottom:14px">—</p>
+    <p id="od-tekst" style="color:var(--muted);font-weight:500;font-size:.93rem;margin-bottom:26px">—</p>
+
+    <p class="under-tit" id="od-antall">Hvem har meldt interesse</p>
+    <div id="od-sokere"></div>
+
+    <div id="od-tildelt" hidden style="margin-top:20px">
+      <div class="godta-boks">
+        <p id="od-tildelt-tekst">—</p>
+        <button class="btn teal" type="button" id="od-betal">Gjør opp med Vipps</button>
+      </div>
+    </div>
+
+    <div id="od-vurdering" hidden style="margin-top:20px">
+      <div class="godta-boks">
+        <div id="ov-skjema">
+          <p style="margin-bottom:10px;font-weight:700">Hvordan gikk det med <span id="ov-navn">—</span>?</p>
+          <div class="styr" id="ov-stjerner" style="margin-bottom:12px">
+            <button class="pill" type="button" data-stj="1" aria-pressed="false">1 ★</button>
+            <button class="pill" type="button" data-stj="2" aria-pressed="false">2 ★</button>
+            <button class="pill" type="button" data-stj="3" aria-pressed="false">3 ★</button>
+            <button class="pill" type="button" data-stj="4" aria-pressed="false">4 ★</button>
+            <button class="pill" type="button" data-stj="5" aria-pressed="false">5 ★</button>
+          </div>
+          <textarea id="ov-kommentar" class="inn" placeholder="Kommentar (valgfritt)" style="margin-bottom:10px;min-height:70px;resize:vertical"></textarea>
+          <p class="feil" id="ov-feil" hidden></p>
+          <button class="btn teal" type="button" id="ov-send">Send vurdering</button>
+        </div>
+        <div id="ov-ferdig" hidden>
+          <p style="font-weight:700;margin-bottom:4px">Du har vurdert <span id="ov-navn2">—</span></p>
+          <p><span class="stjerne" id="ov-visstjerner"></span></p>
+          <p id="ov-viskommentar" style="color:var(--muted);font-weight:500;font-size:.9rem;margin-top:6px"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div><!-- /oppdrag-detalj -->
+
+<div id="samtale" class="side" style="display:none">
+<section>
+  <div class="wrap" style="max-width:560px">
+    <button class="tilbake" type="button" id="sam-tilbake" style="background:none;border:none;font:inherit;cursor:pointer">← Tilbake</button>
+    <div class="sam-topp" style="margin-top:14px">
+      <div class="av" id="sam-ini" aria-hidden="true">—</div>
+      <div style="flex:1;min-width:0">
+        <div class="navn-rad"><span class="navn" id="sam-navn">—</span><span id="sam-merke"></span></div>
+        <div class="meta" id="sam-meta" style="margin:0">—</div>
+      </div>
+      <button class="txt-btn" type="button" id="sam-profil">Se profil</button>
+    </div>
+
+    <div class="boble-liste" id="sam-bobler"></div>
+
+    <div class="skriv">
+      <label class="f" for="sam-inn" style="position:absolute;left:-9999px">Skriv en melding</label>
+      <textarea id="sam-inn" placeholder="Spør om det du lurer på…" rows="1"></textarea>
+      <button class="btn" type="button" id="sam-send">Send</button>
+    </div>
+
+    <div class="godta-boks" id="sam-godta-boks">
+      <p id="sam-godta-tekst">Fornøyd med svarene? Da kan du gi oppdraget til denne hjelperen.</p>
+      <button class="btn teal" type="button" id="sam-godta">Godta —</button>
+    </div>
+  </div>
+</section>
+</div><!-- /samtale -->
+
+<div id="lag-bruker" class="side" style="display:none">
+<section>
+  <div class="wrap" style="max-width:460px">
+    <div class="head" style="display:block;text-align:center">
+      <h2>Lag en bruker</h2>
+      <p style="margin:0 auto">Gratis. Du velger selv om du vil legge ut oppdrag eller ta dem.</p>
+    </div>
+
+    <p class="ikke-koblet" id="reg-ikke-koblet"><b>Ikke koblet opp ennå.</b> Skjemaet lagrer ingenting og oppretter ingen konto. Det trenger en server med database. Se notatet nederst.</p>
+
+    <button class="vipps" type="button" id="vipps-reg">
+      Registrer med Vipps
+    </button>
+    <p class="hint" style="text-align:center;margin-top:10px">Henter navn og telefon fra Vipps. Du slipper passord.</p>
+
+    <div class="eller">eller med e-post</div>
+
+    <form id="reg-skjema" novalidate>
+      <div class="reg-bilde">
+        <button class="reg-av" id="reg-av" type="button" aria-label="Legg til profilbilde">
+          <span id="reg-av-ini" aria-hidden="true">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>
+          </span>
+          <span class="av-kamera" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </span>
+        </button>
+        <input id="reg-fil" type="file" accept="image/*" hidden>
+        <p class="hint" style="margin:0">Legg til et profilbilde <span style="color:var(--muted)">(valgfritt)</span></p>
+      </div>
+      <p class="under-tit">Hva vil du bruke Nobon til? Velg gjerne begge.</p>
+      <div class="velg">
+        <button class="vkort" type="button" data-type="kunde" aria-pressed="false">
+          <span class="hake" aria-hidden="true"></span>
+          <b>Legge ut oppdrag</b><span class="vk-und">Jeg trenger hjelp til noe</span></button>
+        <button class="vkort" type="button" data-type="hjelper" aria-pressed="false">
+          <span class="hake" aria-hidden="true"></span>
+          <b>Ta oppdrag</b><span class="vk-und">Jeg vil tjene penger på småjobber</span></button>
+      </div>
+      <div class="rad"><label class="f" for="r-navn">Navn</label>
+        <input class="inn" id="r-navn" type="text" placeholder="Fornavn og etternavn" autocomplete="name"></div>
+      <div class="rad"><label class="f" for="r-epost">E-post</label>
+        <input class="inn" id="r-epost" type="email" placeholder="deg@epost.no" autocomplete="email"></div>
+      <div class="rad"><label class="f" for="r-tlf">Mobilnummer</label>
+        <input class="inn" id="r-tlf" type="tel" placeholder="8 siffer" autocomplete="tel" inputmode="numeric"></div>
+      <div class="rad"><label class="f" for="r-pass">Lag et passord</label>
+        <input class="inn" id="r-pass" type="password" placeholder="Minst 8 tegn" autocomplete="new-password"></div>
+      <label class="kryss"><input type="checkbox" id="r-vilkar">
+        <span>Jeg godtar <a href="#" onclick="return false">tjenestevilkårene</a> og <a href="#" onclick="return false">personvernerklæringen</a>.</span></label>
+      <p class="feil" id="r-feil" hidden></p>
+      <button class="btn teal" type="submit" style="width:100%;margin-top:14px">Lag bruker</button>
+    </form>
+    <p class="hint" style="text-align:center;margin-top:18px">Har du bruker? <a href="#" onclick="visSide('logg-inn');return false;" style="font-weight:700">Logg inn</a></p>
+
+    <div id="reg-ok" hidden>
+      <div class="ok" style="padding:40px 0">
+        <div class="sirkel"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#06312E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <h3 style="margin-bottom:6px" id="reg-ok-tittel">Slik ville det sett ut</h3>
+        <p id="reg-ok-tekst">Kontoen er ikke opprettet — skjemaet er ikke koblet til noen server.</p>
+        <button class="btn ghost" type="button" id="reg-ny">Tilbake til skjemaet</button>
+      </div>
+    </div>
+  </div>
+</section>
+</div><!-- /lag-bruker -->
+
+<div id="betal" class="side" style="display:none">
+<section>
+  <div class="wrap" style="max-width:460px">
+    <a class="tilbake" href="#" onclick="visSide('meldinger');return false;">← Tilbake til meldinger</a>
+    <div class="head" style="display:block;margin-top:14px">
+      <h2>Gjør opp for oppdraget</h2>
+      <p>Betal når jobben er ferdig og du er fornøyd.</p>
+    </div>
+
+    <p class="ikke-koblet" id="betal-ikke-koblet"><b>Vipps krever egne nøkler.</b> Betalingskallet går nå via en Edge Function på Supabase (ikke direkte fra nettleseren), men den trenger dine egne Vipps-nøkler satt som secrets før noe kan trekkes. Se NOBON-SETUP.md.</p>
+
+    <div class="kvitt">
+      <div class="kvitt-rad"><span>Oppdrag</span><b id="b-oppdrag">—</b></div>
+      <div class="kvitt-rad"><span>Hjelper</span><b id="b-hjelper">—</b></div>
+      <div class="kvitt-rad"><span>Avtalt pris</span><b id="b-pris">—</b></div>
+      <div class="kvitt-rad"><span>Nobon-gebyr</span><b id="b-gebyr">—</b></div>
+      <div class="kvitt-rad sum"><span>Å betale</span><b id="b-sum">—</b></div>
+    </div>
+
+    <p class="feil" id="betal-feil" hidden></p>
+    <button class="vipps" type="button" id="vipps-betal">
+      Betal med Vipps
+    </button>
+    <p class="hint" style="text-align:center;margin-top:10px">Du får en forespørsel i Vipps-appen.</p>
+
+    <div id="betal-ok" hidden>
+      <div class="ok" style="padding:30px 0">
+        <div class="sirkel"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#06312E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <h3 style="margin-bottom:6px">Slik ville det sett ut</h3>
+        <p>Ingen penger er trukket. Vipps er ikke koblet til.</p>
+        <button class="btn ghost" type="button" id="betal-ny">Tilbake</button>
+      </div>
+    </div>
+  </div>
+</section>
+</div><!-- /betal -->
+
+<div id="logg-inn" class="side" style="display:none">
+<section>
+  <div class="wrap" style="max-width:420px">
+    <div class="head" style="display:block;text-align:center"><h2>Logg inn</h2><p style="margin:0 auto">Bruk e-posten du registrerte deg med.</p></div>
+    <form id="inn-skjema" novalidate>
+      <div class="rad"><label class="f" for="i-epost">E-post</label>
+        <input class="inn" id="i-epost" type="email" placeholder="deg@epost.no" required autocomplete="email"></div>
+      <div class="rad"><label class="f" for="i-pass">Passord</label>
+        <input class="inn" id="i-pass" type="password" placeholder="Passordet ditt" required autocomplete="current-password"></div>
+      <p class="feil" id="i-feil" hidden></p>
+      <button class="btn teal" type="submit" style="width:100%;margin-top:6px">Logg inn</button>
+      <p style="text-align:center;margin-top:12px"><a href="#" id="glemt-pass" style="font-size:.85rem;font-weight:700;color:var(--teal-d)">Glemt passord?</a></p>
+    </form>
+    <p class="hint" style="text-align:center;margin-top:18px">Ny her? <a href="#" onclick="visSide('lag-bruker');return false;" style="font-weight:700">Lag en bruker</a></p>
+  </div>
+</section>
+</div><!-- /logg-inn -->
+</main>
+
+<nav class="bunn" aria-label="Hovednavigasjon">
+  <button class="bnav" type="button" data-b="finn-hjelp" aria-current="page">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>
+    <span>Forside</span>
+  </button>
+  <button class="bnav" type="button" data-b="finn-oppdrag">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9"/><path d="M14 3l5 5v4"/><path d="M14 3v5h5"/><path d="M8 12h5M8 16h3"/><circle cx="17.5" cy="17.5" r="3"/><path d="M22 22l-2.2-2.2"/></svg>
+    <span>Oppdrag</span>
+  </button>
+  <button class="bnav" type="button" data-b="legg-ut">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+    <span>Legg ut</span>
+  </button>
+  <button class="bnav" type="button" data-b="meldinger">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l2-4.9A8.4 8.4 0 0 1 4.1 12a8.4 8.4 0 0 1 8.4-9 8.4 8.4 0 0 1 8.5 8.5z"/></svg>
+    <span>Meldinger</span>
+    <span class="bad" id="bunn-ulest" hidden>0</span>
+  </button>
+  <button class="bnav" type="button" data-b="min-konto">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.4"/><path d="M5 21v-1a7 7 0 0 1 14 0v1"/></svg>
+    <span>Min konto</span>
+  </button>
+</nav>
+
+<footer>
+  © <span id="aar"></span> Nobon ·
+  <a href="#" onclick="visSide('finn-oppdrag');return false;">Finn oppdrag</a> ·
+  <a href="#" onclick="visSide('finn-hjelp');return false;">Finn hjelper</a> ·
+  <a href="#" onclick="visSide('legg-ut');return false;">Legg ut oppdrag</a> ·
+  <a href="#" onclick="visSide('lag-bruker');return false;">Lag bruker</a>
+</footer>
+<p class="demo">Designdemo — hjelpere, oppdrag og meldinger er fiktive eksempeldata.</p>
+
+<dialog id="dlg-profil"><div class="dlg" id="profil-inn"></div></dialog>
+<dialog id="dlg-inviter"><div class="dlg" id="inviter-inn"></div></dialog>
+
+<!-- Supabase Auth: håndterer passord-hashing, sesjoner og e-postbekreftelse på ekte.
+     URL + anon key er trygge å ha i frontend SÅ LENGE Row Level Security (RLS)
+     er skrudd på i prosjektet – de gir ingen tilgang i seg selv. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+document.getElementById('aar').textContent=new Date().getFullYear();
+
+// --- Sikkerhet: escape untrusted strings før de settes med innerHTML ---
+// Alt som kommer fra brukere (navn, oppdragstekst, meldinger) må gjennom denne
+// før det havner i innerHTML, ellers kan noen lagre <script>/onerror-payloads
+// som kjører i andre brukeres nettlesere (lagret XSS) den dagen dataene deles
+// via en database (se steg 2 i overleveringsnotatet).
+function escapeHtml(s){
+  return String(s==null?'':s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+
+// --- Supabase Auth: ekte innlogging ---
+// Fyll inn ditt eget Supabase-prosjekt her (Project Settings → API → Project URL / anon public key).
+// Disse to er trygge å ha i frontend-koden: anon key gir ingen tilgang alene,
+// det er Row Level Security (RLS)-reglene i Supabase-prosjektet som bestemmer
+// hva en innlogget bruker faktisk får lese/skrive. ALDRI legg service_role-nøkkelen
+// her – den gir full tilgang forbi RLS og hører hjemme kun på en backend.
+var SUPABASE_URL = '';
+var SUPABASE_ANON_KEY = '';
+
+var sb = (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase)
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null;
+if(!sb){
+  console.warn('Supabase er ikke konfigurert – sett SUPABASE_URL og SUPABASE_ANON_KEY i <script>-blokken for å skru på ekte innlogging.');
+}
+
+// Supabase lagrer navn/telefon/roller som user_metadata på auth-brukeren
+// (satt ved signUp). Ingen egen "profiler"-tabell trengs for at innlogging skal virke.
+function brukerFraSupabase(su){
+  if(!su) return null;
+  var md = su.user_metadata || {};
+  return {
+    id: su.id,
+    navn: md.navn || su.email,
+    epost: su.email,
+    tlf: md.tlf || '',
+    roller: md.roller || [],
+    bilde: md.bilde || null
+  };
+}
+
+var KAT=[
+ {id:'transport',navn:'Transport',k:'k1',sub:['Hente & levere','Flyttehjelp','Bortkjøring','Bærehjelp','Persontransport'],ic:'<path d="M3 16V7h11v9M14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>'},
+ {id:'husarbeid',navn:'Husarbeid',k:'k2',sub:['Vaskehjelp','Flyttevask','Hjemmehjelp','Matlaging','Fiks & utbedring'],ic:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>'},
+ {id:'utendors',navn:'Utendørs',k:'k3',sub:['Fasadevask','Planter & hage','Grave & bære','Snømåking','Rydding & sjauing','Rep. & vedlikehold'],ic:'<path d="M12 21V9"/><path d="M12 9c0-3 2-6 5-6 0 4-2 6-5 6z"/><path d="M12 13c0-3-2-5-5-5 0 3 2 5 5 5z"/>'},
+ {id:'handverker',navn:'Håndverker',k:'k4',sub:['Tapet & maling','Mur & flis','Møbel & montering','Snekker/tømrer','Vann & rør','EL & varmepumpe','Smarthus & energiløsninger'],ic:'<path d="M14 3l7 7-3 3-7-7z"/><path d="M11 6L4 13a2.5 2.5 0 0 0 3.5 3.5L14 10"/><path d="M14 16l5 5"/>'},
+ {id:'bil',navn:'Bil & MC',k:'k5',sub:['Vask & rens','Lakk & tectyl','Motor & drivlinje','Dekk & felg','Småfix / kosmetisk','Oppheng & bremser'],ic:'<path d="M5 16l1.5-5.5A2 2 0 0 1 8.4 9h7.2a2 2 0 0 1 1.9 1.5L19 16"/><path d="M4 16h16v3H4z"/><circle cx="7.5" cy="19.5" r="1"/><circle cx="16.5" cy="19.5" r="1"/>'},
+ {id:'personlig',navn:'Personlig',k:'k6',sub:['Barnepass','Dyrepass','Trening & aktivitet','Pleie & omsorg','Handlehjelp'],ic:'<circle cx="12" cy="8" r="3.4"/><path d="M5 21v-1a7 7 0 0 1 14 0v1"/>'},
+ {id:'data',navn:'Data',k:'k2',sub:['Hardware','Web & IT','Software','Foto & video','Grafisk design'],ic:'<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>'},
+ {id:'utdanning',navn:'Utdanning',k:'k3',sub:['Leksehjelp','Kurs & kultur','Øvelseskjøring','Språk/oversetting'],ic:'<path d="M3 8l9-4 9 4-9 4z"/><path d="M7 10.5V16c0 1.5 2.5 2.5 5 2.5s5-1 5-2.5v-5.5"/>'},
+ {id:'velvare',navn:'Velvære',k:'k6',sub:['Klipp & farge','Sminke & negler','Massasje'],ic:'<circle cx="6" cy="6" r="2.6"/><circle cx="6" cy="18" r="2.6"/><path d="M20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12"/>'},
+ {id:'handarbeid',navn:'Håndarbeid',k:'k1',sub:['Tekstil','Skotøy','Interiør'],ic:'<circle cx="8" cy="8" r="4"/><path d="M11 11l9 9"/><path d="M18 18l-2 3-1-2-2 1 3-2"/>'},
+ {id:'event',navn:'Event',k:'k4',sub:['Catering','Underholdning','Ryddehjelp'],ic:'<path d="M4 21l4-11 8 8-11 4z"/><path d="M14 3v3M20 9h-3M17.5 5.5l-2 2"/>'},
+ {id:'okonomi',navn:'Økonomi',k:'k5',sub:['Regnskap','Privatøkonomi','Advokat'],ic:'<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h5M8 17h3"/>'},
+ {id:'bat',navn:'Båt & scooter',k:'k1',sub:['Vedlikehold','Lakk & maling','Reparasjon','Vask & rens'],ic:'<path d="M4 17h16l-2 4H6z"/><path d="M6 17V8l6-4 6 4v9"/>'},
+ {id:'bemanning',navn:'Bemanning',k:'k3',sub:['Sommerjobb','Vikar','Fast stilling','Sesongarbeider'],ic:'<rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>'}
+];
+
+// Fiktive demoprofiler
+var H=[
+ {n:'Anders K.',k:'transport',t:['Flyttehjelp','Bortkjøring'],pro:1,sted:'Oslo',km:1.2,r:4.9,ant:84,pris:520,sist:0.4},
+ {n:'Kristian V.',k:'transport',t:['Hente & levere','Bærehjelp'],pro:0,sted:'Kristiansand',km:6.3,r:4.4,ant:71,pris:360,sist:5},
+ {n:'Bytjenester AS',k:'transport',t:['Flyttehjelp','Persontransport'],pro:1,sted:'Trondheim',km:2.8,r:4.7,ant:112,pris:590,sist:1.2},
+ {n:'Marte L.',k:'husarbeid',t:['Vaskehjelp','Flyttevask'],pro:0,sted:'Bergen',km:2.1,r:5.0,ant:31,pris:390,sist:1.5},
+ {n:'Rent & Klart',k:'husarbeid',t:['Vaskehjelp','Hjemmehjelp'],pro:1,sted:'Oslo',km:4.7,r:4.6,ant:168,pris:480,sist:0.6},
+ {n:'Grønn Hage AS',k:'utendors',t:['Planter & hage','Snømåking'],pro:1,sted:'Trondheim',km:3.4,r:4.7,ant:126,pris:640,sist:0.2},
+ {n:'Ole M.',k:'utendors',t:['Rydding & sjauing','Grave & bære'],pro:0,sted:'Ålesund',km:5.1,r:4.8,ant:44,pris:420,sist:9},
+ {n:'Jonas B.',k:'handverker',t:['Møbel & montering','Snekker/tømrer'],pro:0,sted:'Oslo',km:0.8,r:4.8,ant:47,pris:450,sist:3},
+ {n:'Rørlaget Vest',k:'handverker',t:['Vann & rør'],pro:1,sted:'Bergen',km:5.6,r:4.6,ant:203,pris:890,sist:0.1},
+ {n:'Malerbrødrene',k:'handverker',t:['Tapet & maling'],pro:1,sted:'Drammen',km:8.9,r:4.8,ant:147,pris:820,sist:0.3},
+ {n:'Elektro Nord',k:'handverker',t:['EL & varmepumpe','Smarthus & energiløsninger'],pro:1,sted:'Tromsø',km:3.2,r:4.9,ant:91,pris:950,sist:1.8},
+ {n:'Ivar T.',k:'bil',t:['Vask & rens','Dekk & felg'],pro:0,sted:'Tromsø',km:4.2,r:4.5,ant:58,pris:410,sist:2},
+ {n:'Bilpleie Sør',k:'bil',t:['Vask & rens','Småfix / kosmetisk'],pro:1,sted:'Kristiansand',km:2.3,r:4.7,ant:134,pris:560,sist:0.9},
+ {n:'Silje H.',k:'personlig',t:['Barnepass','Dyrepass'],pro:0,sted:'Stavanger',km:1.9,r:5.0,ant:22,pris:280,sist:6},
+ {n:'Hanne V.',k:'personlig',t:['Pleie & omsorg','Handlehjelp'],pro:0,sted:'Bodø',km:3.7,r:4.9,ant:35,pris:340,sist:14},
+ {n:'Nord Data',k:'data',t:['Hardware','Web & IT'],pro:1,sted:'Trondheim',km:7.1,r:4.9,ant:95,pris:760,sist:0.8},
+ {n:'Sindre A.',k:'data',t:['Foto & video','Grafisk design'],pro:0,sted:'Oslo',km:2.4,r:4.8,ant:52,pris:650,sist:4},
+ {n:'Emilie R.',k:'utdanning',t:['Leksehjelp','Språk/oversetting'],pro:0,sted:'Oslo',km:2.8,r:4.9,ant:39,pris:340,sist:12},
+ {n:'Trafikk & Trening',k:'utdanning',t:['Øvelseskjøring','Kurs & kultur'],pro:1,sted:'Fredrikstad',km:4.9,r:4.6,ant:67,pris:480,sist:7},
+ {n:'Nora S.',k:'velvare',t:['Klipp & farge','Sminke & negler'],pro:0,sted:'Oslo',km:1.4,r:5.0,ant:28,pris:480,sist:20},
+ {n:'Salong Vest',k:'velvare',t:['Klipp & farge','Massasje'],pro:1,sted:'Bergen',km:3.0,r:4.8,ant:189,pris:690,sist:1.1},
+ {n:'Sy & Sømme',k:'handarbeid',t:['Tekstil','Interiør'],pro:0,sted:'Bergen',km:2.6,r:4.9,ant:41,pris:390,sist:16},
+ {n:'Fest & Catering',k:'event',t:['Catering','Ryddehjelp'],pro:1,sted:'Oslo',km:5.3,r:4.7,ant:78,pris:720,sist:2.5},
+ {n:'DJ Marius',k:'event',t:['Underholdning'],pro:0,sted:'Stavanger',km:4.4,r:5.0,ant:63,pris:1200,sist:11},
+ {n:'Regnskap Nord',k:'okonomi',t:['Regnskap','Privatøkonomi'],pro:1,sted:'Tromsø',km:1.7,r:4.8,ant:104,pris:980,sist:0.7},
+ {n:'Marina Service',k:'bat',t:['Vedlikehold','Vask & rens'],pro:1,sted:'Stavanger',km:6.8,r:4.6,ant:88,pris:740,sist:3.4},
+ {n:'Vikarhuset',k:'bemanning',t:['Vikar','Sesongarbeider'],pro:1,sted:'Oslo',km:3.9,r:4.5,ant:156,pris:520,sist:1.4}
+];
+
+// H over er demodata som vises når Supabase ikke er konfigurert (sb===null),
+// slik at prototypen ikke ser tom ut. Er sb konfigurert, bytter lastHjelpere()
+// den ut med ekte hjelperprofiler fra databasen - se overleveringsnotatets
+// problem #1 ("data deles ikke mellom brukere").
+function profilTilHjelper(p){
+  var timerSiden = p.updated_at ? Math.max(0,(Date.now()-new Date(p.updated_at).getTime())/36e5) : 0;
+  return {
+    id: p.id, n: p.navn, k: p.kategori||'', t: p.tags||[], pro: !!p.pro,
+    sted: p.sted||'', km: null, r: p.rating, ant: p.antall_oppdrag||0,
+    pris: p.pris||0, sist: timerSiden, bilde: p.bilde_url||null
+  };
+}
+async function lastHjelpere(){
+  if(!sb) return;
+  var res=await sb.from('profiler').select('*').contains('roller',['hjelper']).limit(200);
+  if(res.error){ console.error('Klarte ikke å laste hjelpere:', res.error.message); return; }
+  H=res.data.map(profilTilHjelper);
+  tegnKatRad();
+  if(document.getElementById('finn-hjelper').style.display!=='none') tegnHjelper();
+  if(document.getElementById('kategori').style.display!=='none') tegnKat();
+}
+
+var AV=['#C9E5E2','#CFD8EC','#D8E5C7','#F3DBC7','#E7D6E9','#F0DCD3'];
+// Fargen skal folge personen, ikke plasseringen i lista
+function avFor(navn){
+  var h=0; for(var i=0;i<navn.length;i++) h=(h*31+navn.charCodeAt(i))>>>0;
+  return AV[h%AV.length];
+}
+var valgtKat='alle', fPro=false, fPriv=false;
+var visAlle=false;               // forsiden viser et utvalg til du ber om mer
+var FORSIDE_ANT=6;
+var MAKS=50;                 // maks paa avstandsskyveren; paa maks filtreres det ikke paa avstand
+function maksTekst(){ return brukerSted() ? 'Uansett avstand' : 'Hele landet' }
+function brukerSted(){ return document.getElementById('sted').value.trim() }
+function stedTreff(x){ var b=brukerSted().toLowerCase(); return !b || (x.sted||x.s||'').toLowerCase().indexOf(b)>-1 }
+function stedTekst(){ var b=brukerSted(); return b ? 'i '+b : 'i hele landet' }
+
+// bygg kategorifliser + select
+var rad=document.getElementById('kat-rad'), sel=document.getElementById('hva');
+(function(){
+  var o='';
+  KAT.forEach(function(k){ o+='<option value="'+k.id+'">'+k.navn+'</option>' });
+  sel.insertAdjacentHTML('beforeend',o);
+})();
+// Kalles på nytt når H (hjelperlista) endres, f.eks. etter at ekte hjelpere er lastet fra databasen
+function tegnKatRad(){
+  var h='';
+  KAT.forEach(function(k){
+    var n=H.filter(function(x){return x.k===k.id}).length;
+    h+='<button class="kat '+k.k+'" type="button" data-k="'+k.id+'" aria-pressed="false">'+
+       '<div class="arch"><svg viewBox="0 0 24 24" stroke="#16302D" aria-hidden="true">'+k.ic+'</svg></div>'+
+       '<div class="lab">'+k.navn+'<span class="n">'+n+' hjelper'+(n===1?'':'e')+'</span></div></button>';
+  });
+  rad.innerHTML=h;
+}
+tegnKatRad();
+
+function sistTekst(t){
+  if(t<1) return 'Sett for '+Math.round(t*60)+' min siden';
+  if(t<24) return 'Sett for '+Math.round(t)+' t siden';
+  return 'Sett for '+Math.round(t/24)+' d siden';
+}
+// Viser karakteren nøyaktig - 4,6 blir 4,6 stjerner, ikke 5
+function stjerner(r){
+  return '<span class="stj" style="--p:'+(r/5*100)+'%" role="img" aria-label="'+
+    r.toFixed(1).replace('.',',')+' av 5"></span>';
+}
+// r er null for ekte hjelpere uten vurderinger ennå - ikke fiks opp en falsk 5-stjerners rating
+function vurderingHtml(r,ant){
+  if(r==null) return '<span style="font-weight:700">Ny hjelper</span> <i>(ingen vurderinger ennå)</i>';
+  return stjerner(r)+' <b>'+r.toFixed(1).replace('.',',')+'</b> <i>('+ant+')</i>';
+}
+
+
+// --- Kategoriflis aapner egen side ---
+rad.addEventListener('click',function(e){
+  var b=e.target.closest('.kat'); if(!b) return;
+  visKategori(b.dataset.k);
+});
+function sokJobber(){
+  // Ta med sted og kategori over til Finn oppdrag
+  var sted=document.getElementById('sted').value.trim();
+  document.getElementById('o-avst').value=MAKS; oAvst=MAKS;
+  if(sel.value!=='alle'){ visKategori(sel.value); return }
+  visSide('finn-oppdrag');
+  document.getElementById('finn-oppdrag').scrollIntoView({block:'start'});
+}
+document.getElementById('sok-btn').addEventListener('click',sokJobber);
+sel.addEventListener('change',function(){ valgtKat=sel.value; });
+
+document.getElementById('sted').addEventListener('input',function(){
+    document.getElementById('o-avst-verdi').textContent = oAvst>=MAKS ? maksTekst() : 'Innenfor '+oAvst+' km';
+  document.getElementById('k-avst-verdi').textContent = kAvst>=MAKS ? maksTekst() : 'Innenfor '+kAvst+' km';
+  if(document.getElementById('kategori').style.display!=='none'){
+    document.getElementById('k-avst-fra').textContent = brukerSted() ? 'Avstand fra '+brukerSted() : 'Avstand';
+    tegnKat();
+  }
+  tegnJobb();
+});
+
+// --- Profil og invitasjon ---
+var dP=document.getElementById('dlg-profil'), dI=document.getElementById('dlg-inviter');
+var KATNAVN={}; KAT.forEach(function(k){KATNAVN[k.id]=k.navn});
+var OM={0:'Har gjort dette i mange år og stiller med eget utstyr. Gi meg en lyd, så finner vi ut av tid.',
+        1:'Registrert foretak med ansvarsforsikring. Vi tar oppdrag i hele distriktet og gir fast pris på forhånd.'};
+
+function finn(n){ return H.filter(function(x){return x.n===n})[0] }
+function initialer(n){ return n.split(' ').map(function(w){return w[0]}).join('').slice(0,2).toUpperCase() }
+
+function visProfil(n){
+  var x=finn(n); if(!x) return;
+  document.getElementById('profil-inn').innerHTML=
+   '<button class="lukk" type="button" data-lukk aria-label="Lukk">✕</button>'+
+   '<div class="dlg-topp"><div class="av" style="background:'+avFor(n)+'" aria-hidden="true">'+escapeHtml(initialer(n))+'</div>'+
+     '<div><h3>'+escapeHtml(x.n)+'</h3><div class="meta" style="margin:0">'+
+       (x.r==null ? '<span style="font-weight:700">Ny hjelper</span> <i>(ingen vurderinger ennå)</i>'
+                  : '<span class="stjerne">'+stjerner(x.r)+'</span> '+x.r.toFixed(1)+' · '+x.ant+' oppdrag')+
+     '</div></div></div>'+
+   '<p style="color:var(--muted);font-weight:500;font-size:.92rem;margin-bottom:18px">'+OM[x.pro]+'</p>'+
+   '<ul class="fakta">'+
+     '<li><span>Kategori</span><b>'+escapeHtml(KATNAVN[x.k])+'</b></li>'+
+     '<li><span>Tjenester</span><b>'+escapeHtml(x.t.join(', '))+'</b></li>'+
+     '<li><span>Timepris</span><b>'+x.pris+' kr/t</b></li>'+
+     (x.km!=null ? '<li><span>Avstand</span><b>'+x.km.toFixed(1)+' km</b></li>' : '')+
+     '<li><span>Type</span><b>'+(x.pro?'PRO – registrert foretak':'Privat hjelper')+'</b></li>'+
+     '<li><span>Sist aktiv</span><b>'+escapeHtml(sistTekst(x.sist).replace('Sett for ',''))+'</b></li>'+
+   '</ul>'+
+   '<div class="dlg-bunn"><button class="btn teal" type="button" data-inv="'+escapeHtml(x.n)+'">Inviter til oppdrag</button>'+
+     '<button class="btn ghost" type="button" data-lukk>Lukk</button></div>';
+  dP.showModal();
+}
+
+function visInviter(n){
+  var x=finn(n); if(!x) return;
+  document.getElementById('inviter-inn').innerHTML=
+   '<button class="lukk" type="button" data-lukk aria-label="Lukk">✕</button>'+
+   '<h3 style="margin-bottom:6px">Inviter '+escapeHtml(x.n)+'</h3>'+
+   '<p style="color:var(--muted);font-weight:500;font-size:.92rem;margin-bottom:18px">'+
+     escapeHtml(x.n)+' får invitasjonen i meldinger og svarer deg der.</p>'+
+   '<label class="f" for="melding">Hva trenger du hjelp til</label>'+
+   '<textarea id="melding" placeholder="Kort om oppdraget – hva, hvor og når det passer."></textarea>'+
+   '<div class="dlg-bunn"><button class="btn teal" type="button" id="send-inv">Send invitasjon</button>'+
+     '<button class="btn ghost" type="button" data-lukk>Avbryt</button></div>';
+  dI.showModal();
+  document.getElementById('send-inv').addEventListener('click',function(){
+    document.getElementById('inviter-inn').innerHTML=
+     '<button class="lukk" type="button" data-lukk aria-label="Lukk">✕</button>'+
+     '<div class="ok"><div class="sirkel"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#06312E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>'+
+     '<h3 style="margin-bottom:6px">Invitasjon sendt</h3>'+
+     '<p>'+escapeHtml(x.n)+' svarer deg i meldinger. Du får varsel når svaret kommer.</p>'+
+     '<button class="btn ghost" type="button" data-lukk>Ferdig</button></div>';
+  });
+}
+
+document.addEventListener('click',function(e){
+  var l=e.target.closest('[data-lukk]');
+  if(l){ l.closest('dialog').close(); return }
+  var pr=e.target.closest('[data-prof]');
+  if(pr){ visProfil(pr.dataset.prof); return }
+  var iv=e.target.closest('[data-inv]');
+  if(iv){ if(dP.open) dP.close(); visInviter(iv.dataset.inv); }
+});
+[dP,dI].forEach(function(d){
+  d.addEventListener('click',function(e){ if(e.target===d) d.close() });
+});
+
+
+// --- Sidebytte ---
+var NAVN_SIDE={'finn-hjelp':'Finn hjelper','finn-oppdrag':'Finn oppdrag','legg-ut':'Legg ut oppdrag','meldinger':'Meldinger','logg-inn':'Logg inn','lag-bruker':'Lag bruker','betal':'Betal','kategori':'Kategori','finn-hjelper':'Finn hjelper','min-konto':'Min konto','mine-oppdrag':'Mine oppdrag','oppdrag-detalj':'Oppdrag','samtale':'Samtale','jobb-detalj':'Oppdrag'};
+var loype=[];            // hvor du har vært, så tilbakeknappen vet veien
+var hopper=false;        // sant mens vi går bakover, så vi ikke lagrer det som et nytt steg
+
+function visSide(id){
+  if(id!=='finn-oppdrag'){ document.body.classList.remove('bla-full'); blaAktiv=false; }
+  if(id!=='samtale' && typeof stoppSamtaleLytting==='function') stoppSamtaleLytting();
+  var na=document.querySelector('.side:not([style*="none"])');
+  if(!hopper && na && na.id!==id) loype.push(na.id);
+  document.querySelectorAll('.side').forEach(function(e){e.style.display='none'});
+  var t=document.getElementById(id); if(t) t.style.display='block';
+  document.querySelector('header').classList.toggle('pa-dash', id==='finn-hjelp');
+  document.getElementById('hjem-knapp').hidden = loype.length===0;
+  // Marker riktig fane i bunnlinja. Undersider peker tilbake til sin hovedside.
+  var hoved = {'kategori':'finn-oppdrag','finn-hjelper':'finn-hjelp','jobb-detalj':'finn-oppdrag','oppdrag-detalj':'min-konto',
+               'mine-oppdrag':'min-konto','samtale':'meldinger','betal':'meldinger',
+               'lag-bruker':'min-konto','logg-inn':'min-konto'}[id] || id;
+  document.querySelectorAll('.bnav').forEach(function(e){
+    if(e.dataset.b===hoved) e.setAttribute('aria-current','page'); else e.removeAttribute('aria-current');
+  });
+  document.title=(NAVN_SIDE[id]||'Nobon')+' | Nobon';
+  document.querySelectorAll('.nav-links a').forEach(function(a){a.removeAttribute('aria-current')});
+  if(id==='finn-hjelper') document.getElementById('nav-fh').setAttribute('aria-current','page');
+  window.scrollTo(0,0);
+  // Frisk opp fra databasen når man går inn på en side som viser delte data
+  // (fire-and-forget - siden viser det den har med en gang, og oppdaterer når svaret kommer).
+  if(sb){
+    if(id==='finn-oppdrag') lastJobb();
+    else if(id==='finn-hjelper') lastHjelpere();
+    else if(id==='kategori'){ lastJobb(); lastHjelpere(); }
+    else if(id==='mine-oppdrag' || id==='meldinger'){ lastMineOppdrag(); lastFatt(); }
+    else if(id==='admin' && BRUKER && BRUKER.erAdmin){ lastAdmin(); }
+  }
+}
+
+// --- Oppdrag (demo) ---
+var JOBB=[
+ {t:'Montere kjøkkenskap',k:'handverker',u:'Møbel & montering',s:'Oslo',b:'2 500 kr',km:0.9,n:0.5,d:'Fem overskap som skal opp på gipsvegg. Skapene er kjøpt, trenger noen med utstyr.'},
+ {t:'Male stue og gang',k:'handverker',u:'Tapet & maling',s:'Drammen',b:'8 000 kr',km:2.4,n:20,d:'Ca. 45 kvm vegg. Maling er kjøpt. Ønsker fast pris.'},
+ {t:'Skifte blandebatteri',k:'handverker',u:'Vann & rør',s:'Bergen',b:'1 200 kr',km:4.1,n:31,d:'Kjøkkenkran lekker. Nytt batteri ligger klart.'},
+ {t:'Montere varmepumpe',k:'handverker',u:'EL & varmepumpe',s:'Tromsø',b:'Etter avtale',km:3.5,n:38,d:'Har kjøpt pumpe, trenger godkjent montør. Utedel på vegg.'},
+ {t:'Flyttehjelp lørdag',k:'transport',u:'Flyttehjelp',s:'Oslo',b:'3 000 kr',km:4.2,n:2,d:'2-roms til 3-roms, ingen heis i den ene enden. Trenger to personer og bil.'},
+ {t:'Kjøre sofa til gjenbruk',k:'transport',u:'Bortkjøring',s:'Trondheim',b:'900 kr',km:1.1,n:9,d:'Tresetes sofa som skal til gjenbruksstasjonen. Må bæres ned én etasje.'},
+ {t:'Hente pakke og levere hjem',k:'transport',u:'Hente & levere',s:'Kristiansand',b:'450 kr',km:8.2,n:36,d:'Liten pakke som skal hentes og leveres samme dag.'},
+ {t:'Vaskehjelp annenhver uke',k:'husarbeid',u:'Vaskehjelp',s:'Bergen',b:'450 kr/t',km:2.6,n:5,d:'Fast oppdrag i enebolig, ca. 3 timer per gang. Ønsker samme person over tid.'},
+ {t:'Flyttevask 3-roms',k:'husarbeid',u:'Flyttevask',s:'Oslo',b:'4 500 kr',km:1.8,n:17,d:'Overtakelse fredag. Leilighet på 72 kvm, må være godkjent standard.'},
+ {t:'Klippe hekk og rydde hage',k:'utendors',u:'Planter & hage',s:'Stavanger',b:'1 800 kr',km:1.4,n:8,d:'Ca. 20 meter hekk og bortkjøring av kvist. Utstyr kan lånes.'},
+ {t:'Snømåking gjennom vinteren',k:'utendors',u:'Snømåking',s:'Tromsø',b:'600 kr/gang',km:3.9,n:44,d:'Innkjørsel og trapp. Trenger noen som kan rykke ut på kort varsel.'},
+ {t:'Bytte sommerdekk',k:'bil',u:'Dekk & felg',s:'Fredrikstad',b:'800 kr',km:7.8,n:14,d:'Fire dekk på felg, står klare i garasjen. Kan gjøres når som helst denne uka.'},
+ {t:'Polere og vokse bil',k:'bil',u:'Vask & rens',s:'Kristiansand',b:'2 200 kr',km:2.0,n:29,d:'Mørk bil med en del swirls. Ønsker maskinpolering.'},
+ {t:'Leksehjelp matte 9. trinn',k:'utdanning',u:'Leksehjelp',s:'Oslo',b:'400 kr/t',km:4.5,n:26,d:'To ganger i uka fram til eksamen. Helst noen med erfaring fra ungdomsskole.'},
+ {t:'Øvelseskjøring før oppkjøring',k:'utdanning',u:'Øvelseskjøring',s:'Bergen',b:'350 kr/t',km:1.6,n:52,d:'Trenger noen å kjøre med noen økter. Har egen bil.'},
+ {t:'Barnepass fredag kveld',k:'personlig',u:'Barnepass',s:'Stavanger',b:'250 kr/t',km:1.2,n:6,d:'To barn på 4 og 7 år. Fra 17 til ca. 23.'},
+ {t:'Passe katt i påsken',k:'personlig',u:'Dyrepass',s:'Bodø',b:'2 000 kr',km:2.9,n:40,d:'Innom to ganger daglig i ni dager. Mat, vann og litt kos.'},
+ {t:'Sette opp ny PC',k:'data',u:'Hardware',s:'Trondheim',b:'1 000 kr',km:4.4,n:22,d:'Ny maskin skal settes opp og filer flyttes over fra den gamle.'},
+ {t:'Enkel nettside til enkeltmannsforetak',k:'data',u:'Web & IT',s:'Oslo',b:'12 000 kr',km:0.7,n:48,d:'Trenger en enkel side med kontaktskjema. Har logo og tekst klar.'},
+ {t:'Klipp hjemme hos meg',k:'velvare',u:'Klipp & farge',s:'Ålesund',b:'700 kr',km:1.5,n:33,d:'Kommer meg ikke ut. Ønsker frisør som tar hjemmebesøk.'},
+ {t:'Sminke til konfirmasjon',k:'velvare',u:'Sminke & negler',s:'Bergen',b:'1 500 kr',km:4.0,n:60,d:'To personer skal sminkes lørdag morgen.'},
+ {t:'Sy om gardiner',k:'handarbeid',u:'Tekstil',s:'Bergen',b:'1 100 kr',km:1.9,n:38,d:'Seks gardiner som skal kortes ned 20 cm.'},
+ {t:'Catering til 30 personer',k:'event',u:'Catering',s:'Oslo',b:'9 000 kr',km:2.7,n:12,d:'Konfirmasjon i mai. Ønsker koldtbord, én vegetar.'},
+ {t:'DJ til bursdag',k:'event',u:'Underholdning',s:'Stavanger',b:'5 000 kr',km:1.3,n:55,d:'50-årsdag i leid lokale. Fire timer, eget utstyr.'},
+ {t:'Årsregnskap for AS',k:'okonomi',u:'Regnskap',s:'Tromsø',b:'Etter avtale',km:4.6,n:18,d:'Lite AS med få bilag. Trenger hjelp til årsoppgjør.'},
+ {t:'Pusse opp båtbunn',k:'bat',u:'Vedlikehold',s:'Stavanger',b:'6 500 kr',km:9.1,n:41,d:'26 fots seilbåt. Skraping og ny bunnstoff før sjøsetting.'},
+ {t:'Sommervikar i kiosk',k:'bemanning',u:'Sommerjobb',s:'Lillehammer',b:'Etter avtale',km:1.0,n:24,d:'Fire uker i juli. Passer for deg over 18.'}
+];
+
+// JOBB over er demodata (vises når sb===null). lastJobb() bytter den ut med
+// ekte, åpne oppdrag fra databasen - egne oppdrag er filtrert bort, man
+// søker jo ikke på sin egen jobb.
+function oppdragTilJobb(row){
+  return {
+    id: row.id, t: row.tittel, k: row.kategori, u: row.underkategori||'', s: row.sted,
+    b: row.pris||'', d: row.beskrivelse||'', km: null,
+    n: Math.max(0,(Date.now()-new Date(row.created_at).getTime())/36e5),
+    bilder: row.bilder||[], status: row.status, valgt: null, bruker_id: row.bruker_id,
+    hjelper_id: row.hjelper_id, sokere: []
+  };
+}
+async function lastJobb(){
+  if(!sb) return;
+  var res=await sb.from('oppdrag').select('*').eq('status','apen').order('created_at',{ascending:false}).limit(200);
+  if(res.error){ console.error('Klarte ikke å laste oppdrag:', res.error.message); return; }
+  var megId = BRUKER ? BRUKER.id : null;
+  var alt = res.data.filter(function(r){return r.bruker_id!==megId});
+  if(BRUKER){
+    var interesseRes=await sb.from('interesse').select('oppdrag_id').eq('hjelper_id',BRUKER.id).limit(500);
+    if(!interesseRes.error && interesseRes.data.length){
+      var alleredeVist={};
+      interesseRes.data.forEach(function(r){ alleredeVist[r.oppdrag_id]=true });
+      alt=alt.filter(function(r){ return !alleredeVist[r.id] });
+    }
+  }
+  JOBB=alt.map(oppdragTilJobb);
+  tegnJobb();
+  if(document.getElementById('kategori').style.display!=='none') tegnKat();
+}
+
+function tidSiden(t){
+  if(t<1) return Math.round(t*60)+' min siden';
+  if(t<24) return Math.round(t)+' t siden';
+  return Math.round(t/24)+' d siden';
+}
+// Kort form til det lille merket paa bildet
+function tidKort(t){
+  if(t<1) return Math.round(t*60)+' min';
+  if(t<24) return Math.round(t)+' t';
+  return Math.round(t/24)+' d';
+}
+// Samme som tidKort, men fra et ekte tidsstempel (meldinger fra databasen)
+function relTid(iso){
+  var min=Math.max(0,(Date.now()-new Date(iso).getTime())/6e4);
+  if(min<1) return 'nå';
+  if(min<60) return Math.round(min)+' min';
+  if(min<1440) return Math.round(min/60)+' t';
+  return Math.round(min/1440)+' d';
+}
+var oAvst=MAKS;
+function tegnJobb(){
+  var d=JOBB.filter(function(x){return stedTreff(x) && (oAvst>=MAKS || x.km<=oAvst)});
+  var s=document.getElementById('o-sort').value;
+  d.sort(function(a,b){
+    if(s==='ny') return a.n-b.n;
+    if(s==='avstand') return a.km-b.km;
+    return (parseInt(b.b.replace(/\D/g,''))||0)-(parseInt(a.b.replace(/\D/g,''))||0);
+  });
+  document.getElementById('o-avst-fra').textContent = brukerSted() ? 'Avstand fra '+brukerSted() : 'Avstand';
+  document.getElementById('o-tell').innerHTML=d.length+' ledig'+(d.length===1?' oppdrag':'e oppdrag')+
+    ' <span>'+(oAvst>=MAKS?stedTekst():'innenfor '+oAvst+' km'+(brukerSted()?' fra '+brukerSted():''))+'</span>';
+  if(!d.length){
+    document.getElementById('o-liste').classList.add('jobber');
+    document.getElementById('o-liste').innerHTML=
+      '<div class="tom"><h3>Ingen oppdrag innenfor '+oAvst+' km</h3>'+
+      '<p>Dra avstanden lenger ut for å se flere.</p>'+
+      '<button class="btn ghost" type="button" id="o-utvid">Fjern avstandsgrensen</button></div>';
+    return;
+  }
+  var ol=document.getElementById('o-liste');
+  ol.classList.add('jobber');
+  ol.innerHTML=d.map(function(x){ return jobbKort(x,'meld') }).join('');
+}
+
+// --- Bla gjennom (swipe) ---
+// Sørg for at alle JOBB har en id (for klikkbare kort)
+JOBB.forEach(function(x,i){ if(x.id==null) x.id='j'+i; });
+var blaKo=[];        // køen av oppdrag som skal vises
+var blaHist=[];      // {jobb, retning} for angre
+var blaInteressert=[]; // jobber man har swipet høyre på
+var blaAktiv=false;
+
+function byggKo(){
+  // Samme filtrering som lista: sted + avstand + sortering
+  blaKo = JOBB.filter(function(x){return stedTreff(x) && (oAvst>=MAKS || x.km<=oAvst)});
+  blaHist=[]; blaInteressert=[];
+  var st=document.getElementById('o-sort').value;
+  blaKo.sort(function(a,b){
+    if(st==='ny') return a.n-b.n;
+    if(st==='avstand') return a.km-b.km;
+    return (parseInt(b.b.replace(/\D/g,''))||0)-(parseInt(a.b.replace(/\D/g,''))||0);
+  });
+}
+
+function swKortHtml(x){
+  var harBilde = x.bilder && x.bilder.length;
+  var flereBilder = harBilde && x.bilder.length>1;
+  return '<button class="sw-detalj" type="button" data-detalj aria-label="Se oppdraget"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.3-4.3M11 8v6M8 11h6"/></svg></button>'+
+    '<div class="sw-bilde" style="background:'+(KATFARGE[x.k]||'var(--mint)')+'">'+
+      (harBilde ? '<img src="'+x.bilder[0]+'" alt="">'
+                : '<svg class="katikon" viewBox="0 0 24 24" stroke="#16302D" aria-hidden="true">'+(KATIKON[x.k]||'')+'</svg>')+
+      '<span class="sw-alder">Lagt ut '+tidKort(x.n)+' siden</span>'+
+      (flereBilder ? '<span class="sw-flere"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg>'+x.bilder.length+'</span>' : '')+
+    '</div>'+
+    '<span class="sw-stempel ja">Interessert</span>'+
+    '<span class="sw-stempel nei">Neste</span>'+
+    '<div class="sw-inn">'+
+      '<h3>'+escapeHtml(x.t)+'</h3>'+
+      '<div class="sw-rad r-sted"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg><span>'+escapeHtml(x.s)+(x.km!=null?' · '+x.km.toFixed(0)+' km':'')+'</span></div>'+
+      '<div class="sw-rad r-pris"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/></svg><span>'+escapeHtml(x.b||'Tilbud ønskes')+'</span></div>'+
+      '<div class="sw-rad r-kat"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg><span>'+escapeHtml(x.u)+'</span></div>'+
+      '<p>'+escapeHtml(x.d)+'</p>'+
+    '</div>';
+}
+
+function tegnStabel(){
+  var st=document.getElementById('stabel');
+  var tel=document.getElementById('bla-teller');
+  if(tel) tel.textContent = blaKo.length ? blaKo.length+' igjen' : '';
+  oppdaterAngre();
+  if(!blaKo.length){
+    var ant=blaInteressert.length;
+    st.innerHTML='<div class="stabel-tom">'+
+      '<h3>Ferdig! Du har sett alle oppdragene.</h3>'+
+      (ant
+        ? '<p>Du meldte interesse i <b>'+ant+' oppdrag</b>. '+
+            (sb && !BRUKER
+              ? 'Logg inn for at oppdragsgiverne faktisk skal se det - uten innlogging blir ikke interessen din lagret.'
+              : 'Oppdragsgiverne ser det, og du finner samtalene under Meldinger.')+
+          '</p>'+
+          '<button class="btn teal" type="button" id="bla-meldinger">'+(sb && !BRUKER ? 'Logg inn' : 'Gå til meldinger')+'</button>'+
+          '<button class="btn ghost" type="button" id="bla-omstart" style="margin-top:9px">Se gjennom på nytt</button>'
+        : '<p>Du meldte ikke interesse i noen denne gangen. Prøv et annet sted, eller se gjennom på nytt.</p>'+
+          '<button class="btn ghost" type="button" id="bla-omstart">Se gjennom på nytt</button>')+
+      '</div>';
+    return;
+  }
+  // Vis de to øverste (den bakerste gir dybde)
+  var top=blaKo[0], neste=blaKo[1];
+  st.innerHTML='';
+  if(neste){
+    var b2=document.createElement('div');
+    b2.className='sw-kort'; b2.style.transform='scale(.96) translateY(10px)'; b2.style.pointerEvents='none';
+    b2.innerHTML=swKortHtml(neste);
+    st.appendChild(b2);
+  }
+  var kort=document.createElement('div');
+  kort.className='sw-kort'; kort.innerHTML=swKortHtml(top);
+  st.appendChild(kort);
+  koblSwipe(kort, top);
+}
+
+function fjernTopp(retning, jobb){
+  var st=document.getElementById('stabel');
+  var kort=st.lastElementChild;
+  if(!kort || !kort.classList.contains('sw-kort')){ blaKo.shift(); tegnStabel(); return }
+  var ut = retning>0 ? window.innerWidth : -window.innerWidth;
+  kort.style.transition='transform .35s ease-out, opacity .35s';
+  kort.style.transform='translate('+ut+'px,'+40+'px) rotate('+(retning*18)+'deg)';
+  kort.style.opacity='0';
+  if(retning>0 && blaInteressert.indexOf(jobb)===-1) blaInteressert.push(jobb);
+  if(retning>0 && sb && BRUKER) lagreInteresse(jobb);
+  setTimeout(function(){
+    var borte=blaKo.shift();
+    blaHist.push({jobb:borte, retning:retning});
+    oppdaterAngre();
+    tegnStabel();
+  }, 300);
+}
+function oppdaterAngre(){
+  var kn=document.getElementById('sw-angre');
+  if(kn) kn.hidden = blaHist.length===0;
+}
+// Persisterer/fjerner "meldt interesse" i databasen. Beste innsats - en swipe
+// er rask og undo kan komme før forrige lagring er ferdig; verste utfall er
+// en interesse-rad som blir stående selv om brukeren angret, ikke en krasj.
+async function lagreInteresse(jobb){
+  if(jobb.id==null) return;
+  var res=await sb.from('interesse').upsert(
+    {oppdrag_id:jobb.id, hjelper_id:BRUKER.id}, {onConflict:'oppdrag_id,hjelper_id',ignoreDuplicates:true});
+  if(res.error) console.error('Klarte ikke å lagre interesse:', res.error.message);
+}
+async function fjernInteresse(jobb){
+  if(jobb.id==null) return;
+  var res=await sb.from('interesse').delete().eq('oppdrag_id',jobb.id).eq('hjelper_id',BRUKER.id);
+  if(res.error) console.error('Klarte ikke å fjerne interesse:', res.error.message);
+}
+function angreSwipe(){
+  if(!blaHist.length) return;
+  var siste=blaHist.pop();
+  if(siste.retning>0){
+    var i=blaInteressert.indexOf(siste.jobb); if(i>-1) blaInteressert.splice(i,1);
+    if(sb && BRUKER) fjernInteresse(siste.jobb);
+  }
+  blaKo.unshift(siste.jobb);   // legg kortet tilbake øverst
+  oppdaterAngre();
+  tegnStabel();
+  // liten animasjon: kortet kommer inn fra siden det forsvant
+  var st=document.getElementById('stabel');
+  var kort=st.lastElementChild;
+  if(kort && kort.classList.contains('sw-kort')){
+    var fra = siste.retning>0 ? window.innerWidth : -window.innerWidth;
+    kort.style.transition='none';
+    kort.style.transform='translate('+fra+'px,40px) rotate('+(siste.retning*18)+'deg)';
+    requestAnimationFrame(function(){
+      kort.style.transition='transform .35s ease-out';
+      kort.style.transform='';
+    });
+  }
+}
+
+function koblSwipe(kort, jobb){
+  var x0=0,y0=0,dx=0,dy=0,dragger=false;
+  var jaSt=kort.querySelector('.sw-stempel.ja'), neiSt=kort.querySelector('.sw-stempel.nei');
+
+  kort.addEventListener('pointerdown',function(e){
+    if(e.target.closest('[data-detalj]')) return;   // detalj-knappen skal ikke starte drag
+    dragger=true; x0=e.clientX; y0=e.clientY; kort.style.transition='none';
+    kort.setPointerCapture(e.pointerId);   // følg fingeren/musa selv utenfor kortet
+  });
+  kort.addEventListener('pointermove',function(e){
+    if(!dragger) return;
+    dx=e.clientX-x0; dy=e.clientY-y0;
+    kort.style.transform='translate('+dx+'px,'+dy+'px) rotate('+(dx*0.06)+'deg)';
+    var pr=Math.min(Math.abs(dx)/120,1);
+    jaSt.style.opacity = dx>0 ? pr : 0;
+    neiSt.style.opacity = dx<0 ? pr : 0;
+  });
+  function slutt(){
+    if(!dragger) return; dragger=false;
+    if(Math.abs(dx)>40){ kort._draget=true; setTimeout(function(){kort._draget=false},400); }
+    if(Math.abs(dx)>110){ fjernTopp(dx>0?1:-1, jobb); }
+    else {
+      kort.style.transition='transform .25s'; kort.style.transform='';
+      jaSt.style.opacity=0; neiSt.style.opacity=0;
+    }
+    dx=0; dy=0;
+  }
+  kort.addEventListener('pointerup',slutt);
+  kort.addEventListener('pointercancel',slutt);
+}
+
+var jdJobb=null, jdFraSwipe=false;
+function jobbFraId(id){
+  for(var i=0;i<JOBB.length;i++) if(JOBB[i].id==id) return JOBB[i];
+  return null;
+}
+function visJobbDetalj(x, fraSwipe){
+  jdJobb=x;
+  jdFraSwipe=!!fraSwipe;
+  var g=document.getElementById('jd-galleri');
+  var harBilde = x.bilder && x.bilder.length;
+  if(harBilde){
+    g.classList.toggle('enkelt', x.bilder.length===1);
+    g.innerHTML=x.bilder.map(function(src){
+      return '<div class="jd-bilde"><img src="'+src+'" alt=""></div>';
+    }).join('');
+  } else {
+    g.classList.add('enkelt');
+    g.innerHTML='<div class="jd-bilde" style="background:'+(KATFARGE[x.k]||'var(--mint)')+'">'+
+      '<svg class="katikon" viewBox="0 0 24 24" stroke="#16302D" aria-hidden="true">'+(KATIKON[x.k]||'')+'</svg></div>';
+  }
+  document.getElementById('jd-alder').textContent='Lagt ut '+tidKort(x.n)+' siden';
+  document.getElementById('jd-tittel').textContent=x.t;
+  document.getElementById('jd-sted').textContent=x.s+(x.km!=null?' · '+x.km.toFixed(0)+' km':'');
+  document.getElementById('jd-pris').textContent=x.b||'Tilbud ønskes';
+  document.getElementById('jd-kat').textContent=x.u;
+  document.getElementById('jd-tekst').textContent=x.d;
+  visSide('jobb-detalj');
+}
+document.getElementById('jd-tilbake').addEventListener('click',function(){
+  if(jdFraSwipe){ visSide('finn-oppdrag'); visBla(true); }
+  else { visSide('finn-oppdrag'); }
+});
+document.getElementById('jd-meld').addEventListener('click',function(){
+  if(jdJobb && blaInteressert.indexOf(jdJobb)===-1) blaInteressert.push(jdJobb);
+  var kn=this;
+  kn.textContent='Interesse meldt ✓'; kn.disabled=true;
+  if(jdFraSwipe){
+    // Kom fra swipe: fjern fra køen og gå tilbake til blaingen
+    var i=blaKo.indexOf(jdJobb); if(i>-1){ blaKo.splice(i,1); blaHist.push({jobb:jdJobb, retning:1}); }
+    setTimeout(function(){ kn.textContent='Meld interesse'; kn.disabled=false; visSide('finn-oppdrag'); visBla(true); }, 700);
+  } else {
+    // Kom fra lista: gå til meldinger (det er der samtalen havner)
+    setTimeout(function(){ kn.textContent='Meld interesse'; kn.disabled=false; visSide('meldinger'); }, 700);
+  }
+});
+
+function visBla(behold){
+  blaAktiv=true;
+  document.getElementById('vv-liste').setAttribute('aria-selected','false');
+  document.getElementById('vv-bla').setAttribute('aria-selected','true');
+  document.getElementById('o-liste').hidden=true;
+  document.getElementById('o-bla').hidden=false;
+  document.body.classList.add('bla-full');
+  if(!behold || !blaKo.length) byggKo();   // behold køen ved retur fra detalj/melding
+  tegnStabel();
+}
+function visListe(){
+  blaAktiv=false;
+  document.getElementById('vv-liste').setAttribute('aria-selected','true');
+  document.getElementById('vv-bla').setAttribute('aria-selected','false');
+  document.getElementById('o-bla').hidden=true;
+  document.getElementById('o-liste').hidden=false;
+  document.body.classList.remove('bla-full');
+}
+document.getElementById('vv-liste').addEventListener('click',visListe);
+// Klikk på et jobbkort i lista -> full oppdragsside
+document.getElementById('o-liste').addEventListener('click',function(e){
+  var k=e.target.closest('[data-jobbkort]'); if(!k) return;
+  var jobb=jobbFraId(k.dataset.jobbkort); if(jobb) visJobbDetalj(jobb);
+});
+document.getElementById('vv-bla').addEventListener('click',visBla);
+document.getElementById('bla-lukk').addEventListener('click',visListe);
+document.getElementById('sw-ja').addEventListener('click',function(){ if(blaKo.length) fjernTopp(1, blaKo[0]) });
+document.getElementById('sw-nei').addEventListener('click',function(){ if(blaKo.length) fjernTopp(-1, blaKo[0]) });
+document.getElementById('sw-angre').addEventListener('click',angreSwipe);
+// Trykk på detalj-knappen (eller kortet utenom drag) -> full oppdragsside
+document.getElementById('stabel').addEventListener('click',function(e){
+  if(e.target.closest('[data-detalj]') && blaKo.length){ visJobbDetalj(blaKo[0], true); }
+});
+document.getElementById('o-bla').addEventListener('click',function(e){
+  if(e.target.id==='bla-omstart'){ blaInteressert=[]; byggKo(); tegnStabel(); }
+  if(e.target.id==='bla-meldinger'){ visSide(sb && !BRUKER ? 'logg-inn' : 'meldinger'); }
+});
+
+// --- Bla gjennom slutt ---
+
+// --- Legg ut oppdrag ---
+var jk=document.getElementById('j-kat');
+jk.innerHTML='<option value="">Velg kategori</option>'+KAT.map(function(k){return '<option value="'+k.id+'">'+k.navn+'</option>'}).join('');
+document.getElementById('hp-kat').innerHTML='<option value="">Velg kategori</option>'+KAT.map(function(k){return '<option value="'+k.id+'">'+k.navn+'</option>'}).join('');
+var skjema=document.getElementById('skjema');
+skjema.addEventListener('submit',async function(e){
+  e.preventDefault();
+  var felt=['j-tittel','j-kat','j-sted','j-tekst'], mangler=[];
+  felt.forEach(function(id){
+    var el=document.getElementById(id), tom=!el.value.trim();
+    el.setAttribute('aria-invalid',tom?'true':'false');
+    if(tom) mangler.push(el.previousElementSibling.textContent.toLowerCase());
+  });
+  var f=document.getElementById('j-feil');
+  if(mangler.length){
+    f.hidden=false;
+    f.textContent='Fyll ut: '+mangler.join(', ')+'.';
+    document.getElementById(felt[0]).focus();
+    return;
+  }
+  if(sb && !BRUKER){
+    f.hidden=false;
+    f.textContent='Du må være logget inn for å legge ut et oppdrag.';
+    return;
+  }
+  f.hidden=true;
+
+  var knapp=skjema.querySelector('button[type="submit"]');
+  knapp.disabled=true; knapp.textContent='Legger ut …';
+
+  var tittel=document.getElementById('j-tittel').value.trim(),
+      kategori=jk.value,
+      underkategori=jk.options[jk.selectedIndex].text,
+      sted=document.getElementById('j-sted').value.trim(),
+      pris=document.getElementById('j-pris').value.trim(),
+      tekst=document.getElementById('j-tekst').value.trim();
+
+  if(sb){
+    var bilder=await lastOppOppdragsbilder();
+    var res=await sb.from('oppdrag').insert({
+      bruker_id: BRUKER.id, tittel: tittel, kategori: kategori, underkategori: underkategori,
+      sted: sted, pris: pris, beskrivelse: tekst, bilder: bilder
+    }).select().single();
+    knapp.disabled=false; knapp.textContent='Legg ut oppdrag';
+    if(res.error){
+      f.hidden=false; f.textContent='Klarte ikke å legge ut oppdraget: '+res.error.message;
+      return;
+    }
+    jBilder=[]; tegnBilder();
+    await lastMineOppdrag();
+    await lastJobb();
+  } else {
+    MINE.unshift({id:nesteId++, t:tittel, k:kategori, u:underkategori, s:sted, b:pris, d:tekst,
+                  status:'apen', valgt:null, sokere:[],
+                  bilder:jBilder.map(function(b){return b.url})});
+    jBilder=[]; tegnBilder();
+    tegnMine(); tegnKonto(); tegnMeldinger(); tegnDash();
+    knapp.disabled=false; knapp.textContent='Legg ut oppdrag';
+  }
+
+  document.getElementById('j-ok-tekst').textContent=
+    'Hjelpere innen '+underkategori.toLowerCase()+' i '+sted+' ser oppdraget nå. Du får varsel når noen melder seg.';
+  skjema.hidden=true;
+  document.getElementById('j-ok').hidden=false;
+  window.scrollTo(0,0);
+});
+// Laster opp valgte oppdragsbilder til Supabase Storage, returnerer offentlige URL-er.
+async function lastOppOppdragsbilder(){
+  if(!jBilder.length) return [];
+  var urls=[];
+  for(var i=0;i<jBilder.length;i++){
+    var b=jBilder[i];
+    var sti=BRUKER.id+'/'+Date.now()+'-'+i+'-'+b.navn.replace(/[^\w.\-]/g,'_');
+    var opp=await sb.storage.from('oppdragsbilder').upload(sti, b.file, { cacheControl:'3600' });
+    if(opp.error){ console.error('Klarte ikke å laste opp bilde:', opp.error.message); continue; }
+    urls.push(sb.storage.from('oppdragsbilder').getPublicUrl(sti).data.publicUrl);
+  }
+  return urls;
+}
+document.getElementById('j-ny').addEventListener('click',function(){
+  skjema.reset(); jBilder=[]; tegnBilder(); skjema.hidden=false;
+  document.getElementById('j-ok').hidden=true;
+  document.querySelectorAll('#skjema .inn').forEach(function(el){el.setAttribute('aria-invalid','false')});
+  window.scrollTo(0,0);
+});
+
+// --- Logg inn ---
+document.getElementById('inn-skjema').addEventListener('submit',async function(e){
+  e.preventDefault();
+  var ep=document.getElementById('i-epost'), pa=document.getElementById('i-pass'), f=document.getElementById('i-feil');
+  var gyldig=/\S+@\S+\.\S+/.test(ep.value);
+  ep.setAttribute('aria-invalid',gyldig?'false':'true');
+  pa.setAttribute('aria-invalid',pa.value?'false':'true');
+  f.removeAttribute('style');
+  if(!gyldig){ f.hidden=false; f.textContent='Skriv inn en gyldig e-postadresse.'; ep.focus(); return }
+  if(!pa.value){ f.hidden=false; f.textContent='Skriv inn passordet ditt.'; pa.focus(); return }
+
+  if(!sb){
+    f.hidden=false;
+    f.style.cssText='background:#FFF1EB;border-color:#FFC4AC;color:#8A3312';
+    f.textContent='Innlogging er ikke koblet til Supabase ennå. Fyll inn SUPABASE_URL og SUPABASE_ANON_KEY øverst i skriptet.';
+    return;
+  }
+
+  var knapp=this.querySelector('button[type="submit"]');
+  knapp.disabled=true; knapp.textContent='Logger inn …';
+  var res=await sb.auth.signInWithPassword({ email: ep.value.trim(), password: pa.value });
+  knapp.disabled=false; knapp.textContent='Logg inn';
+
+  f.hidden=false;
+  if(res.error){
+    f.style.cssText='background:#FDECEC;border-color:#F0BCBC;color:#8E2A2A';
+    f.textContent = /invalid login credentials/i.test(res.error.message) ? 'Feil e-post eller passord.'
+      : /email not confirmed/i.test(res.error.message) ? 'Bekreft e-posten din før du logger inn. Sjekk innboksen din.'
+      : 'Noe gikk galt: '+res.error.message;
+    pa.value='';
+    return;
+  }
+  BRUKER=brukerFraSupabase(res.data.user);
+  tegnDash(); tegnKonto(); tegnMine();
+  this.reset();
+  f.hidden=true;
+  visSide('finn-hjelp');
+  window.scrollTo(0,0);
+});
+
+// --- Dashbord og konto ---
+// Sesjonsminne: forsvinner ved refresh. Ekte konto krever server.
+var BRUKER=null;
+var nesteId=1;
+// Demooppdrag med søkere, så flyten er synlig uten å legge ut noe først
+var MINE=[
+ {id:0, k:'handverker', t:'Montere kjøkkenskap', u:'Møbel & montering', s:'Oslo', b:'2 500 kr',
+  d:'Fem overskap som skal opp på gipsvegg. Skapene er kjøpt, trenger noen med utstyr.',
+  status:'apen', valgt:null,
+  sokere:[
+   {n:'Jonas B.', pro:0, r:4.8, ant:47, km:0.8, pris:450, meldinger:[
+     {fra:'dem', t:'Hei! Jeg kan ta det på lørdag formiddag hvis det passer. Har eget utstyr.', tid:'12 min'}
+   ]},
+   {n:'Snekker Nord AS', pro:1, r:4.9, ant:132, km:3.1, pris:780, meldinger:[
+     {fra:'dem', t:'God dag. Vi kan gjøre jobben tirsdag eller onsdag. Fast pris 2 500 kr inkl. mva, og vi rydder etter oss.', tid:'1 t'}
+   ]},
+   {n:'Marius T.', pro:0, r:4.5, ant:19, km:5.4, pris:380, meldinger:[
+     {fra:'dem', t:'Hei, er skapene fra IKEA? Da har jeg gjort dette mange ganger.', tid:'3 t'}
+   ]}
+  ]}
+];
+// Demoraden over har ikke noen ekte oppdrag-id i databasen - fjern den med
+// en gang sb er konfigurert, ellers vil "godta hjelper"/meldinger prøve å
+// skrive til et oppdrag som ikke finnes. lastMineOppdrag() fyller den ekte lista.
+if(sb) MINE=[];
+
+async function lastMeldingerFor(oppdragId, hjelperId){
+  var res=await sb.from('meldinger').select('*').eq('oppdrag_id',oppdragId).eq('hjelper_id',hjelperId).order('created_at',{ascending:true}).limit(500);
+  if(res.error || !res.data) return [];
+  return res.data.map(function(m){
+    return { id:m.id, fra: m.avsender_id===BRUKER.id?'meg':'dem', t:m.tekst, tid:relTid(m.created_at), lest:m.lest };
+  });
+}
+async function markerLest(meldingIder){
+  var res=await sb.from('meldinger').update({lest:true}).in('id',meldingIder);
+  if(res.error) console.error('Klarte ikke å markere meldinger som lest:', res.error.message);
+}
+async function lastSokereFor(oppdragId){
+  var res=await sb.from('interesse').select('hjelper_id, profiler!hjelper_id(navn,pro,rating,antall_oppdrag,pris)').eq('oppdrag_id',oppdragId).limit(100);
+  if(res.error || !res.data) return [];
+  return Promise.all(res.data.map(async function(row){
+    var p=row.profiler||{};
+    return {
+      id: row.hjelper_id, n: p.navn||'Ukjent hjelper', pro: !!p.pro, r: p.rating,
+      ant: p.antall_oppdrag||0, km: null, pris: p.pris||0,
+      meldinger: await lastMeldingerFor(oppdragId, row.hjelper_id)
+    };
+  }));
+}
+async function lastMineOppdrag(){
+  if(!sb || !BRUKER) return;
+  var res=await sb.from('oppdrag').select('*, hjelper:profiler!hjelper_id(navn)')
+    .eq('bruker_id',BRUKER.id).order('created_at',{ascending:false}).limit(200);
+  if(res.error){ console.error('Klarte ikke å laste dine oppdrag:', res.error.message); return; }
+  MINE=await Promise.all(res.data.map(async function(row){
+    var j=oppdragTilJobb(row);
+    j.valgt = row.hjelper ? row.hjelper.navn : null;
+    j.sokere = await lastSokereFor(row.id);
+    return j;
+  }));
+  tegnMine(); tegnKonto(); tegnDash(); tegnMeldinger();
+}
+
+function initialer(n){ return n.trim().split(/\s+/).map(function(w){return w[0]}).join('').slice(0,2).toUpperCase() }
+
+function tegnDash(){
+  var hei=document.getElementById('dash-hei'), ini=document.getElementById('dash-ini');
+  var g=ini.parentNode.querySelector('img.dash-bilde');
+  if(BRUKER){
+    hei.textContent='Velkommen, '+BRUKER.navn.split(' ')[0];
+    if(BRUKER.bilde){
+      ini.hidden=true;
+      if(!g){ g=document.createElement('img'); g.className='dash-bilde'; g.alt='';
+        g.style.cssText='width:44px;height:44px;border-radius:13px;object-fit:cover;display:block';
+        ini.parentNode.insertBefore(g, ini); }
+      g.src=BRUKER.bilde;
+    } else {
+      if(g) g.remove();
+      ini.hidden=false; ini.textContent=initialer(BRUKER.navn);
+    }
+  } else {
+    if(g) g.remove();
+    hei.textContent='Velkommen til Nobon';
+    ini.hidden=false; ini.textContent='N';
+  }
+  var ulest=0;
+  MINE.forEach(function(j){ j.sokere.forEach(function(sk){ ulest+=uleste(sk) }) });
+  if(typeof FATT!=='undefined') FATT.forEach(function(f){
+    ulest+=f.meldinger.filter(function(m){return m.fra==='dem' && !m.lest}).length });
+  var bad=document.getElementById('dash-ulest');
+  bad.textContent=ulest; bad.hidden = ulest===0;
+  var bb=document.getElementById('bunn-ulest');
+  bb.textContent=ulest; bb.hidden = ulest===0;
+}
+
+function visProfilbilde(){
+  var avKnapp=document.getElementById('mk-av');
+  var ini=document.getElementById('mk-ini');
+  var g=avKnapp.querySelector('img');
+  if(BRUKER && BRUKER.bilde){
+    ini.hidden=true;
+    if(!g){ g=document.createElement('img'); g.alt=''; avKnapp.insertBefore(g, avKnapp.firstChild); }
+    g.src=BRUKER.bilde;
+  } else {
+    if(g) g.remove();
+    ini.hidden=false; ini.textContent=BRUKER?initialer(BRUKER.navn):'N';
+  }
+}
+document.getElementById('mk-av').addEventListener('click',function(){
+  if(!BRUKER) return;
+  document.getElementById('mk-fil').click();
+});
+document.getElementById('mk-fil').addEventListener('change',async function(){
+  var f=this.files[0]; if(!f || !BRUKER) return;
+  this.value='';
+  if(!sb){
+    if(BRUKER.bilde) URL.revokeObjectURL(BRUKER.bilde);
+    BRUKER.bilde=URL.createObjectURL(f);
+    visProfilbilde(); tegnDash();
+    return;
+  }
+  var url=await lastOppAvatar(f);
+  if(url){ BRUKER.bilde=url; visProfilbilde(); tegnDash(); }
+});
+// Laster opp et profilbilde til Supabase Storage og lagrer URL-en på profilen.
+// Returnerer den offentlige URL-en, eller null hvis noe gikk galt.
+async function lastOppAvatar(file){
+  var ext=(file.name.split('.').pop()||'jpg').toLowerCase();
+  var sti=BRUKER.id+'/avatar.'+ext;
+  var opp=await sb.storage.from('avatarer').upload(sti, file, { upsert:true, cacheControl:'3600' });
+  if(opp.error){ console.error('Klarte ikke å laste opp bilde:', opp.error.message); return null; }
+  var pub=sb.storage.from('avatarer').getPublicUrl(sti);
+  var url=pub.data.publicUrl+'?t='+Date.now();   // cache-bust så nytt bilde vises med en gang
+  var oppd=await sb.from('profiler').update({ bilde_url:url }).eq('id',BRUKER.id);
+  if(oppd.error){ console.error('Klarte ikke å lagre bilde-URL:', oppd.error.message); return null; }
+  return url;
+}
+
+function tegnKonto(){
+  var avKnapp=document.getElementById('mk-av');
+  var av=document.getElementById('mk-ini'), navn=document.getElementById('mk-navn'),
+      rolle=document.getElementById('mk-rolle'), fakta=document.getElementById('mk-fakta'),
+      knapp=document.getElementById('mk-handling'),
+      hpKnapp=document.getElementById('mk-hjelperprofil'), pwKnapp=document.getElementById('mk-passord'),
+      epKnapp=document.getElementById('mk-epost'), fare=document.getElementById('mk-fare'),
+      adminKnapp=document.getElementById('mk-admin');
+  if(!BRUKER){
+    avKnapp.disabled=true;
+    av.textContent='N'; av.hidden=false;
+    document.getElementById('mk-hint').hidden=true;
+    var g=avKnapp.querySelector('img'); if(g) g.remove();
+    navn.textContent='Ikke innlogget';
+    rolle.textContent='Lag en bruker for å ta i bruk Nobon';
+    fakta.innerHTML=''; fakta.hidden=true;
+    knapp.textContent='Lag en bruker';
+    knapp.onclick=function(){ visSide('lag-bruker') };
+    hpKnapp.hidden=true; pwKnapp.hidden=true; epKnapp.hidden=true; fare.hidden=true; adminKnapp.hidden=true;
+    return;
+  }
+  fakta.hidden=false;
+  avKnapp.disabled=false;
+  visProfilbilde();
+  document.getElementById('mk-hint').hidden = !!BRUKER.bilde;
+  navn.textContent=BRUKER.navn;
+  navn.textContent=BRUKER.navn;
+  var rolleTekst = BRUKER.roller.length===2 ? 'Oppdragsgiver og hjelper'
+    : BRUKER.roller[0]==='hjelper' ? 'Hjelper' : 'Oppdragsgiver';
+  rolle.textContent = rolleTekst;
+  fakta.innerHTML=
+    '<li><span>E-post</span><b>'+escapeHtml(BRUKER.epost)+'</b></li>'+
+    '<li><span>Mobil</span><b>'+escapeHtml(BRUKER.tlf)+'</b></li>'+
+    '<li><span>Kontotype</span><b>'+rolleTekst+'</b></li>'+
+    '<li><span>Oppdrag lagt ut</span><b>'+MINE.length+'</b></li>'+
+    (BRUKER.sperret ? '<li><span>Kontostatus</span><b style="color:#C0392B">Sperret</b></li>' : '');
+  knapp.textContent='Logg ut';
+  knapp.onclick=function(){ if(sb) sb.auth.signOut(); BRUKER=null; tegnDash(); tegnKonto(); visSide('finn-hjelp') };
+  hpKnapp.hidden = !(sb && BRUKER.roller.indexOf('hjelper')>-1);
+  pwKnapp.hidden = !sb;
+  epKnapp.hidden = !sb;
+  fare.hidden = !sb;
+  adminKnapp.hidden = !(sb && BRUKER.erAdmin);
+}
+
+// --- Rediger hjelperprofil ---
+var dlgHp=document.getElementById('dlg-hjelperprofil');
+document.getElementById('mk-hjelperprofil').addEventListener('click',async function(){
+  if(!BRUKER) return;
+  var f=document.getElementById('hp-feil'); f.hidden=true;
+  var res=await sb.from('profiler').select('kategori,tags,sted,pris').eq('id',BRUKER.id).single();
+  var p=res.data || {};
+  document.getElementById('hp-kat').value=p.kategori||'';
+  document.getElementById('hp-tags').value=(p.tags||[]).join(', ');
+  document.getElementById('hp-sted').value=p.sted||'';
+  document.getElementById('hp-pris').value=p.pris||'';
+  dlgHp.showModal();
+});
+document.getElementById('hp-skjema').addEventListener('submit',async function(e){
+  e.preventDefault();
+  var f=document.getElementById('hp-feil');
+  var kategori=document.getElementById('hp-kat').value,
+      tags=document.getElementById('hp-tags').value.split(',').map(function(t){return t.trim()}).filter(Boolean),
+      sted=document.getElementById('hp-sted').value.trim(),
+      pris=document.getElementById('hp-pris').value ? +document.getElementById('hp-pris').value : null;
+  var knapp=this.querySelector('button[type="submit"]');
+  knapp.disabled=true; knapp.textContent='Lagrer …';
+  var res=await sb.from('profiler').update({kategori:kategori||null, tags:tags, sted:sted||null, pris:pris}).eq('id',BRUKER.id);
+  knapp.disabled=false; knapp.textContent='Lagre';
+  if(res.error){ f.hidden=false; f.textContent='Klarte ikke å lagre: '+res.error.message; return; }
+  dlgHp.close();
+  await lastHjelpere();
+});
+
+// --- Endre passord (fra Min konto, eller etter "glemt passord"-lenke) ---
+var dlgPw=document.getElementById('dlg-passord');
+document.getElementById('mk-passord').addEventListener('click',function(){
+  document.getElementById('pw-tittel').textContent='Endre passord';
+  document.getElementById('pw-hjelp').textContent='Skriv inn et nytt passord for kontoen din.';
+  document.getElementById('pw-feil').hidden=true;
+  document.getElementById('pw-skjema').reset();
+  dlgPw.showModal();
+});
+document.getElementById('glemt-pass').addEventListener('click',async function(e){
+  e.preventDefault();
+  var f=document.getElementById('i-feil');
+  var ep=document.getElementById('i-epost').value.trim();
+  f.removeAttribute('style'); f.hidden=false;
+  if(!sb){ f.textContent='Passordtilbakestilling er ikke koblet til Supabase ennå.'; return; }
+  if(!/\S+@\S+\.\S+/.test(ep)){ f.textContent='Skriv inn e-posten din i feltet over først, trykk så «Glemt passord?».'; document.getElementById('i-epost').focus(); return; }
+  var res=await sb.auth.resetPasswordForEmail(ep, { redirectTo: window.location.href.split('?')[0].split('#')[0] });
+  if(res.error){ f.textContent='Noe gikk galt: '+res.error.message; return; }
+  f.style.cssText='background:#EDF7F6;border-color:#3FBCB5;color:#1F8E88';
+  f.textContent='Vi har sendt deg en lenke for å lage nytt passord, hvis '+ep+' er registrert hos oss.';
+});
+document.getElementById('pw-skjema').addEventListener('submit',async function(e){
+  e.preventDefault();
+  var f=document.getElementById('pw-feil');
+  var p1=document.getElementById('pw-nytt').value, p2=document.getElementById('pw-gjenta').value;
+  f.hidden=false;
+  if(p1.length<8){ f.textContent='Passordet må være minst 8 tegn.'; return }
+  if(p1!==p2){ f.textContent='Passordene er ikke like.'; return }
+  var knapp=this.querySelector('button[type="submit"]');
+  knapp.disabled=true; knapp.textContent='Lagrer …';
+  var res=await sb.auth.updateUser({ password: p1 });
+  knapp.disabled=false; knapp.textContent='Lagre nytt passord';
+  if(res.error){ f.textContent='Noe gikk galt: '+res.error.message; return; }
+  f.hidden=true;
+  dlgPw.close();
+  visSide('min-konto');
+});
+
+// --- Endre e-post ---
+var dlgEp=document.getElementById('dlg-epost');
+document.getElementById('mk-epost').addEventListener('click',function(){
+  document.getElementById('ep-ny').value='';
+  document.getElementById('ep-feil').hidden=true;
+  dlgEp.showModal();
+});
+document.getElementById('ep-skjema').addEventListener('submit',async function(e){
+  e.preventDefault();
+  var f=document.getElementById('ep-feil');
+  var ny=document.getElementById('ep-ny').value.trim();
+  f.hidden=false;
+  if(!/\S+@\S+\.\S+/.test(ny)){ f.textContent='Skriv inn en gyldig e-postadresse.'; return }
+  var knapp=this.querySelector('button[type="submit"]');
+  knapp.disabled=true; knapp.textContent='Sender …';
+  var res=await sb.auth.updateUser({ email: ny });
+  knapp.disabled=false; knapp.textContent='Send bekreftelse';
+  if(res.error){ f.textContent='Noe gikk galt: '+res.error.message; return; }
+  f.hidden=false;
+  f.style.cssText='background:#EDF7F6;border-color:#3FBCB5;color:#1F8E88';
+  f.textContent='Sjekk innboksen din på '+ny+' for å bekrefte den nye adressen.';
+});
+
+// --- Slett konto ---
+var dlgSlett=document.getElementById('dlg-slett');
+document.getElementById('mk-slett').addEventListener('click',function(){
+  document.getElementById('slett-bekreft').value='';
+  document.getElementById('slett-feil').hidden=true;
+  dlgSlett.showModal();
+});
+document.getElementById('slett-skjema').addEventListener('submit',async function(e){
+  e.preventDefault();
+  var f=document.getElementById('slett-feil');
+  f.hidden=false;
+  if(document.getElementById('slett-bekreft').value.trim()!=='SLETT'){
+    f.textContent='Skriv SLETT (med store bokstaver) for å bekrefte.'; return;
+  }
+  var knapp=this.querySelector('button[type="submit"]');
+  knapp.disabled=true; knapp.textContent='Sletter …';
+  var res=await sb.functions.invoke('slett-konto');
+  knapp.disabled=false; knapp.textContent='Slett for godt';
+  if(res.error || (res.data && res.data.error)){
+    f.textContent='Klarte ikke å slette kontoen: '+((res.data && res.data.error) || 'ukjent feil');
+    return;
+  }
+  dlgSlett.close();
+  await sb.auth.signOut();
+  BRUKER=null; MINE=[]; FATT=[];
+  tegnDash(); tegnKonto(); tegnMine(); tegnMeldinger();
+  visSide('finn-hjelp');
+});
+
+// --- Admin ---
+async function lastAdmin(){
+  if(!sb || !BRUKER || !BRUKER.erAdmin) return;
+  var oMal=document.getElementById('admin-oppdrag'), bMal=document.getElementById('admin-brukere');
+
+  var oRes=await sb.from('oppdrag').select('*, eier:profiler!bruker_id(navn)').order('created_at',{ascending:false}).limit(200);
+  oMal.innerHTML = (!oRes.data || !oRes.data.length) ? '<p class="hint">Ingen oppdrag.</p>' : oRes.data.map(function(x){
+    return '<article class="jkort" style="align-items:center">'+
+      '<div class="jinn"><h3>'+escapeHtml(x.tittel)+'</h3>'+
+      '<div class="j-und">'+escapeHtml(x.sted)+' &middot; '+escapeHtml(x.status)+' &middot; av '+escapeHtml(x.eier?x.eier.navn:'?')+'</div></div>'+
+      '<button class="btn sm ghost" type="button" data-slett-oppdrag="'+x.id+'">Slett</button>'+
+      '</article>';
+  }).join('');
+
+  var pRes=await sb.from('profiler').select('*').order('created_at',{ascending:false}).limit(200);
+  bMal.innerHTML = (!pRes.data || !pRes.data.length) ? '<p class="hint">Ingen brukere.</p>' : pRes.data.map(function(p){
+    return '<article class="jkort" style="align-items:center">'+
+      '<div class="jinn"><h3>'+escapeHtml(p.navn)+'</h3>'+
+      '<div class="j-und">'+escapeHtml(p.epost)+
+        (p.er_admin?' &middot; <b>ADMIN</b>':'')+
+        (p.sperret?' &middot; <b style="color:#C0392B">SPERRET</b>':'')+
+      '</div></div>'+
+      (p.er_admin ? '' :
+        '<button class="btn sm '+(p.sperret?'teal':'ghost')+'" type="button" data-sperr="'+p.id+'" data-verdi="'+(!p.sperret)+'">'+
+          (p.sperret?'Opphev sperring':'Sperr bruker')+'</button>')+
+      '</article>';
+  }).join('');
+}
+document.getElementById('admin-oppdrag').addEventListener('click',async function(e){
+  var b=e.target.closest('[data-slett-oppdrag]'); if(!b) return;
+  if(!window.confirm('Slette dette oppdraget for godt? Dette kan ikke angres.')) return;
+  var res=await sb.rpc('admin_slett_oppdrag',{ mal_id: +b.dataset.slettOppdrag });
+  if(res.error){ alert('Klarte ikke å slette: '+res.error.message); return; }
+  lastAdmin();
+});
+document.getElementById('admin-brukere').addEventListener('click',async function(e){
+  var b=e.target.closest('[data-sperr]'); if(!b) return;
+  var verdi=b.dataset.verdi==='true';
+  if(!window.confirm((verdi?'Sperre':'Oppheve sperring for')+' denne brukeren?')) return;
+  var res=await sb.rpc('admin_sperr_bruker',{ mal_id: b.dataset.sperr, sperret_verdi: verdi });
+  if(res.error){ alert('Klarte ikke å oppdatere: '+res.error.message); return; }
+  lastAdmin();
+});
+
+function tegnMine(){
+  var l=document.getElementById('mine-liste');
+  if(!MINE.length){
+    l.innerHTML='<div class="tom"><h3>Ingen oppdrag ennå</h3>'+
+      '<p>Legg ut et oppdrag, så melder hjelpere seg her. Du snakker med dem før du velger.</p>'+
+      '<button class="btn teal" type="button" data-gaa="legg-ut">Legg ut oppdrag</button></div>';
+    return;
+  }
+  l.innerHTML=MINE.map(function(x){
+    var u=x.sokere.reduce(function(a,sk){return a+uleste(sk)},0);
+    var n=x.sokere.length;
+    return '<article class="jkort" style="cursor:pointer" data-jobb="'+x.id+'">'+
+      '<div class="jbilde" style="background:'+(KATFARGE[x.k]||'var(--mint)')+'">'+
+        (x.bilder && x.bilder.length
+          ? '<img src="'+x.bilder[0]+'" alt="" style="width:100%;height:100%;object-fit:cover">'
+          : '<svg viewBox="0 0 24 24" stroke="#16302D" aria-hidden="true">'+(KATIKON[x.k]||'')+'</svg>')+
+        '<span class="alder">'+(n===0?'Ingen søkere':n+' søker'+(n===1?'':'e'))+'</span>'+
+      '</div>'+
+      '<div class="jinn">'+
+        '<h3>'+escapeHtml(x.t)+'</h3>'+
+        jrad('sted', escapeHtml(x.s), 'j-sted')+
+        jrad('pris', escapeHtml(x.b) || 'Tilbud ønskes', 'j-pris')+
+        '<div class="j-und">'+escapeHtml(x.u)+'</div>'+
+        '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:9px">'+
+          '<span class="status'+(x.status==='tildelt'?' tildelt':'')+'">'+
+            (x.status==='tildelt' ? 'Tildelt '+escapeHtml(x.valgt) : 'Åpent')+'</span>'+
+          (u?'<span class="uleste">'+u+' ulest'+(u===1?'':'e')+'</span>':'')+
+        '</div>'+
+      '</div></article>';
+  }).join('');
+}
+
+
+document.getElementById('hjem-knapp').addEventListener('click',function(){
+  if(!loype.length) return;
+  var forrige=loype.pop();
+  hopper=true;
+  if(forrige==='kategori' && kAktiv) visKategori(kAktiv);
+  else if(forrige==='oppdrag-detalj' && odId!==null) visOppdrag(odId);
+  else if(forrige==='samtale'){
+    if(samKilde==='fatt' && fattIdx!==null) visSamtaleFatt(fattIdx);
+    else if(samId!==null) visSamtale(samId, samIdx);
+    else visSide(forrige);
+  }
+  else visSide(forrige);
+  hopper=false;
+  document.getElementById('hjem-knapp').hidden = loype.length===0;
+});
+
+// --- Oppdragskort etter forbilde: bilde til venstre, faktarader til høyre ---
+var KATIKON={}, KATFARGE={};
+KAT.forEach(function(k,i){ KATIKON[k.id]=k.ic; KATFARGE[k.id]=AV[i%AV.length] });
+
+var IK={
+ sted:'<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/>',
+ pris:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 12h.01M18 12h.01"/>',
+ kat:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/>',
+ tid:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>'
+};
+function jrad(type,tekst,klasse){
+  return '<div class="jrad '+klasse+'"><svg viewBox="0 0 24 24" aria-hidden="true">'+IK[type]+'</svg><span>'+tekst+'</span></div>';
+}
+function jobbKort(x, knapp){
+  var alder=tidKort(x.n);
+  var harBilde = x.bilder && x.bilder.length;
+  return '<article class="jkort" style="cursor:pointer" data-jobbkort="'+x.id+'">'+
+    '<div class="jbilde" style="background:'+(KATFARGE[x.k]||'var(--mint)')+'">'+
+      (harBilde
+        ? '<img src="'+x.bilder[0]+'" alt="" style="width:100%;height:100%;object-fit:cover">'
+        : '<svg viewBox="0 0 24 24" stroke="#16302D" aria-hidden="true">'+(KATIKON[x.k]||'')+'</svg>')+
+      '<span class="alder">'+alder+'</span>'+
+    '</div>'+
+    '<div class="jinn">'+
+      '<h3>'+escapeHtml(x.t)+'</h3>'+
+      jrad('sted', escapeHtml(x.s)+(x.km!=null?' | '+x.km.toFixed(0)+' km':''), 'j-sted')+
+      jrad('pris', escapeHtml(x.b) || 'Tilbud ønskes', 'j-pris')+
+      (x.nar ? jrad('tid', escapeHtml(x.nar), 'j-tid') : '')+
+      '<div class="j-und">'+escapeHtml(x.u)+'</div>'+
+    '</div></article>';
+}
+
+// Jobber du har fått som hjelper – motsatt side av MINE
+var FATT=[
+ {id:100, k:'bil', t:'Bytte sommerdekk', u:'Dekk & felg', s:'Fredrikstad', b:'800 kr',
+  kunde:'Line H.', status:'tildelt', meldinger:[
+   {fra:'dem', t:'Hei! Du fikk oppdraget. Passer det på torsdag ettermiddag?', tid:'25 min'}
+  ]},
+ {id:101, k:'utdanning', t:'Leksehjelp matte 9. trinn', u:'Leksehjelp', s:'Oslo', b:'400 kr/t',
+  kunde:'Ahmed R.', status:'tildelt', meldinger:[
+   {fra:'dem', t:'Så bra at du kunne ta det. Vi starter neste mandag kl. 17?', tid:'4 t', lest:true},
+   {fra:'meg', t:'Det passer fint. Sees da!', tid:'3 t', lest:true}
+  ]},
+ {id:102, k:'transport', t:'Kjøre sofa til gjenbruk', u:'Bortkjøring', s:'Trondheim', b:'900 kr',
+  kunde:'Bjørn K.', status:'ferdig', meldinger:[
+   {fra:'dem', t:'Tusen takk for hjelpen! Betalingen er sendt.', tid:'2 d', lest:true}
+  ]}
+];
+if(sb) FATT=[];   // demoraden over har ingen ekte oppdrag-id - lastFatt() fyller den ekte lista
+
+async function lastFatt(){
+  if(!sb || !BRUKER) return;
+  var res=await sb.from('oppdrag').select('*, bruker:profiler!bruker_id(navn)')
+    .eq('hjelper_id',BRUKER.id).order('created_at',{ascending:false}).limit(200);
+  if(res.error){ console.error('Klarte ikke å laste jobbene dine:', res.error.message); return; }
+  FATT=await Promise.all(res.data.map(async function(row){
+    return {
+      id: row.id, k: row.kategori, t: row.tittel, u: row.underkategori||'', s: row.sted, b: row.pris||'',
+      kunde: row.bruker ? row.bruker.navn : 'Ukjent', status: row.status,
+      meldinger: await lastMeldingerFor(row.id, BRUKER.id)
+    };
+  }));
+  tegnMeldinger(); tegnDash();
+}
+
+document.querySelector('.bunn').addEventListener('click',function(e){
+  var b=e.target.closest('.bnav'); if(!b) return;
+  visSide(b.dataset.b);
+  // "Oppdrag" i bunnlinja går rett til bla-gjennom (swipe)
+  if(b.dataset.b==='finn-oppdrag') visBla();
+});
+
+// --- Oppdragsdetalj og samtale ---
+var odId=null, samId=null, samIdx=null, samKilde='sok', fattIdx=null;
+
+function jobbById(id){ return MINE.filter(function(x){return x.id===id})[0] }
+function uleste(sk){ return sk.meldinger.filter(function(m){return m.fra==='dem' && !m.lest}).length }
+
+function visOppdrag(id){
+  var j=jobbById(id); if(!j) return;
+  odId=id;
+  document.getElementById('od-tittel').textContent=j.t;
+  document.getElementById('od-meta').innerHTML=escapeHtml(j.u)+' &middot; '+escapeHtml(j.s)+' &middot; '+escapeHtml(j.b||'Etter avtale');
+  document.getElementById('od-tekst').textContent=j.d;
+
+  var st=document.getElementById('od-status');
+  st.textContent = j.status==='ferdig' ? 'Ferdig' : j.status==='tildelt' ? 'Tildelt '+j.valgt : 'Åpent';
+  st.className = 'status' + (j.status==='tildelt'||j.status==='ferdig' ? ' tildelt' : '');
+
+  var n=j.sokere.length;
+  document.getElementById('od-antall').textContent =
+    n===0 ? 'Ingen har meldt interesse ennå' :
+    (j.status==='tildelt' ? 'Du snakket med disse' : n+' har meldt interesse — snakk med dem før du velger');
+
+  document.getElementById('od-sokere').innerHTML = n===0
+    ? '<div class="tom"><h3>Ingen søkere ennå</h3><p>Hjelpere som er interessert dukker opp her. Da kan du snakke med dem før du bestemmer deg.</p></div>'
+    : j.sokere.map(function(sk,i){
+        var u=uleste(sk), siste=sk.meldinger[sk.meldinger.length-1];
+        return '<article class="soker'+(j.valgt===sk.n?' valgt':'')+'">'+
+          '<div class="av" style="background:'+avFor(sk.n)+'" aria-hidden="true">'+escapeHtml(initialer(sk.n))+'</div>'+
+          '<div class="soker-inn">'+
+            '<div class="navn-rad"><span class="navn" style="font-size:.98rem">'+escapeHtml(sk.n)+'</span>'+
+              (sk.pro?'<span class="merke pro">PRO</span>':'<span class="merke">PRIVAT</span>')+
+              (u?'<span class="uleste">'+u+' ny'+(u===1?'':'e')+'</span>':'')+
+              (j.valgt===sk.n?'<span class="merke pro">VALGT</span>':'')+'</div>'+
+            '<div class="meta" style="margin:3px 0 0">'+vurderingHtml(sk.r,sk.ant)+' oppdrag'+
+              (sk.km!=null ? ' &middot; '+sk.km.toFixed(1)+' km' : '')+'</div>'+
+            '<p class="siste">'+escapeHtml(siste.t)+'</p>'+
+            '<div class="soker-cta">'+
+              '<button class="btn sm" type="button" data-sam="'+i+'">'+(u?'Les og svar':'Snakk med '+escapeHtml(sk.n.split(' ')[0]))+'</button>'+
+            '</div>'+
+          '</div></article>';
+      }).join('');
+
+  var td=document.getElementById('od-tildelt');
+  if(j.status==='tildelt'){
+    td.hidden=false;
+    document.getElementById('od-tildelt-tekst').textContent=
+      j.valgt+' har fått oppdraget. Gjør opp når jobben er ferdig og du er fornøyd.';
+  } else td.hidden=true;
+
+  var ov=document.getElementById('od-vurdering');
+  if(sb && BRUKER && j.status==='ferdig' && j.hjelper_id){ ov.hidden=false; visVurdering(j); }
+  else ov.hidden=true;
+
+  visSide('oppdrag-detalj');
+  document.title=j.t+' | Nobon';
+}
+
+// --- Vurdering (etter ferdig oppdrag) ---
+var ovStjerner=0;
+async function visVurdering(j){
+  document.getElementById('ov-navn').textContent=j.valgt||'hjelperen';
+  document.getElementById('ov-navn2').textContent=j.valgt||'hjelperen';
+  var res=await sb.from('vurderinger').select('*').eq('oppdrag_id',j.id).eq('hjelper_id',j.hjelper_id).maybeSingle();
+  var skjema=document.getElementById('ov-skjema'), ferdig=document.getElementById('ov-ferdig');
+  if(res.data){
+    skjema.hidden=true; ferdig.hidden=false;
+    document.getElementById('ov-visstjerner').textContent='★'.repeat(res.data.stjerner)+'☆'.repeat(5-res.data.stjerner);
+    document.getElementById('ov-viskommentar').textContent=res.data.kommentar||'';
+  } else {
+    skjema.hidden=false; ferdig.hidden=true;
+    ovStjerner=0;
+    document.querySelectorAll('#ov-stjerner .pill').forEach(function(b){ b.setAttribute('aria-pressed','false') });
+    document.getElementById('ov-kommentar').value='';
+    document.getElementById('ov-feil').hidden=true;
+  }
+}
+document.getElementById('ov-stjerner').addEventListener('click',function(e){
+  var b=e.target.closest('[data-stj]'); if(!b) return;
+  ovStjerner=+b.dataset.stj;
+  document.querySelectorAll('#ov-stjerner .pill').forEach(function(el){
+    el.setAttribute('aria-pressed', (+el.dataset.stj<=ovStjerner) ? 'true' : 'false');
+  });
+});
+document.getElementById('ov-send').addEventListener('click',async function(){
+  var f=document.getElementById('ov-feil');
+  f.hidden=false;
+  if(!ovStjerner){ f.textContent='Velg antall stjerner.'; return }
+  var j=jobbById(odId); if(!j) return;
+  var kommentar=document.getElementById('ov-kommentar').value.trim();
+  this.disabled=true; this.textContent='Sender …';
+  var res=await sb.from('vurderinger').insert({
+    oppdrag_id: j.id, hjelper_id: j.hjelper_id, bruker_id: BRUKER.id,
+    stjerner: ovStjerner, kommentar: kommentar||null
+  });
+  this.disabled=false; this.textContent='Send vurdering';
+  if(res.error){ f.textContent='Klarte ikke å lagre vurderingen: '+res.error.message; return; }
+  f.hidden=true;
+  await visVurdering(j);
+  lastHjelpere();   // ratingen på profilen er nå oppdatert av databasetriggeren
+});
+
+function visSamtale(jobbId, idx){
+  var j=jobbById(jobbId); if(!j) return;
+  var sk=j.sokere[idx]; if(!sk) return;
+  samId=jobbId; samIdx=idx; samKilde='sok';
+  document.getElementById('sam-profil').hidden=false;
+  var ulesteId=sk.meldinger.filter(function(m){return m.fra==='dem' && !m.lest}).map(function(m){return m.id}).filter(function(id){return id!=null});
+  sk.meldinger.forEach(function(m){ m.lest=true });
+  if(sb && BRUKER && ulesteId.length) markerLest(ulesteId);
+
+  document.getElementById('sam-ini').textContent=initialer(sk.n);
+  document.getElementById('sam-ini').style.background=avFor(sk.n);
+  document.getElementById('sam-navn').textContent=sk.n;
+  document.getElementById('sam-merke').innerHTML = sk.pro
+    ? '<span class="merke pro">PRO</span>' : '<span class="merke">PRIVAT</span>';
+  document.getElementById('sam-meta').innerHTML=
+    (sk.r==null ? 'Ny hjelper' : '<span class="stjerne">'+stjerner(sk.r)+'</span> '+sk.r.toFixed(1)+' &middot; '+sk.ant+' oppdrag')+
+    ' &middot; '+sk.pris+' kr/t &middot; om «'+escapeHtml(j.t)+'»';
+
+  tegnBobler();
+
+  var boks=document.getElementById('sam-godta-boks'),
+      knapp=document.getElementById('sam-godta'),
+      tekst=document.getElementById('sam-godta-tekst');
+  knapp.hidden=false;
+  if(j.status==='tildelt'){
+    boks.hidden = j.valgt!==sk.n;
+    if(j.valgt===sk.n){
+      tekst.textContent=sk.n+' har oppdraget.';
+      knapp.textContent='Gjør opp med Vipps';
+      knapp.onclick=function(){ visBetal(j.id, j.t, sk.n, prisTall(j.b)) };
+    }
+  } else {
+    boks.hidden=false;
+    tekst.textContent='Fornøyd med svarene? Da kan du gi oppdraget til '+sk.n.split(' ')[0]+'. De andre får beskjed.';
+    knapp.textContent='Godta '+sk.n;
+    knapp.onclick=function(){ godta(jobbId, idx) };
+  }
+  visSide('samtale');
+  document.title=sk.n+' | Nobon';
+  if(sb && BRUKER) lyttPaSamtale(jobbId, sk.id);
+}
+
+// Samtale om en jobb DU har fått - du er hjelperen, ingen godta-knapp
+function visSamtaleFatt(i){
+  var f=FATT[i]; if(!f) return;
+  samKilde='fatt'; fattIdx=i;
+  var ulesteId=f.meldinger.filter(function(m){return m.fra==='dem' && !m.lest}).map(function(m){return m.id}).filter(function(id){return id!=null});
+  f.meldinger.forEach(function(m){ m.lest=true });
+  if(sb && BRUKER && ulesteId.length) markerLest(ulesteId);
+
+  document.getElementById('sam-ini').textContent=initialer(f.kunde);
+  document.getElementById('sam-ini').style.background=avFor(f.kunde);
+  document.getElementById('sam-navn').textContent=f.kunde;
+  document.getElementById('sam-merke').innerHTML='<span class="merke">OPPDRAGSGIVER</span>';
+  document.getElementById('sam-meta').innerHTML=
+    '«'+escapeHtml(f.t)+'» &middot; '+escapeHtml(f.u)+' &middot; '+escapeHtml(f.s)+' &middot; <span class="pr">'+escapeHtml(f.b)+'</span>';
+  document.getElementById('sam-profil').hidden=true;
+
+  tegnBobler();
+
+  var boks=document.getElementById('sam-godta-boks'),
+      knapp=document.getElementById('sam-godta'),
+      tekst=document.getElementById('sam-godta-tekst');
+  boks.hidden=false;
+  if(f.status==='ferdig'){
+    tekst.textContent='Jobben er ferdig og gjort opp.';
+    knapp.hidden=true;
+  } else {
+    knapp.hidden=false;
+    tekst.textContent='Når jobben er gjort, si fra til '+f.kunde.split(' ')[0]+'.';
+    knapp.textContent='Marker som ferdig';
+    knapp.onclick=function(){
+      var tekst='Jobben er ferdig. Takk for oppdraget!';
+      f.status='ferdig';
+      f.meldinger.push({fra:'meg', t:tekst, tid:'nå', lest:true});
+      tegnBobler(); tegnMeldinger(); visSamtaleFatt(i);
+      if(sb && BRUKER) ferdigLagre(f.id, tekst);
+    };
+  }
+  visSide('samtale');
+  document.title=f.kunde+' | Nobon';
+  if(sb && BRUKER) lyttPaSamtale(f.id, BRUKER.id);
+}
+async function ferdigLagre(oppdragId, tekst){
+  var res=await sb.from('oppdrag').update({status:'ferdig'}).eq('id',oppdragId);
+  if(res.error){ console.error('Klarte ikke å lagre at oppdraget er ferdig:', res.error.message); return; }
+  var mres=await sb.from('meldinger').insert(
+    {oppdrag_id:oppdragId, hjelper_id:BRUKER.id, avsender_id:BRUKER.id, tekst:tekst, lest:false});
+  if(mres.error) console.error('Klarte ikke å lagre meldingen:', mres.error.message);
+}
+
+function tegnBobler(){
+  var kilde = samKilde==='fatt' ? FATT[fattIdx] : jobbById(samId).sokere[samIdx];
+  document.getElementById('sam-bobler').innerHTML=kilde.meldinger.map(function(m){
+    return '<div class="boble '+(m.fra==='meg'?'meg':'dem')+'">'+escapeHtml(m.t)+
+      '<span class="tid">'+escapeHtml(m.tid)+'</span></div>';
+  }).join('');
+}
+
+function prisTall(b){ return parseInt((b||'').replace(/\D/g,'')) || 0 }
+
+function godta(jobbId, idx){
+  var j=jobbById(jobbId), sk=j.sokere[idx];
+  j.status='tildelt'; j.valgt=sk.n;
+  var tekst='Du har fått oppdraget. Si fra når det passer å komme.';
+  sk.meldinger.push({fra:'meg', t:tekst, tid:'nå', lest:true});
+  tegnMine();
+  visOppdrag(jobbId);
+  if(sb && BRUKER) godtaLagre(jobbId, sk.id, tekst);
+}
+async function godtaLagre(jobbId, hjelperId, tekst){
+  var res=await sb.from('oppdrag').update({hjelper_id:hjelperId, status:'tildelt'}).eq('id',jobbId);
+  if(res.error){ console.error('Klarte ikke å lagre tildelingen:', res.error.message); return; }
+  var mres=await sb.from('meldinger').insert(
+    {oppdrag_id:jobbId, hjelper_id:hjelperId, avsender_id:BRUKER.id, tekst:tekst, lest:false});
+  if(mres.error) console.error('Klarte ikke å lagre meldingen:', mres.error.message);
+}
+
+document.getElementById('mine-liste').addEventListener('click',function(e){
+  var j=e.target.closest('[data-jobb]');
+  if(j && !e.target.closest('[data-gaa]')) visOppdrag(+j.dataset.jobb);
+});
+document.getElementById('od-sokere').addEventListener('click',function(e){
+  var b=e.target.closest('[data-sam]'); if(!b) return;
+  visSamtale(odId, +b.dataset.sam);
+});
+document.getElementById('sam-tilbake').addEventListener('click',function(){
+  if(samKilde==='fatt') visSide('meldinger'); else visOppdrag(samId);
+});
+document.getElementById('sam-profil').addEventListener('click',function(){
+  var sk=jobbById(samId).sokere[samIdx];
+  var h=finn(sk.n);
+  if(h) visProfil(sk.n);
+  else {
+    var f=document.getElementById('sam-bobler');
+    f.insertAdjacentHTML('beforeend','<div class="boble dem" style="background:#FFF8E6;color:#6B5518">'+
+      'Full profil for '+sk.n+' finnes ikke i demodataene.<span class="tid">demo</span></div>');
+  }
+});
+document.getElementById('od-betal').addEventListener('click',function(){
+  var j=jobbById(odId);
+  visBetal(j.id, j.t, j.valgt, prisTall(j.b));
+});
+
+// --- Bilder på oppdrag ---
+var jBilder=[];   // {url (blob-forhåndsvisning), navn, file}
+var regBilde=null;   // profilbilde valgt under registrering (blob-forhåndsvisning)
+var regBildeFil=null;   // samme bilde som ekte File - trengs for opplasting til Storage
+var jFil=document.getElementById('j-fil');
+function tegnBilder(){
+  var c=document.getElementById('j-bilder');
+  c.innerHTML=jBilder.map(function(b,i){
+    return '<div class="bilde-mini"><img src="'+b.url+'" alt="'+escapeHtml(b.navn)+'">'+
+      '<button type="button" data-fjern="'+i+'" aria-label="Fjern bilde">&times;</button></div>';
+  }).join('');
+}
+jFil.addEventListener('change',function(){
+  [].slice.call(this.files).forEach(function(f){
+    if(f.type.indexOf('image/')!==0) return;
+    if(jBilder.length>=6) return;         // et rimelig tak
+    jBilder.push({url:URL.createObjectURL(f), navn:f.name, file:f});
+  });
+  this.value='';                          // så samme fil kan velges igjen
+  tegnBilder();
+});
+document.getElementById('j-bilder').addEventListener('click',function(e){
+  var btn=e.target.closest('[data-fjern]'); if(!btn) return;
+  var i=+btn.dataset.fjern;
+  URL.revokeObjectURL(jBilder[i].url);
+  jBilder.splice(i,1);
+  tegnBilder();
+});
+
+// Profilbilde valgt i registreringsskjemaet
+document.getElementById('reg-av').addEventListener('click',function(){
+  document.getElementById('reg-fil').click();
+});
+document.getElementById('reg-fil').addEventListener('change',function(){
+  var f=this.files[0]; if(!f) return;
+  if(regBilde) URL.revokeObjectURL(regBilde);
+  regBilde=URL.createObjectURL(f);
+  regBildeFil=f;
+  this.value='';
+  var av=document.getElementById('reg-av');
+  var g=av.querySelector('img');
+  if(!g){ g=document.createElement('img'); g.alt=''; av.insertBefore(g, av.firstChild); }
+  g.src=regBilde;
+  document.getElementById('reg-av-ini').hidden=true;
+});
+
+// Live oppdatering av en åpen samtale via Supabase Realtime, så en melding
+// fra motparten dukker opp med en gang i stedet for bare ved neste navigering.
+var samKanal=null;
+function lyttPaSamtale(oppdragId, hjelperId){
+  if(!sb) return;
+  stoppSamtaleLytting();
+  samKanal=sb.channel('meldinger-'+oppdragId+'-'+hjelperId)
+    .on('postgres_changes',
+      { event:'INSERT', schema:'public', table:'meldinger', filter:'oppdrag_id=eq.'+oppdragId },
+      function(payload){
+        var m=payload.new;
+        if(m.hjelper_id!==hjelperId || m.avsender_id===BRUKER.id) return;   // egne meldinger er alt lagt til lokalt
+        var kilde = samKilde==='fatt' ? FATT[fattIdx] : (jobbById(samId) && jobbById(samId).sokere[samIdx]);
+        if(!kilde) return;
+        kilde.meldinger.push({id:m.id, fra:'dem', t:m.tekst, tid:relTid(m.created_at), lest:false});
+        tegnBobler(); tegnMeldinger(); tegnDash();
+        var boks=document.getElementById('sam-bobler');
+        if(boks.lastElementChild) boks.lastElementChild.scrollIntoView({behavior:'smooth',block:'nearest'});
+      })
+    .subscribe();
+}
+function stoppSamtaleLytting(){
+  if(samKanal){ sb.removeChannel(samKanal); samKanal=null; }
+}
+
+var samInn=document.getElementById('sam-inn');
+function sendMelding(){
+  var t=samInn.value.trim(); if(!t) return;
+  var kilde = samKilde==='fatt' ? FATT[fattIdx] : jobbById(samId).sokere[samIdx];
+  var oppdragId = samKilde==='fatt' ? FATT[fattIdx].id : samId;
+  var hjelperId = samKilde==='fatt' ? (BRUKER&&BRUKER.id) : kilde.id;
+  kilde.meldinger.push({fra:'meg', t:t, tid:'nå', lest:true});
+  samInn.value=''; samInn.style.height='auto';
+  tegnBobler(); tegnMeldinger(); tegnDash();
+  document.getElementById('sam-bobler').lastElementChild.scrollIntoView({behavior:'smooth',block:'nearest'});
+  if(sb && BRUKER) lagreMelding(oppdragId, hjelperId, t);
+}
+async function lagreMelding(oppdragId, hjelperId, tekst){
+  var res=await sb.from('meldinger').insert(
+    {oppdrag_id:oppdragId, hjelper_id:hjelperId, avsender_id:BRUKER.id, tekst:tekst, lest:false});
+  if(res.error) console.error('Klarte ikke å lagre meldingen:', res.error.message);
+}
+document.getElementById('sam-send').addEventListener('click',sendMelding);
+samInn.addEventListener('input',function(){
+  this.style.height='auto';
+  this.style.height=Math.min(this.scrollHeight,120)+'px';
+});
+samInn.addEventListener('keydown',function(e){
+  if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendMelding() }
+});
+
+// --- Lag bruker ---
+document.querySelectorAll('.vkort').forEach(function(k){
+  k.addEventListener('click',function(){
+    var på=k.getAttribute('aria-pressed')==='true';
+    k.setAttribute('aria-pressed', på?'false':'true');
+  });
+});
+function valgteRoller(){
+  return [].slice.call(document.querySelectorAll('.vkort[aria-pressed="true"]')).map(function(e){return e.dataset.type});
+}
+
+var regSkjema=document.getElementById('reg-skjema');
+regSkjema.addEventListener('submit',async function(e){
+  e.preventDefault();
+  var f=document.getElementById('r-feil');
+  var navn=document.getElementById('r-navn'), ep=document.getElementById('r-epost'),
+      tlf=document.getElementById('r-tlf'), pa=document.getElementById('r-pass'),
+      vil=document.getElementById('r-vilkar');
+
+  function merk(el,ok){ el.setAttribute('aria-invalid', ok?'false':'true'); return ok }
+  var okNavn = merk(navn, navn.value.trim().length>1);
+  var okEp   = merk(ep, /\S+@\S+\.\S+/.test(ep.value));
+  var okTlf  = merk(tlf, /^\d{8}$/.test(tlf.value.replace(/\s/g,'')));
+  var okPa   = merk(pa, pa.value.length>=8);
+
+  f.hidden=false;
+  if(!okNavn){ f.textContent='Skriv inn navnet ditt.'; navn.focus(); return }
+  if(!okEp){ f.textContent='Skriv inn en gyldig e-postadresse.'; ep.focus(); return }
+  if(!okTlf){ f.textContent='Mobilnummeret må være 8 siffer.'; tlf.focus(); return }
+  if(!okPa){ f.textContent='Passordet må være minst 8 tegn.'; pa.focus(); return }
+  var roller=valgteRoller();
+  if(!roller.length){ f.textContent='Velg minst ett bruksområde.'; document.querySelector('.vkort').focus(); return }
+  if(!vil.checked){ f.textContent='Du må godta vilkårene for å lage bruker.'; vil.focus(); return }
+
+  if(!sb){
+    f.textContent='Registrering er ikke koblet til Supabase ennå. Fyll inn SUPABASE_URL og SUPABASE_ANON_KEY øverst i skriptet.';
+    return;
+  }
+  f.hidden=true;
+
+  var knapp=regSkjema.querySelector('button[type="submit"]');
+  knapp.disabled=true; knapp.textContent='Oppretter bruker …';
+
+  // Passordet går rett til Supabase (https) og hashes der (bcrypt) – det
+  // lagres eller logges aldri i klartekst noe sted i denne fila.
+  var res=await sb.auth.signUp({
+    email: ep.value.trim(),
+    password: pa.value,
+    options: { data: { navn: navn.value.trim(), tlf: tlf.value.replace(/\s/g,''), roller: roller } }
+  });
+
+  knapp.disabled=false; knapp.textContent='Lag bruker';
+
+  if(res.error){
+    f.hidden=false;
+    f.textContent = /already registered/i.test(res.error.message)
+      ? 'Denne e-postadressen er allerede registrert. Prøv å logge inn i stedet.'
+      : 'Noe gikk galt: '+res.error.message;
+    return;
+  }
+  // Supabase svarer 200 med en bruker som har tom identities[] hvis e-posten
+  // allerede finnes, i stedet for en feilmelding som ville lekket at kontoen
+  // finnes fra før – så det må sjekkes eksplisitt her.
+  if(res.data.user && res.data.user.identities && res.data.user.identities.length===0){
+    f.hidden=false;
+    f.textContent='Denne e-postadressen er allerede registrert. Prøv å logge inn i stedet.';
+    return;
+  }
+
+  var rg=document.querySelector('#reg-av img'); if(rg) rg.remove();
+  document.getElementById('reg-av-ini').hidden=false;
+
+  var trengerBekreftelse = !res.data.session;
+  if(!trengerBekreftelse){
+    BRUKER=brukerFraSupabase(res.data.user);
+    // E-postbekreftelse er av, så vi har en sesjon med en gang - last opp
+    // profilbildet valgt i skjemaet mens vi har mulighet (Storage krever innlogging).
+    if(regBildeFil){
+      var url=await lastOppAvatar(regBildeFil);
+      if(url) BRUKER.bilde=url;
+    }
+    tegnDash(); tegnKonto(); tegnMine();
+  }
+  if(regBilde) URL.revokeObjectURL(regBilde);
+  regBilde=null; regBildeFil=null;
+  document.getElementById('reg-ok-tittel').textContent = trengerBekreftelse ? 'Sjekk innboksen din' : 'Velkommen til Nobon';
+  document.getElementById('reg-ok-tekst').textContent = trengerBekreftelse
+    ? 'Nesten ferdig! Vi har sendt en bekreftelseslenke til '+ep.value.trim()+'. Bekreft e-posten for å logge inn.'
+    : 'Bruker opprettet og du er logget inn. '+
+      (roller.length===2 ? 'Du kan både legge ut og ta oppdrag.'
+        : roller[0]==='hjelper' ? 'En hjelperprofil ville gått til godkjenning her.'
+        : 'Du kan legge ut ditt første oppdrag med en gang.');
+  regSkjema.hidden=true;
+  document.getElementById('reg-ok').hidden=false;
+  window.scrollTo(0,0);
+});
+document.getElementById('reg-ny').addEventListener('click',function(){
+  regSkjema.reset();
+  regBilde=null;
+  var rg=document.querySelector('#reg-av img'); if(rg) rg.remove();
+  document.getElementById('reg-av-ini').hidden=false;
+  regSkjema.hidden=false;
+  document.getElementById('reg-ok').hidden=true;
+  document.querySelectorAll('#reg-skjema .inn').forEach(function(el){el.setAttribute('aria-invalid','false')});
+  window.scrollTo(0,0);
+});
+document.getElementById('vipps-reg').addEventListener('click',function(){
+  var f=document.getElementById('r-feil');
+  f.hidden=false;
+  f.style.cssText='background:#FFF1EB;border-color:#FFC4AC;color:#8A3312';
+  f.textContent='Vipps-innlogging krever en server. Se notatet nederst på siden.';
+  f.scrollIntoView({block:'center',behavior:'smooth'});
+});
+
+// --- Betaling ---
+var betalData={oppdragId:null,oppdrag:'—',hjelper:'—',pris:0};
+function visBetal(oppdragId,oppdrag,hjelper,pris){
+  betalData={oppdragId:oppdragId,oppdrag:oppdrag,hjelper:hjelper,pris:pris};
+  var gebyr=Math.round(pris*0.05);
+  document.getElementById('b-oppdrag').textContent=oppdrag;
+  document.getElementById('b-hjelper').textContent=hjelper;
+  document.getElementById('b-pris').textContent=pris.toLocaleString('nb-NO')+' kr';
+  document.getElementById('b-gebyr').textContent=gebyr.toLocaleString('nb-NO')+' kr';
+  document.getElementById('b-sum').textContent=(pris+gebyr).toLocaleString('nb-NO')+' kr';
+  document.getElementById('betal-ok').hidden=true;
+  document.getElementById('betal-feil').hidden=true;
+  document.getElementById('vipps-betal').hidden=false;
+  document.getElementById('vipps-betal').disabled=false;
+  document.getElementById('vipps-betal').textContent='Betal med Vipps';
+  visSide('betal');
+}
+document.getElementById('vipps-betal').addEventListener('click',async function(){
+  var feil=document.getElementById('betal-feil');
+  feil.hidden=true;
+  if(!sb){
+    // Demomodus uten backend: vis "slik ville det sett ut" som før.
+    this.hidden=true;
+    document.getElementById('betal-ok').hidden=false;
+    return;
+  }
+  this.disabled=true; this.textContent='Starter Vipps …';
+  var res=await sb.functions.invoke('vipps-init', { body:{ oppdragId: betalData.oppdragId } });
+  if(res.error || (res.data && res.data.error)){
+    this.disabled=false; this.textContent='Betal med Vipps';
+    feil.hidden=false;
+    feil.textContent=(res.data && res.data.error) || 'Klarte ikke å starte Vipps-betaling. '+
+      'Sjekk at Vipps-nøklene er satt som Supabase-secrets (se NOBON-SETUP.md).';
+    return;
+  }
+  window.location.href=res.data.redirectUrl;
+});
+document.getElementById('betal-ny').addEventListener('click',function(){
+  document.getElementById('betal-ok').hidden=true;
+  document.getElementById('betal-feil').hidden=true;
+  document.getElementById('vipps-betal').hidden=false;
+  document.getElementById('vipps-betal').disabled=false;
+});
+
+// Brukeren kommer tilbake fra Vipps med ?vipps_ref=... i URL-en. Sjekk den
+// EKTE statusen hos Vipps (via vipps-status) - stol aldri på selve retur-URL-en.
+(function(){
+  var ref=new URLSearchParams(window.location.search).get('vipps_ref');
+  if(!ref || !sb) return;
+  history.replaceState(null,'',window.location.pathname);
+  sb.auth.getSession().then(async function(){
+    var res=await sb.functions.invoke('vipps-status', { body:{ reference: ref } });
+    visSide('betal');
+    var ok=document.getElementById('betal-ok'), feil=document.getElementById('betal-feil'), knapp=document.getElementById('vipps-betal');
+    if(res.error || !res.data || res.data.error){
+      feil.hidden=false; feil.textContent='Klarte ikke å bekrefte betalingsstatus. Prøv igjen, eller sjekk Vipps-appen.';
+      return;
+    }
+    if(res.data.status==='betalt'){
+      knapp.hidden=true;
+      ok.hidden=false;
+      ok.querySelector('p').textContent='Betalingen er bekreftet av Vipps.';
+      await lastMineOppdrag(); await lastFatt();
+    } else if(res.data.status==='kansellert'){
+      feil.hidden=false; feil.textContent='Betalingen ble avbrutt eller kansellert i Vipps.';
+    } else {
+      feil.hidden=false; feil.textContent='Vipps har ikke bekreftet betalingen ennå. Prøv "Betal med Vipps" på nytt om et øyeblikk.';
+    }
+  });
+})();
+
+// --- Meldinger ---
+var mFane='mine';
+
+function tegnMeldinger(){
+  var uMine=0, uFatt=0;
+  MINE.forEach(function(j){ j.sokere.forEach(function(sk){ uMine+=uleste(sk) }) });
+  FATT.forEach(function(f){ uFatt+=f.meldinger.filter(function(m){return m.fra==='dem' && !m.lest}).length });
+
+  var nMine=MINE.reduce(function(a,j){return a+j.sokere.length},0);
+  document.getElementById('mn-mine').textContent=nMine;
+  document.getElementById('mn-fatt').textContent=FATT.length;
+  document.getElementById('mf-mine').setAttribute('aria-selected', mFane==='mine'?'true':'false');
+  document.getElementById('mf-fatt').setAttribute('aria-selected', mFane==='fatt'?'true':'false');
+
+  var l=document.getElementById('m-liste');
+
+  if(mFane==='fatt'){
+    if(!FATT.length){
+      l.innerHTML='<div class="tom"><h3>Ingen jobber ennå</h3>'+
+        '<p>Meld interesse på et oppdrag. Får du det, havner samtalen med oppdragsgiver her.</p>'+
+        '<button class="btn teal" type="button" data-gaa="finn-oppdrag">Finn oppdrag</button></div>';
+      return;
+    }
+    l.innerHTML=FATT.map(function(f,i){
+      var siste=f.meldinger[f.meldinger.length-1];
+      var u=f.meldinger.filter(function(m){return m.fra==='dem' && !m.lest}).length;
+      return '<button class="trad" type="button" data-fatt="'+i+'">'+
+        '<span class="uled"'+(u?' aria-label="Ulest"':' style="background:transparent"')+'></span>'+
+        '<div class="av" style="background:'+avFor(f.kunde)+';width:44px;height:44px;font-size:.92rem" aria-hidden="true">'+escapeHtml(initialer(f.kunde))+'</div>'+
+        '<div style="flex:1;min-width:0">'+
+          '<div class="navn-rad" style="justify-content:space-between">'+
+            '<span class="navn" style="font-size:.96rem">'+escapeHtml(f.kunde)+'</span>'+
+            '<span class="tid">'+escapeHtml(siste.tid)+'</span></div>'+
+          '<div class="prv">'+(siste.fra==='meg'?'Du: ':'')+escapeHtml(siste.t)+'</div>'+
+          '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:5px">'+
+            '<span class="status'+(f.status==='ferdig'?' tildelt':'')+'">'+
+              (f.status==='ferdig'?'Ferdig':'Din jobb')+'</span>'+
+            '<span class="meta" style="margin:0;font-size:.75rem">«'+escapeHtml(f.t)+'» &middot; '+escapeHtml(f.b)+'</span>'+
+          '</div>'+
+        '</div></button>';
+    }).join('');
+    return;
+  }
+
+  var rader=[];
+  MINE.forEach(function(j){
+    j.sokere.forEach(function(sk,idx){
+      rader.push({jobb:j, sk:sk, idx:idx, siste:sk.meldinger[sk.meldinger.length-1], u:uleste(sk)});
+    });
+  });
+  if(!rader.length){
+    l.innerHTML='<div class="tom"><h3>Ingen meldinger</h3>'+
+      '<p>Når hjelpere melder interesse på oppdragene dine, havner samtalene her.</p>'+
+      '<button class="btn teal" type="button" data-gaa="legg-ut">Legg ut oppdrag</button></div>';
+    return;
+  }
+  l.innerHTML=rader.map(function(r,i){
+    return '<button class="trad" type="button" data-tr="'+r.jobb.id+':'+r.idx+'">'+
+      '<span class="uled"'+(r.u?' aria-label="Ulest"':' style="background:transparent"')+'></span>'+
+      '<div class="av" style="background:'+avFor(r.sk.n)+';width:44px;height:44px;font-size:.92rem" aria-hidden="true">'+escapeHtml(initialer(r.sk.n))+'</div>'+
+      '<div style="flex:1;min-width:0">'+
+        '<div class="navn-rad" style="justify-content:space-between">'+
+          '<span class="navn" style="font-size:.96rem">'+escapeHtml(r.sk.n)+'</span>'+
+          '<span class="tid">'+escapeHtml(r.siste.tid)+'</span></div>'+
+        '<div class="prv">'+(r.siste.fra==='meg'?'Du: ':'')+escapeHtml(r.siste.t)+'</div>'+
+        '<div class="meta" style="margin:4px 0 0;font-size:.75rem">om «'+escapeHtml(r.jobb.t)+'»</div>'+
+      '</div></button>';
+  }).join('');
+}
+document.getElementById('mf-mine').addEventListener('click',function(){ mFane='mine'; tegnMeldinger() });
+document.getElementById('mf-fatt').addEventListener('click',function(){ mFane='fatt'; tegnMeldinger() });
+
+document.addEventListener('click',function(e){
+  var t=e.target.closest('[data-tr]');
+  if(t){ var d=t.dataset.tr.split(':'); visSamtale(+d[0], +d[1]); return }
+  var ft=e.target.closest('[data-fatt]');
+  if(ft){ visSamtaleFatt(+ft.dataset.fatt); return }
+  if(e.target.id==='o-utvid'){
+    oAvst=MAKS; document.getElementById('o-avst').value=MAKS;
+    document.getElementById('o-avst-verdi').textContent=maksTekst();
+    tegnJobb();
+  }
+});
+
+document.getElementById('o-sort').addEventListener('change',function(){ tegnJobb(); if(blaAktiv){byggKo();tegnStabel();} });
+document.getElementById('o-avst').addEventListener('input',function(){
+  oAvst=parseInt(this.value);
+  document.getElementById('o-avst-verdi').textContent = oAvst>=MAKS ? maksTekst() : 'Innenfor '+oAvst+' km';
+  tegnJobb();
+  if(blaAktiv){ byggKo(); tegnStabel(); }
+});
+tegnJobb();
+
+// --- Kategoriside ---
+var kAktiv=null, kUnder='alle', kPro=false, kPriv=false, kFane='oppdrag', kAvst=MAKS;
+
+var SORT_OPPDRAG='<option value="ny">Nyeste</option><option value="pris">Høyest betaling</option><option value="avstand">Avstand</option>';
+var SORT_HJELPERE='<option value="avstand">Avstand</option><option value="karakter">Karakter</option><option value="sist">Sist sett</option><option value="oppdrag">Flest oppdrag</option>';
+
+function kortHtml(x,i){
+  var ini=x.n.split(' ').map(function(w){return w[0]}).join('').slice(0,2).toUpperCase();
+  return '<article class="kort">'+
+    '<div class="av" style="background:'+avFor(x.n)+'" aria-hidden="true">'+escapeHtml(ini)+'</div>'+
+    '<div class="kort-inn">'+
+      '<div class="navn-rad"><span class="navn">'+escapeHtml(x.n)+'</span>'+
+        (x.pro?'<span class="merke pro">PRO</span>':'<span class="merke">PRIVAT</span>')+'</div>'+
+      '<div class="meta k-meta">'+
+        '<span class="m-r">'+vurderingHtml(x.r,x.ant)+'</span>'+
+        '<span class="m-p">'+x.pris+' kr/t</span>'+
+        (x.km!=null ? '<span class="m-km">'+x.km.toFixed(1).replace('.',',')+' km</span>' : '')+
+      '</div>'+
+      '<div class="tags">'+x.t.map(function(t){return '<span class="tag">'+escapeHtml(t)+'</span>'}).join('')+'</div>'+
+      '<div class="kort-cta"><button class="btn sm" type="button" data-inv="'+escapeHtml(x.n)+'">'+
+          '<span class="d-full">Inviter til oppdrag</span><span class="d-kort">Inviter</span></button>'+
+        '<button class="txt-btn" type="button" data-prof="'+escapeHtml(x.n)+'">Se profil</button></div>'+
+      '<div class="meta" style="margin:9px 0 0;font-size:.76rem">'+escapeHtml(sistTekst(x.sist))+'</div>'+
+    '</div></article>';
+}
+function jobbHtml(x){ return jobbKort(x,'meld') }
+
+function innenfor(x){ return stedTreff(x) && (kAvst>=MAKS || x.km<=kAvst) }
+function kFiltrerJobb(){
+  var d=JOBB.filter(function(x){return x.k===kAktiv && innenfor(x)});
+  if(kUnder!=='alle') d=d.filter(function(x){return x.u===kUnder});
+  return d;
+}
+function kFiltrerHjelpere(){
+  var d=H.filter(function(x){return x.k===kAktiv && innenfor(x)});
+  if(kUnder!=='alle') d=d.filter(function(x){return x.t.indexOf(kUnder)>-1});
+  if(kPro&&!kPriv) d=d.filter(function(x){return x.pro});
+  if(kPriv&&!kPro) d=d.filter(function(x){return !x.pro});
+  return d;
+}
+
+function tegnKat(){
+  if(!kAktiv) return;
+  document.getElementById('n-oppdrag').textContent=kFiltrerJobb().length;
+  var hAlle=H.filter(function(x){return x.k===kAktiv && innenfor(x)});
+  if(kUnder!=='alle') hAlle=hAlle.filter(function(x){return x.t.indexOf(kUnder)>-1});
+  document.getElementById('n-hjelpere').textContent=hAlle.length;
+
+  var jobbFane = kFane==='oppdrag';
+  document.getElementById('k-pro').hidden=jobbFane;
+  document.getElementById('k-priv').hidden=jobbFane;
+
+  var l=document.getElementById('k-liste'), st=document.getElementById('k-sort').value;
+  l.classList.toggle('jobber', jobbFane);
+
+  if(jobbFane){
+    var d=kFiltrerJobb();
+    d.sort(function(a,b){
+      if(st==='ny') return a.n-b.n;
+      if(st==='avstand') return a.km-b.km;
+      var pa=parseInt(a.b.replace(/\D/g,''))||0, pb=parseInt(b.b.replace(/\D/g,''))||0;
+      return pb-pa;
+    });
+    document.getElementById('k-tell').innerHTML=d.length+' ledig'+(d.length===1?' oppdrag':'e oppdrag')+
+      ' <span>'+(kUnder!=='alle'?kUnder+' &middot; ':'')+avstTekst()+'</span>';
+    l.innerHTML = d.length ? d.map(jobbHtml).join('')
+      : tomHtml('oppdrag');
+  } else {
+    var d=kFiltrerHjelpere();
+    d.sort(function(a,b){
+      if(st==='avstand') return a.km-b.km;
+      if(st==='karakter') return b.r-a.r || b.ant-a.ant;
+      if(st==='sist') return a.sist-b.sist;
+      return b.ant-a.ant;
+    });
+    document.getElementById('k-tell').innerHTML=d.length+' hjelper'+(d.length===1?'':'e')+
+      ' <span>'+(kUnder!=='alle'?kUnder+' &middot; ':'')+avstTekst()+'</span>';
+    l.innerHTML = d.length ? d.map(kortHtml).join('')
+      : tomHtml('hjelpere');
+  }
+}
+
+function avstTekst(){ return kAvst>=MAKS ? stedTekst() : 'innenfor '+kAvst+' km' + (brukerSted()?' fra '+brukerSted():'') }
+function tomHtml(hva){
+  var trangt = kAvst<MAKS;
+  return '<div class="tom"><h3>Ingen '+hva+' '+(trangt?'innenfor '+kAvst+' km':'her ennå')+'</h3>'+
+    '<p>'+(trangt ? 'Dra avstanden lenger ut for å se flere.'
+                  : (hva==='oppdrag' ? 'Ingen har lagt ut oppdrag i denne kategorien ennå.'
+                                     : 'Legg ut oppdraget, så kan hjelpere melde seg selv.'))+'</p>'+
+    (trangt ? '<button class="btn ghost" type="button" id="utvid">Fjern avstandsgrensen</button>'
+            : '<button class="btn teal" type="button" data-gaa="legg-ut">Legg ut oppdrag</button>')+
+    '</div>';
+}
+function settAvst(v){
+  kAvst=parseInt(v);
+  document.getElementById('k-avst').value=kAvst;
+  document.getElementById('k-avst-verdi').textContent = kAvst>=MAKS ? maksTekst() : 'Innenfor '+kAvst+' km';
+  tegnKat();
+}
+function settFane(f){
+  kFane=f;
+  document.getElementById('fane-oppdrag').setAttribute('aria-selected', f==='oppdrag'?'true':'false');
+  document.getElementById('fane-hjelpere').setAttribute('aria-selected', f==='hjelpere'?'true':'false');
+  var sel=document.getElementById('k-sort');
+  sel.innerHTML = f==='oppdrag' ? SORT_OPPDRAG : SORT_HJELPERE;
+  sel.value = f==='oppdrag' ? 'ny' : 'avstand';
+  tegnKat();
+}
+
+function visKategori(id){
+  var k=KAT.filter(function(x){return x.id===id})[0]; if(!k) return;
+  kAktiv=id; kUnder='alle'; kPro=false; kPriv=false; kAvst=MAKS;
+  document.getElementById('k-avst').value=MAKS;
+  document.getElementById('k-avst-verdi').textContent=maksTekst();
+  document.getElementById('k-avst-fra').textContent = brukerSted() ? 'Avstand fra '+brukerSted() : 'Avstand';
+  document.getElementById('k-pro').setAttribute('aria-pressed','false');
+  document.getElementById('k-priv').setAttribute('aria-pressed','false');
+
+  document.getElementById('k-tittel').textContent=k.navn;
+
+  document.getElementById('k-under').innerHTML=
+    '<button class="uk" type="button" data-uk="alle" aria-pressed="true">Alle</button>'+
+    k.sub.map(function(u){
+      return '<button class="uk" type="button" data-uk="'+u+'" aria-pressed="false">'+u+'</button>';
+    }).join('');
+
+  settFane('oppdrag');
+  visSide('kategori');
+  document.title=k.navn+' | Nobon';
+}
+
+document.getElementById('fane-oppdrag').addEventListener('click',function(){settFane('oppdrag')});
+document.getElementById('fane-hjelpere').addEventListener('click',function(){settFane('hjelpere')});
+document.getElementById('k-under').addEventListener('click',function(e){
+  var b=e.target.closest('.uk'); if(!b) return;
+  kUnder=b.dataset.uk;
+  this.querySelectorAll('.uk').forEach(function(el){
+    el.setAttribute('aria-pressed', el.dataset.uk===kUnder ? 'true':'false');
+  });
+  tegnKat();
+});
+function kTog(btn){
+  btn.addEventListener('click',function(){
+    var p=btn.getAttribute('aria-pressed')==='true';
+    btn.setAttribute('aria-pressed',p?'false':'true');
+    if(btn.id==='k-pro') kPro=!p; else kPriv=!p;
+    tegnKat();
+  });
+}
+kTog(document.getElementById('k-pro'));
+kTog(document.getElementById('k-priv'));
+document.getElementById('k-sort').addEventListener('change',tegnKat);
+document.getElementById('k-avst').addEventListener('input',function(){ settAvst(this.value) });
+document.getElementById('k-liste').addEventListener('click',function(e){
+  if(e.target.id==='utvid'){ settAvst(MAKS); return }
+  var g=e.target.closest('[data-gaa]'); if(g){ visSide(g.dataset.gaa); return }
+  var k=e.target.closest('[data-jobbkort]');
+  if(k){ var jobb=jobbFraId(k.dataset.jobbkort); if(jobb) visJobbDetalj(jobb); }
+});
+
+document.querySelector('header').classList.add('pa-dash');  // forsiden vises ved lasting
+// --- Finn hjelper (egen side) ---
+var hKat='alle', hPro=false, hPriv=false, hAlle=false;
+var hSel=document.getElementById('h-hva');
+hSel.insertAdjacentHTML('beforeend', KAT.map(function(k){return '<option value="'+k.id+'">'+k.navn+'</option>'}).join(''));
+
+function hSted(){ return document.getElementById('h-sted').value.trim() }
+function hStedTreff(x){ var b=hSted().toLowerCase(); return !b || (x.sted||'').toLowerCase().indexOf(b)>-1 }
+
+function tegnHjelper(){
+  var d=H.filter(hStedTreff);
+  if(hKat!=='alle') d=d.filter(function(x){return x.k===hKat});
+  if(hPro&&!hPriv) d=d.filter(function(x){return x.pro});
+  if(hPriv&&!hPro) d=d.filter(function(x){return !x.pro});
+
+  var st=document.getElementById('h-sort').value;
+  d.sort(function(a,b){
+    if(st==='avstand') return a.km-b.km;
+    if(st==='karakter') return b.r-a.r || b.ant-a.ant;
+    if(st==='sist') return a.sist-b.sist;
+    return b.ant-a.ant;
+  });
+
+  var totalt=d.length, knapp=document.getElementById('h-flere');
+  if(!hAlle && totalt>FORSIDE_ANT) d=d.slice(0,FORSIDE_ANT);
+  knapp.hidden = totalt<=FORSIDE_ANT;
+  knapp.textContent = hAlle ? 'Vis færre' : 'Vis alle '+totalt+' hjelpere';
+
+  var sted=hSted();
+  document.getElementById('h-tell').innerHTML = totalt+' hjelper'+(totalt===1?'':'e')+
+    ' <span>'+(hKat!=='alle' ? KATNAVN[hKat]+' · ' : '')+(sted ? 'i '+sted : 'i hele landet')+'</span>';
+
+  var l=document.getElementById('h-liste');
+  l.classList.remove('jobber');
+  l.innerHTML = d.length
+    ? d.map(kortHtml).join('')
+    : '<div class="tom"><h3>Ingen hjelpere i dette filteret</h3>'+
+      '<p>Prøv et annet sted, eller legg ut oppdraget så melder hjelpere seg selv.</p>'+
+      '<button class="btn teal" type="button" data-gaa="legg-ut">Legg ut oppdrag</button></div>';
+}
+
+document.getElementById('h-sted').addEventListener('input',function(){ hAlle=false; tegnHjelper() });
+hSel.addEventListener('change',function(){ hKat=hSel.value; hAlle=false; tegnHjelper() });
+document.getElementById('h-sort').addEventListener('change',tegnHjelper);
+document.getElementById('h-flere').addEventListener('click',function(){
+  hAlle=!hAlle; tegnHjelper();
+  if(!hAlle) document.getElementById('h-resultat').scrollIntoView({block:'start'});
+});
+[['h-pro','pro'],['h-priv','priv']].forEach(function(par){
+  document.getElementById(par[0]).addEventListener('click',function(){
+    var p=this.getAttribute('aria-pressed')==='true';
+    this.setAttribute('aria-pressed',p?'false':'true');
+    if(par[1]==='pro') hPro=!p; else hPriv=!p;
+    tegnHjelper();
+  });
+});
+
+tegnMeldinger(); tegnDash(); tegnKonto(); tegnMine(); tegnHjelper();
+
+// --- Gjenopprett innlogging fra Supabase-sesjonen, og last delte data ---
+if(sb){
+  document.getElementById('reg-ikke-koblet').hidden=true;
+  document.getElementById('konto-ikke-koblet').innerHTML=
+    '<b>Koblet til Supabase.</b> Innlogging, oppdrag, hjelpere, meldinger og bilder er ekte og deles '+
+    'mellom brukere. Vipps-betaling er fortsatt bare en skisse (se NOBON-SETUP.md).';
+
+  // Kategorier og hjelpere er offentlige - last dem uansett innloggingsstatus.
+  lastHjelpere();
+  lastJobb();
+
+  var forrigeBrukerId=null;
+  async function ettersyncBruker(){
+    if(BRUKER && BRUKER.id!==forrigeBrukerId){
+      forrigeBrukerId=BRUKER.id;
+      var p=await sb.from('profiler').select('er_admin,sperret').eq('id',BRUKER.id).maybeSingle();
+      if(p.data){ BRUKER.erAdmin=!!p.data.er_admin; BRUKER.sperret=!!p.data.sperret; }
+      tegnKonto();
+      await Promise.all([lastMineOppdrag(), lastFatt(), lastJobb()]);
+    } else if(!BRUKER && forrigeBrukerId!==null){
+      forrigeBrukerId=null;
+      MINE=[]; FATT=[];
+      tegnMine(); tegnMeldinger(); tegnDash(); tegnKonto();
+      lastJobb();
+    }
+  }
+
+  sb.auth.getSession().then(async function(res){
+    BRUKER=brukerFraSupabase(res.data.session && res.data.session.user);
+    tegnDash(); tegnKonto(); tegnMine();
+    await ettersyncBruker();
+  });
+  sb.auth.onAuthStateChange(async function(_event, session){
+    BRUKER=brukerFraSupabase(session && session.user);
+    tegnDash(); tegnKonto(); tegnMine();
+    await ettersyncBruker();
+    // Brukeren kom fra "glemt passord"-lenken i e-posten - la dem sette et nytt med en gang.
+    if(_event==='PASSWORD_RECOVERY'){
+      document.getElementById('pw-tittel').textContent='Lag nytt passord';
+      document.getElementById('pw-hjelp').textContent='Du kom hit via en lenke for glemt passord. Skriv inn et nytt passord under.';
+      document.getElementById('pw-feil').hidden=true;
+      document.getElementById('pw-skjema').reset();
+      document.getElementById('dlg-passord').showModal();
+    }
+  });
+}
+</script>
+</body>
+</html>
