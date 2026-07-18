@@ -1140,7 +1140,7 @@ footer a{text-decoration:underline;text-underline-offset:2px}
       <p>Betal når jobben er ferdig og du er fornøyd.</p>
     </div>
 
-    <p class="ikke-koblet"><b>Vipps er ikke koblet opp.</b> Knappen viser flyten, men trekker ingen penger. Vipps krever hemmelige nøkler som må ligge på en server — de kan ikke ligge i denne fila.</p>
+    <p class="ikke-koblet" id="betal-ikke-koblet"><b>Vipps krever egne nøkler.</b> Betalingskallet går nå via en Edge Function på Supabase (ikke direkte fra nettleseren), men den trenger dine egne Vipps-nøkler satt som secrets før noe kan trekkes. Se NOBON-SETUP.md.</p>
 
     <div class="kvitt">
       <div class="kvitt-rad"><span>Oppdrag</span><b id="b-oppdrag">—</b></div>
@@ -1150,6 +1150,7 @@ footer a{text-decoration:underline;text-underline-offset:2px}
       <div class="kvitt-rad sum"><span>Å betale</span><b id="b-sum">—</b></div>
     </div>
 
+    <p class="feil" id="betal-feil" hidden></p>
     <button class="vipps" type="button" id="vipps-betal">
       Betal med Vipps
     </button>
@@ -1318,6 +1319,28 @@ var H=[
  {n:'Vikarhuset',k:'bemanning',t:['Vikar','Sesongarbeider'],pro:1,sted:'Oslo',km:3.9,r:4.5,ant:156,pris:520,sist:1.4}
 ];
 
+// H over er demodata som vises når Supabase ikke er konfigurert (sb===null),
+// slik at prototypen ikke ser tom ut. Er sb konfigurert, bytter lastHjelpere()
+// den ut med ekte hjelperprofiler fra databasen - se overleveringsnotatets
+// problem #1 ("data deles ikke mellom brukere").
+function profilTilHjelper(p){
+  var timerSiden = p.updated_at ? Math.max(0,(Date.now()-new Date(p.updated_at).getTime())/36e5) : 0;
+  return {
+    id: p.id, n: p.navn, k: p.kategori||'', t: p.tags||[], pro: !!p.pro,
+    sted: p.sted||'', km: null, r: p.rating, ant: p.antall_oppdrag||0,
+    pris: p.pris||0, sist: timerSiden, bilde: p.bilde_url||null
+  };
+}
+async function lastHjelpere(){
+  if(!sb) return;
+  var res=await sb.from('profiler').select('*').contains('roller',['hjelper']);
+  if(res.error){ console.error('Klarte ikke å laste hjelpere:', res.error.message); return; }
+  H=res.data.map(profilTilHjelper);
+  tegnKatRad();
+  if(document.getElementById('finn-hjelper').style.display!=='none') tegnHjelper();
+  if(document.getElementById('kategori').style.display!=='none') tegnKat();
+}
+
 var AV=['#C9E5E2','#CFD8EC','#D8E5C7','#F3DBC7','#E7D6E9','#F0DCD3'];
 // Fargen skal folge personen, ikke plasseringen i lista
 function avFor(navn){
@@ -1334,15 +1357,24 @@ function stedTreff(x){ var b=brukerSted().toLowerCase(); return !b || (x.sted||x
 function stedTekst(){ var b=brukerSted(); return b ? 'i '+b : 'i hele landet' }
 
 // bygg kategorifliser + select
-var rad=document.getElementById('kat-rad'), sel=document.getElementById('hva'), h='', o='';
-KAT.forEach(function(k){
-  var n=H.filter(function(x){return x.k===k.id}).length;
-  h+='<button class="kat '+k.k+'" type="button" data-k="'+k.id+'" aria-pressed="false">'+
-     '<div class="arch"><svg viewBox="0 0 24 24" stroke="#16302D" aria-hidden="true">'+k.ic+'</svg></div>'+
-     '<div class="lab">'+k.navn+'<span class="n">'+n+' hjelper'+(n===1?'':'e')+'</span></div></button>';
-  o+='<option value="'+k.id+'">'+k.navn+'</option>';
-});
-rad.innerHTML=h; sel.insertAdjacentHTML('beforeend',o);
+var rad=document.getElementById('kat-rad'), sel=document.getElementById('hva');
+(function(){
+  var o='';
+  KAT.forEach(function(k){ o+='<option value="'+k.id+'">'+k.navn+'</option>' });
+  sel.insertAdjacentHTML('beforeend',o);
+})();
+// Kalles på nytt når H (hjelperlista) endres, f.eks. etter at ekte hjelpere er lastet fra databasen
+function tegnKatRad(){
+  var h='';
+  KAT.forEach(function(k){
+    var n=H.filter(function(x){return x.k===k.id}).length;
+    h+='<button class="kat '+k.k+'" type="button" data-k="'+k.id+'" aria-pressed="false">'+
+       '<div class="arch"><svg viewBox="0 0 24 24" stroke="#16302D" aria-hidden="true">'+k.ic+'</svg></div>'+
+       '<div class="lab">'+k.navn+'<span class="n">'+n+' hjelper'+(n===1?'':'e')+'</span></div></button>';
+  });
+  rad.innerHTML=h;
+}
+tegnKatRad();
 
 function sistTekst(t){
   if(t<1) return 'Sett for '+Math.round(t*60)+' min siden';
@@ -1353,6 +1385,11 @@ function sistTekst(t){
 function stjerner(r){
   return '<span class="stj" style="--p:'+(r/5*100)+'%" role="img" aria-label="'+
     r.toFixed(1).replace('.',',')+' av 5"></span>';
+}
+// r er null for ekte hjelpere uten vurderinger ennå - ikke fiks opp en falsk 5-stjerners rating
+function vurderingHtml(r,ant){
+  if(r==null) return '<span style="font-weight:700">Ny hjelper</span> <i>(ingen vurderinger ennå)</i>';
+  return stjerner(r)+' <b>'+r.toFixed(1).replace('.',',')+'</b> <i>('+ant+')</i>';
 }
 
 
@@ -1396,14 +1433,16 @@ function visProfil(n){
   document.getElementById('profil-inn').innerHTML=
    '<button class="lukk" type="button" data-lukk aria-label="Lukk">✕</button>'+
    '<div class="dlg-topp"><div class="av" style="background:'+avFor(n)+'" aria-hidden="true">'+escapeHtml(initialer(n))+'</div>'+
-     '<div><h3>'+escapeHtml(x.n)+'</h3><div class="meta" style="margin:0"><span class="stjerne">'+stjerner(x.r)+'</span> '+
-     x.r.toFixed(1)+' · '+x.ant+' oppdrag</div></div></div>'+
+     '<div><h3>'+escapeHtml(x.n)+'</h3><div class="meta" style="margin:0">'+
+       (x.r==null ? '<span style="font-weight:700">Ny hjelper</span> <i>(ingen vurderinger ennå)</i>'
+                  : '<span class="stjerne">'+stjerner(x.r)+'</span> '+x.r.toFixed(1)+' · '+x.ant+' oppdrag')+
+     '</div></div></div>'+
    '<p style="color:var(--muted);font-weight:500;font-size:.92rem;margin-bottom:18px">'+OM[x.pro]+'</p>'+
    '<ul class="fakta">'+
      '<li><span>Kategori</span><b>'+escapeHtml(KATNAVN[x.k])+'</b></li>'+
      '<li><span>Tjenester</span><b>'+escapeHtml(x.t.join(', '))+'</b></li>'+
      '<li><span>Timepris</span><b>'+x.pris+' kr/t</b></li>'+
-     '<li><span>Avstand</span><b>'+x.km.toFixed(1)+' km</b></li>'+
+     (x.km!=null ? '<li><span>Avstand</span><b>'+x.km.toFixed(1)+' km</b></li>' : '')+
      '<li><span>Type</span><b>'+(x.pro?'PRO – registrert foretak':'Privat hjelper')+'</b></li>'+
      '<li><span>Sist aktiv</span><b>'+escapeHtml(sistTekst(x.sist).replace('Sett for ',''))+'</b></li>'+
    '</ul>'+
@@ -1471,6 +1510,14 @@ function visSide(id){
   document.querySelectorAll('.nav-links a').forEach(function(a){a.removeAttribute('aria-current')});
   if(id==='finn-hjelper') document.getElementById('nav-fh').setAttribute('aria-current','page');
   window.scrollTo(0,0);
+  // Frisk opp fra databasen når man går inn på en side som viser delte data
+  // (fire-and-forget - siden viser det den har med en gang, og oppdaterer når svaret kommer).
+  if(sb){
+    if(id==='finn-oppdrag') lastJobb();
+    else if(id==='finn-hjelper') lastHjelpere();
+    else if(id==='kategori'){ lastJobb(); lastHjelpere(); }
+    else if(id==='mine-oppdrag' || id==='meldinger'){ lastMineOppdrag(); lastFatt(); }
+  }
 }
 
 // --- Oppdrag (demo) ---
@@ -1503,6 +1550,38 @@ var JOBB=[
  {t:'Pusse opp båtbunn',k:'bat',u:'Vedlikehold',s:'Stavanger',b:'6 500 kr',km:9.1,n:41,d:'26 fots seilbåt. Skraping og ny bunnstoff før sjøsetting.'},
  {t:'Sommervikar i kiosk',k:'bemanning',u:'Sommerjobb',s:'Lillehammer',b:'Etter avtale',km:1.0,n:24,d:'Fire uker i juli. Passer for deg over 18.'}
 ];
+
+// JOBB over er demodata (vises når sb===null). lastJobb() bytter den ut med
+// ekte, åpne oppdrag fra databasen - egne oppdrag er filtrert bort, man
+// søker jo ikke på sin egen jobb.
+function oppdragTilJobb(row){
+  return {
+    id: row.id, t: row.tittel, k: row.kategori, u: row.underkategori||'', s: row.sted,
+    b: row.pris||'', d: row.beskrivelse||'', km: null,
+    n: Math.max(0,(Date.now()-new Date(row.created_at).getTime())/36e5),
+    bilder: row.bilder||[], status: row.status, valgt: null, bruker_id: row.bruker_id,
+    hjelper_id: row.hjelper_id, sokere: []
+  };
+}
+async function lastJobb(){
+  if(!sb) return;
+  var res=await sb.from('oppdrag').select('*').eq('status','apen').order('created_at',{ascending:false});
+  if(res.error){ console.error('Klarte ikke å laste oppdrag:', res.error.message); return; }
+  var megId = BRUKER ? BRUKER.id : null;
+  var alt = res.data.filter(function(r){return r.bruker_id!==megId});
+  if(BRUKER){
+    var interesseRes=await sb.from('interesse').select('oppdrag_id').eq('hjelper_id',BRUKER.id);
+    if(!interesseRes.error && interesseRes.data.length){
+      var alleredeVist={};
+      interesseRes.data.forEach(function(r){ alleredeVist[r.oppdrag_id]=true });
+      alt=alt.filter(function(r){ return !alleredeVist[r.id] });
+    }
+  }
+  JOBB=alt.map(oppdragTilJobb);
+  tegnJobb();
+  if(document.getElementById('kategori').style.display!=='none') tegnKat();
+}
+
 function tidSiden(t){
   if(t<1) return Math.round(t*60)+' min siden';
   if(t<24) return Math.round(t)+' t siden';
@@ -1513,6 +1592,14 @@ function tidKort(t){
   if(t<1) return Math.round(t*60)+' min';
   if(t<24) return Math.round(t)+' t';
   return Math.round(t/24)+' d';
+}
+// Samme som tidKort, men fra et ekte tidsstempel (meldinger fra databasen)
+function relTid(iso){
+  var min=Math.max(0,(Date.now()-new Date(iso).getTime())/6e4);
+  if(min<1) return 'nå';
+  if(min<60) return Math.round(min)+' min';
+  if(min<1440) return Math.round(min/60)+' t';
+  return Math.round(min/1440)+' d';
 }
 var oAvst=MAKS;
 function tegnJobb(){
@@ -1590,8 +1677,12 @@ function tegnStabel(){
     st.innerHTML='<div class="stabel-tom">'+
       '<h3>Ferdig! Du har sett alle oppdragene.</h3>'+
       (ant
-        ? '<p>Du meldte interesse i <b>'+ant+' oppdrag</b>. Oppdragsgiverne ser det, og du finner samtalene under Meldinger.</p>'+
-          '<button class="btn teal" type="button" id="bla-meldinger">Gå til meldinger</button>'+
+        ? '<p>Du meldte interesse i <b>'+ant+' oppdrag</b>. '+
+            (sb && !BRUKER
+              ? 'Logg inn for at oppdragsgiverne faktisk skal se det - uten innlogging blir ikke interessen din lagret.'
+              : 'Oppdragsgiverne ser det, og du finner samtalene under Meldinger.')+
+          '</p>'+
+          '<button class="btn teal" type="button" id="bla-meldinger">'+(sb && !BRUKER ? 'Logg inn' : 'Gå til meldinger')+'</button>'+
           '<button class="btn ghost" type="button" id="bla-omstart" style="margin-top:9px">Se gjennom på nytt</button>'
         : '<p>Du meldte ikke interesse i noen denne gangen. Prøv et annet sted, eller se gjennom på nytt.</p>'+
           '<button class="btn ghost" type="button" id="bla-omstart">Se gjennom på nytt</button>')+
@@ -1622,6 +1713,7 @@ function fjernTopp(retning, jobb){
   kort.style.transform='translate('+ut+'px,'+40+'px) rotate('+(retning*18)+'deg)';
   kort.style.opacity='0';
   if(retning>0 && blaInteressert.indexOf(jobb)===-1) blaInteressert.push(jobb);
+  if(retning>0 && sb && BRUKER) lagreInteresse(jobb);
   setTimeout(function(){
     var borte=blaKo.shift();
     blaHist.push({jobb:borte, retning:retning});
@@ -1633,10 +1725,27 @@ function oppdaterAngre(){
   var kn=document.getElementById('sw-angre');
   if(kn) kn.hidden = blaHist.length===0;
 }
+// Persisterer/fjerner "meldt interesse" i databasen. Beste innsats - en swipe
+// er rask og undo kan komme før forrige lagring er ferdig; verste utfall er
+// en interesse-rad som blir stående selv om brukeren angret, ikke en krasj.
+async function lagreInteresse(jobb){
+  if(jobb.id==null) return;
+  var res=await sb.from('interesse').upsert(
+    {oppdrag_id:jobb.id, hjelper_id:BRUKER.id}, {onConflict:'oppdrag_id,hjelper_id',ignoreDuplicates:true});
+  if(res.error) console.error('Klarte ikke å lagre interesse:', res.error.message);
+}
+async function fjernInteresse(jobb){
+  if(jobb.id==null) return;
+  var res=await sb.from('interesse').delete().eq('oppdrag_id',jobb.id).eq('hjelper_id',BRUKER.id);
+  if(res.error) console.error('Klarte ikke å fjerne interesse:', res.error.message);
+}
 function angreSwipe(){
   if(!blaHist.length) return;
   var siste=blaHist.pop();
-  if(siste.retning>0){ var i=blaInteressert.indexOf(siste.jobb); if(i>-1) blaInteressert.splice(i,1); }
+  if(siste.retning>0){
+    var i=blaInteressert.indexOf(siste.jobb); if(i>-1) blaInteressert.splice(i,1);
+    if(sb && BRUKER) fjernInteresse(siste.jobb);
+  }
   blaKo.unshift(siste.jobb);   // legg kortet tilbake øverst
   oppdaterAngre();
   tegnStabel();
@@ -1766,7 +1875,7 @@ document.getElementById('stabel').addEventListener('click',function(e){
 });
 document.getElementById('o-bla').addEventListener('click',function(e){
   if(e.target.id==='bla-omstart'){ blaInteressert=[]; byggKo(); tegnStabel(); }
-  if(e.target.id==='bla-meldinger'){ visSide('meldinger'); }
+  if(e.target.id==='bla-meldinger'){ visSide(sb && !BRUKER ? 'logg-inn' : 'meldinger'); }
 });
 
 // --- Bla gjennom slutt ---
@@ -1775,7 +1884,7 @@ document.getElementById('o-bla').addEventListener('click',function(e){
 var jk=document.getElementById('j-kat');
 jk.innerHTML='<option value="">Velg kategori</option>'+KAT.map(function(k){return '<option value="'+k.id+'">'+k.navn+'</option>'}).join('');
 var skjema=document.getElementById('skjema');
-skjema.addEventListener('submit',function(e){
+skjema.addEventListener('submit',async function(e){
   e.preventDefault();
   var felt=['j-tittel','j-kat','j-sted','j-tekst'], mangler=[];
   felt.forEach(function(id){
@@ -1790,23 +1899,65 @@ skjema.addEventListener('submit',function(e){
     document.getElementById(felt[0]).focus();
     return;
   }
+  if(sb && !BRUKER){
+    f.hidden=false;
+    f.textContent='Du må være logget inn for å legge ut et oppdrag.';
+    return;
+  }
   f.hidden=true;
+
+  var knapp=skjema.querySelector('button[type="submit"]');
+  knapp.disabled=true; knapp.textContent='Legger ut …';
+
+  var tittel=document.getElementById('j-tittel').value.trim(),
+      kategori=jk.value,
+      underkategori=jk.options[jk.selectedIndex].text,
+      sted=document.getElementById('j-sted').value.trim(),
+      pris=document.getElementById('j-pris').value.trim(),
+      tekst=document.getElementById('j-tekst').value.trim();
+
+  if(sb){
+    var bilder=await lastOppOppdragsbilder();
+    var res=await sb.from('oppdrag').insert({
+      bruker_id: BRUKER.id, tittel: tittel, kategori: kategori, underkategori: underkategori,
+      sted: sted, pris: pris, beskrivelse: tekst, bilder: bilder
+    }).select().single();
+    knapp.disabled=false; knapp.textContent='Legg ut oppdrag';
+    if(res.error){
+      f.hidden=false; f.textContent='Klarte ikke å legge ut oppdraget: '+res.error.message;
+      return;
+    }
+    jBilder=[]; tegnBilder();
+    await lastMineOppdrag();
+    await lastJobb();
+  } else {
+    MINE.unshift({id:nesteId++, t:tittel, k:kategori, u:underkategori, s:sted, b:pris, d:tekst,
+                  status:'apen', valgt:null, sokere:[],
+                  bilder:jBilder.map(function(b){return b.url})});
+    jBilder=[]; tegnBilder();
+    tegnMine(); tegnKonto(); tegnMeldinger(); tegnDash();
+    knapp.disabled=false; knapp.textContent='Legg ut oppdrag';
+  }
+
   document.getElementById('j-ok-tekst').textContent=
-    'Hjelpere innen '+jk.options[jk.selectedIndex].text.toLowerCase()+' i '+document.getElementById('j-sted').value.trim()+' ser oppdraget nå. Du får varsel når noen melder seg.';
-  MINE.unshift({id:nesteId++, t:document.getElementById('j-tittel').value.trim(),
-                k:jk.value,
-                u:jk.options[jk.selectedIndex].text,
-                s:document.getElementById('j-sted').value.trim(),
-                b:document.getElementById('j-pris').value.trim(),
-                d:document.getElementById('j-tekst').value.trim(),
-                status:'apen', valgt:null, sokere:[],
-                bilder:jBilder.map(function(b){return b.url})});
-  jBilder=[]; tegnBilder();
-  tegnMine(); tegnKonto(); tegnMeldinger(); tegnDash();
+    'Hjelpere innen '+underkategori.toLowerCase()+' i '+sted+' ser oppdraget nå. Du får varsel når noen melder seg.';
   skjema.hidden=true;
   document.getElementById('j-ok').hidden=false;
   window.scrollTo(0,0);
 });
+// Laster opp valgte oppdragsbilder til Supabase Storage, returnerer offentlige URL-er.
+async function lastOppOppdragsbilder(){
+  if(!jBilder.length) return [];
+  var urls=[];
+  for(var i=0;i<jBilder.length;i++){
+    var b=jBilder[i];
+    var sti=BRUKER.id+'/'+Date.now()+'-'+i+'-'+b.navn.replace(/[^\w.\-]/g,'_');
+    var opp=await sb.storage.from('oppdragsbilder').upload(sti, b.file, { cacheControl:'3600' });
+    if(opp.error){ console.error('Klarte ikke å laste opp bilde:', opp.error.message); continue; }
+    urls.push(sb.storage.from('oppdragsbilder').getPublicUrl(sti).data.publicUrl);
+  }
+  return urls;
+}
 document.getElementById('j-ny').addEventListener('click',function(){
   skjema.reset(); jBilder=[]; tegnBilder(); skjema.hidden=false;
   document.getElementById('j-ok').hidden=true;
@@ -1875,6 +2026,47 @@ var MINE=[
    ]}
   ]}
 ];
+// Demoraden over har ikke noen ekte oppdrag-id i databasen - fjern den med
+// en gang sb er konfigurert, ellers vil "godta hjelper"/meldinger prøve å
+// skrive til et oppdrag som ikke finnes. lastMineOppdrag() fyller den ekte lista.
+if(sb) MINE=[];
+
+async function lastMeldingerFor(oppdragId, hjelperId){
+  var res=await sb.from('meldinger').select('*').eq('oppdrag_id',oppdragId).eq('hjelper_id',hjelperId).order('created_at',{ascending:true});
+  if(res.error || !res.data) return [];
+  return res.data.map(function(m){
+    return { id:m.id, fra: m.avsender_id===BRUKER.id?'meg':'dem', t:m.tekst, tid:relTid(m.created_at), lest:m.lest };
+  });
+}
+async function markerLest(meldingIder){
+  var res=await sb.from('meldinger').update({lest:true}).in('id',meldingIder);
+  if(res.error) console.error('Klarte ikke å markere meldinger som lest:', res.error.message);
+}
+async function lastSokereFor(oppdragId){
+  var res=await sb.from('interesse').select('hjelper_id, profiler!hjelper_id(navn,pro,rating,antall_oppdrag,pris)').eq('oppdrag_id',oppdragId);
+  if(res.error || !res.data) return [];
+  return Promise.all(res.data.map(async function(row){
+    var p=row.profiler||{};
+    return {
+      id: row.hjelper_id, n: p.navn||'Ukjent hjelper', pro: !!p.pro, r: p.rating,
+      ant: p.antall_oppdrag||0, km: null, pris: p.pris||0,
+      meldinger: await lastMeldingerFor(oppdragId, row.hjelper_id)
+    };
+  }));
+}
+async function lastMineOppdrag(){
+  if(!sb || !BRUKER) return;
+  var res=await sb.from('oppdrag').select('*, hjelper:profiler!hjelper_id(navn)')
+    .eq('bruker_id',BRUKER.id).order('created_at',{ascending:false});
+  if(res.error){ console.error('Klarte ikke å laste dine oppdrag:', res.error.message); return; }
+  MINE=await Promise.all(res.data.map(async function(row){
+    var j=oppdragTilJobb(row);
+    j.valgt = row.hjelper ? row.hjelper.navn : null;
+    j.sokere = await lastSokereFor(row.id);
+    return j;
+  }));
+  tegnMine(); tegnKonto(); tegnDash(); tegnMeldinger();
+}
 
 function initialer(n){ return n.trim().split(/\s+/).map(function(w){return w[0]}).join('').slice(0,2).toUpperCase() }
 
@@ -1925,13 +2117,31 @@ document.getElementById('mk-av').addEventListener('click',function(){
   if(!BRUKER) return;
   document.getElementById('mk-fil').click();
 });
-document.getElementById('mk-fil').addEventListener('change',function(){
+document.getElementById('mk-fil').addEventListener('change',async function(){
   var f=this.files[0]; if(!f || !BRUKER) return;
-  if(BRUKER.bilde) URL.revokeObjectURL(BRUKER.bilde);
-  BRUKER.bilde=URL.createObjectURL(f);
   this.value='';
-  visProfilbilde(); tegnDash();
+  if(!sb){
+    if(BRUKER.bilde) URL.revokeObjectURL(BRUKER.bilde);
+    BRUKER.bilde=URL.createObjectURL(f);
+    visProfilbilde(); tegnDash();
+    return;
+  }
+  var url=await lastOppAvatar(f);
+  if(url){ BRUKER.bilde=url; visProfilbilde(); tegnDash(); }
 });
+// Laster opp et profilbilde til Supabase Storage og lagrer URL-en på profilen.
+// Returnerer den offentlige URL-en, eller null hvis noe gikk galt.
+async function lastOppAvatar(file){
+  var ext=(file.name.split('.').pop()||'jpg').toLowerCase();
+  var sti=BRUKER.id+'/avatar.'+ext;
+  var opp=await sb.storage.from('avatarer').upload(sti, file, { upsert:true, cacheControl:'3600' });
+  if(opp.error){ console.error('Klarte ikke å laste opp bilde:', opp.error.message); return null; }
+  var pub=sb.storage.from('avatarer').getPublicUrl(sti);
+  var url=pub.data.publicUrl+'?t='+Date.now();   // cache-bust så nytt bilde vises med en gang
+  var oppd=await sb.from('profiler').update({ bilde_url:url }).eq('id',BRUKER.id);
+  if(oppd.error){ console.error('Klarte ikke å lagre bilde-URL:', oppd.error.message); return null; }
+  return url;
+}
 
 function tegnKonto(){
   var avKnapp=document.getElementById('mk-av');
@@ -2065,6 +2275,22 @@ var FATT=[
    {fra:'dem', t:'Tusen takk for hjelpen! Betalingen er sendt.', tid:'2 d', lest:true}
   ]}
 ];
+if(sb) FATT=[];   // demoraden over har ingen ekte oppdrag-id - lastFatt() fyller den ekte lista
+
+async function lastFatt(){
+  if(!sb || !BRUKER) return;
+  var res=await sb.from('oppdrag').select('*, bruker:profiler!bruker_id(navn)')
+    .eq('hjelper_id',BRUKER.id).order('created_at',{ascending:false});
+  if(res.error){ console.error('Klarte ikke å laste jobbene dine:', res.error.message); return; }
+  FATT=await Promise.all(res.data.map(async function(row){
+    return {
+      id: row.id, k: row.kategori, t: row.tittel, u: row.underkategori||'', s: row.sted, b: row.pris||'',
+      kunde: row.bruker ? row.bruker.navn : 'Ukjent', status: row.status,
+      meldinger: await lastMeldingerFor(row.id, BRUKER.id)
+    };
+  }));
+  tegnMeldinger(); tegnDash();
+}
 
 document.querySelector('.bunn').addEventListener('click',function(e){
   var b=e.target.closest('.bnav'); if(!b) return;
@@ -2106,8 +2332,8 @@ function visOppdrag(id){
               (sk.pro?'<span class="merke pro">PRO</span>':'<span class="merke">PRIVAT</span>')+
               (u?'<span class="uleste">'+u+' ny'+(u===1?'':'e')+'</span>':'')+
               (j.valgt===sk.n?'<span class="merke pro">VALGT</span>':'')+'</div>'+
-            '<div class="meta" style="margin:3px 0 0"><span class="stjerne">'+stjerner(sk.r)+'</span> '+
-              sk.r.toFixed(1)+' &middot; '+sk.ant+' oppdrag &middot; '+sk.km.toFixed(1)+' km</div>'+
+            '<div class="meta" style="margin:3px 0 0">'+vurderingHtml(sk.r,sk.ant)+' oppdrag'+
+              (sk.km!=null ? ' &middot; '+sk.km.toFixed(1)+' km' : '')+'</div>'+
             '<p class="siste">'+escapeHtml(siste.t)+'</p>'+
             '<div class="soker-cta">'+
               '<button class="btn sm" type="button" data-sam="'+i+'">'+(u?'Les og svar':'Snakk med '+escapeHtml(sk.n.split(' ')[0]))+'</button>'+
@@ -2131,7 +2357,9 @@ function visSamtale(jobbId, idx){
   var sk=j.sokere[idx]; if(!sk) return;
   samId=jobbId; samIdx=idx; samKilde='sok';
   document.getElementById('sam-profil').hidden=false;
+  var ulesteId=sk.meldinger.filter(function(m){return m.fra==='dem' && !m.lest}).map(function(m){return m.id}).filter(function(id){return id!=null});
   sk.meldinger.forEach(function(m){ m.lest=true });
+  if(sb && BRUKER && ulesteId.length) markerLest(ulesteId);
 
   document.getElementById('sam-ini').textContent=initialer(sk.n);
   document.getElementById('sam-ini').style.background=avFor(sk.n);
@@ -2139,8 +2367,8 @@ function visSamtale(jobbId, idx){
   document.getElementById('sam-merke').innerHTML = sk.pro
     ? '<span class="merke pro">PRO</span>' : '<span class="merke">PRIVAT</span>';
   document.getElementById('sam-meta').innerHTML=
-    '<span class="stjerne">'+stjerner(sk.r)+'</span> '+sk.r.toFixed(1)+' &middot; '+sk.ant+
-    ' oppdrag &middot; '+sk.pris+' kr/t &middot; om «'+escapeHtml(j.t)+'»';
+    (sk.r==null ? 'Ny hjelper' : '<span class="stjerne">'+stjerner(sk.r)+'</span> '+sk.r.toFixed(1)+' &middot; '+sk.ant+' oppdrag')+
+    ' &middot; '+sk.pris+' kr/t &middot; om «'+escapeHtml(j.t)+'»';
 
   tegnBobler();
 
@@ -2153,7 +2381,7 @@ function visSamtale(jobbId, idx){
     if(j.valgt===sk.n){
       tekst.textContent=sk.n+' har oppdraget.';
       knapp.textContent='Gjør opp med Vipps';
-      knapp.onclick=function(){ visBetal(j.t, sk.n, prisTall(j.b)) };
+      knapp.onclick=function(){ visBetal(j.id, j.t, sk.n, prisTall(j.b)) };
     }
   } else {
     boks.hidden=false;
@@ -2169,7 +2397,9 @@ function visSamtale(jobbId, idx){
 function visSamtaleFatt(i){
   var f=FATT[i]; if(!f) return;
   samKilde='fatt'; fattIdx=i;
+  var ulesteId=f.meldinger.filter(function(m){return m.fra==='dem' && !m.lest}).map(function(m){return m.id}).filter(function(id){return id!=null});
   f.meldinger.forEach(function(m){ m.lest=true });
+  if(sb && BRUKER && ulesteId.length) markerLest(ulesteId);
 
   document.getElementById('sam-ini').textContent=initialer(f.kunde);
   document.getElementById('sam-ini').style.background=avFor(f.kunde);
@@ -2193,13 +2423,22 @@ function visSamtaleFatt(i){
     tekst.textContent='Når jobben er gjort, si fra til '+f.kunde.split(' ')[0]+'.';
     knapp.textContent='Marker som ferdig';
     knapp.onclick=function(){
+      var tekst='Jobben er ferdig. Takk for oppdraget!';
       f.status='ferdig';
-      f.meldinger.push({fra:'meg', t:'Jobben er ferdig. Takk for oppdraget!', tid:'nå', lest:true});
+      f.meldinger.push({fra:'meg', t:tekst, tid:'nå', lest:true});
       tegnBobler(); tegnMeldinger(); visSamtaleFatt(i);
+      if(sb && BRUKER) ferdigLagre(f.id, tekst);
     };
   }
   visSide('samtale');
   document.title=f.kunde+' | Nobon';
+}
+async function ferdigLagre(oppdragId, tekst){
+  var res=await sb.from('oppdrag').update({status:'ferdig'}).eq('id',oppdragId);
+  if(res.error){ console.error('Klarte ikke å lagre at oppdraget er ferdig:', res.error.message); return; }
+  var mres=await sb.from('meldinger').insert(
+    {oppdrag_id:oppdragId, hjelper_id:BRUKER.id, avsender_id:BRUKER.id, tekst:tekst, lest:false});
+  if(mres.error) console.error('Klarte ikke å lagre meldingen:', mres.error.message);
 }
 
 function tegnBobler(){
@@ -2215,9 +2454,18 @@ function prisTall(b){ return parseInt((b||'').replace(/\D/g,'')) || 0 }
 function godta(jobbId, idx){
   var j=jobbById(jobbId), sk=j.sokere[idx];
   j.status='tildelt'; j.valgt=sk.n;
-  sk.meldinger.push({fra:'meg', t:'Du har fått oppdraget. Si fra når det passer å komme.', tid:'nå', lest:true});
+  var tekst='Du har fått oppdraget. Si fra når det passer å komme.';
+  sk.meldinger.push({fra:'meg', t:tekst, tid:'nå', lest:true});
   tegnMine();
   visOppdrag(jobbId);
+  if(sb && BRUKER) godtaLagre(jobbId, sk.id, tekst);
+}
+async function godtaLagre(jobbId, hjelperId, tekst){
+  var res=await sb.from('oppdrag').update({hjelper_id:hjelperId, status:'tildelt'}).eq('id',jobbId);
+  if(res.error){ console.error('Klarte ikke å lagre tildelingen:', res.error.message); return; }
+  var mres=await sb.from('meldinger').insert(
+    {oppdrag_id:jobbId, hjelper_id:hjelperId, avsender_id:BRUKER.id, tekst:tekst, lest:false});
+  if(mres.error) console.error('Klarte ikke å lagre meldingen:', mres.error.message);
 }
 
 document.getElementById('mine-liste').addEventListener('click',function(e){
@@ -2243,25 +2491,26 @@ document.getElementById('sam-profil').addEventListener('click',function(){
 });
 document.getElementById('od-betal').addEventListener('click',function(){
   var j=jobbById(odId);
-  visBetal(j.t, j.valgt, prisTall(j.b));
+  visBetal(j.id, j.t, j.valgt, prisTall(j.b));
 });
 
 // --- Bilder på oppdrag ---
-var jBilder=[];   // {url, navn}
-var regBilde=null;   // profilbilde valgt under registrering
+var jBilder=[];   // {url (blob-forhåndsvisning), navn, file}
+var regBilde=null;   // profilbilde valgt under registrering (blob-forhåndsvisning)
+var regBildeFil=null;   // samme bilde som ekte File - trengs for opplasting til Storage
 var jFil=document.getElementById('j-fil');
 function tegnBilder(){
   var c=document.getElementById('j-bilder');
   c.innerHTML=jBilder.map(function(b,i){
-    return '<div class="bilde-mini"><img src="'+b.url+'" alt="'+b.navn+'">'+
+    return '<div class="bilde-mini"><img src="'+b.url+'" alt="'+escapeHtml(b.navn)+'">'+
       '<button type="button" data-fjern="'+i+'" aria-label="Fjern bilde">&times;</button></div>';
   }).join('');
 }
 jFil.addEventListener('change',function(){
   [].slice.call(this.files).forEach(function(f){
-    if(!f.type.indexOf('image/')===0) return;
+    if(f.type.indexOf('image/')!==0) return;
     if(jBilder.length>=6) return;         // et rimelig tak
-    jBilder.push({url:URL.createObjectURL(f), navn:f.name});
+    jBilder.push({url:URL.createObjectURL(f), navn:f.name, file:f});
   });
   this.value='';                          // så samme fil kan velges igjen
   tegnBilder();
@@ -2282,6 +2531,7 @@ document.getElementById('reg-fil').addEventListener('change',function(){
   var f=this.files[0]; if(!f) return;
   if(regBilde) URL.revokeObjectURL(regBilde);
   regBilde=URL.createObjectURL(f);
+  regBildeFil=f;
   this.value='';
   var av=document.getElementById('reg-av');
   var g=av.querySelector('img');
@@ -2294,10 +2544,18 @@ var samInn=document.getElementById('sam-inn');
 function sendMelding(){
   var t=samInn.value.trim(); if(!t) return;
   var kilde = samKilde==='fatt' ? FATT[fattIdx] : jobbById(samId).sokere[samIdx];
+  var oppdragId = samKilde==='fatt' ? FATT[fattIdx].id : samId;
+  var hjelperId = samKilde==='fatt' ? (BRUKER&&BRUKER.id) : kilde.id;
   kilde.meldinger.push({fra:'meg', t:t, tid:'nå', lest:true});
   samInn.value=''; samInn.style.height='auto';
   tegnBobler(); tegnMeldinger(); tegnDash();
   document.getElementById('sam-bobler').lastElementChild.scrollIntoView({behavior:'smooth',block:'nearest'});
+  if(sb && BRUKER) lagreMelding(oppdragId, hjelperId, t);
+}
+async function lagreMelding(oppdragId, hjelperId, tekst){
+  var res=await sb.from('meldinger').insert(
+    {oppdrag_id:oppdragId, hjelper_id:hjelperId, avsender_id:BRUKER.id, tekst:tekst, lest:false});
+  if(res.error) console.error('Klarte ikke å lagre meldingen:', res.error.message);
 }
 document.getElementById('sam-send').addEventListener('click',sendMelding);
 samInn.addEventListener('input',function(){
@@ -2377,15 +2635,22 @@ regSkjema.addEventListener('submit',async function(e){
     return;
   }
 
-  regBilde=null;   // blob-URL-er lever bare i denne økten – ekte fillagring er steg 3
   var rg=document.querySelector('#reg-av img'); if(rg) rg.remove();
   document.getElementById('reg-av-ini').hidden=false;
 
   var trengerBekreftelse = !res.data.session;
   if(!trengerBekreftelse){
     BRUKER=brukerFraSupabase(res.data.user);
+    // E-postbekreftelse er av, så vi har en sesjon med en gang - last opp
+    // profilbildet valgt i skjemaet mens vi har mulighet (Storage krever innlogging).
+    if(regBildeFil){
+      var url=await lastOppAvatar(regBildeFil);
+      if(url) BRUKER.bilde=url;
+    }
     tegnDash(); tegnKonto(); tegnMine();
   }
+  if(regBilde) URL.revokeObjectURL(regBilde);
+  regBilde=null; regBildeFil=null;
   document.getElementById('reg-ok-tittel').textContent = trengerBekreftelse ? 'Sjekk innboksen din' : 'Velkommen til Nobon';
   document.getElementById('reg-ok-tekst').textContent = trengerBekreftelse
     ? 'Nesten ferdig! Vi har sendt en bekreftelseslenke til '+ep.value.trim()+'. Bekreft e-posten for å logge inn.'
@@ -2416,9 +2681,9 @@ document.getElementById('vipps-reg').addEventListener('click',function(){
 });
 
 // --- Betaling ---
-var betalData={oppdrag:'—',hjelper:'—',pris:0};
-function visBetal(oppdrag,hjelper,pris){
-  betalData={oppdrag:oppdrag,hjelper:hjelper,pris:pris};
+var betalData={oppdragId:null,oppdrag:'—',hjelper:'—',pris:0};
+function visBetal(oppdragId,oppdrag,hjelper,pris){
+  betalData={oppdragId:oppdragId,oppdrag:oppdrag,hjelper:hjelper,pris:pris};
   var gebyr=Math.round(pris*0.05);
   document.getElementById('b-oppdrag').textContent=oppdrag;
   document.getElementById('b-hjelper').textContent=hjelper;
@@ -2426,17 +2691,65 @@ function visBetal(oppdrag,hjelper,pris){
   document.getElementById('b-gebyr').textContent=gebyr.toLocaleString('nb-NO')+' kr';
   document.getElementById('b-sum').textContent=(pris+gebyr).toLocaleString('nb-NO')+' kr';
   document.getElementById('betal-ok').hidden=true;
+  document.getElementById('betal-feil').hidden=true;
   document.getElementById('vipps-betal').hidden=false;
+  document.getElementById('vipps-betal').disabled=false;
+  document.getElementById('vipps-betal').textContent='Betal med Vipps';
   visSide('betal');
 }
-document.getElementById('vipps-betal').addEventListener('click',function(){
-  this.hidden=true;
-  document.getElementById('betal-ok').hidden=false;
+document.getElementById('vipps-betal').addEventListener('click',async function(){
+  var feil=document.getElementById('betal-feil');
+  feil.hidden=true;
+  if(!sb){
+    // Demomodus uten backend: vis "slik ville det sett ut" som før.
+    this.hidden=true;
+    document.getElementById('betal-ok').hidden=false;
+    return;
+  }
+  this.disabled=true; this.textContent='Starter Vipps …';
+  var res=await sb.functions.invoke('vipps-init', { body:{ oppdragId: betalData.oppdragId } });
+  if(res.error || (res.data && res.data.error)){
+    this.disabled=false; this.textContent='Betal med Vipps';
+    feil.hidden=false;
+    feil.textContent=(res.data && res.data.error) || 'Klarte ikke å starte Vipps-betaling. '+
+      'Sjekk at Vipps-nøklene er satt som Supabase-secrets (se NOBON-SETUP.md).';
+    return;
+  }
+  window.location.href=res.data.redirectUrl;
 });
 document.getElementById('betal-ny').addEventListener('click',function(){
   document.getElementById('betal-ok').hidden=true;
+  document.getElementById('betal-feil').hidden=true;
   document.getElementById('vipps-betal').hidden=false;
+  document.getElementById('vipps-betal').disabled=false;
 });
+
+// Brukeren kommer tilbake fra Vipps med ?vipps_ref=... i URL-en. Sjekk den
+// EKTE statusen hos Vipps (via vipps-status) - stol aldri på selve retur-URL-en.
+(function(){
+  var ref=new URLSearchParams(window.location.search).get('vipps_ref');
+  if(!ref || !sb) return;
+  history.replaceState(null,'',window.location.pathname);
+  sb.auth.getSession().then(async function(){
+    var res=await sb.functions.invoke('vipps-status', { body:{ reference: ref } });
+    visSide('betal');
+    var ok=document.getElementById('betal-ok'), feil=document.getElementById('betal-feil'), knapp=document.getElementById('vipps-betal');
+    if(res.error || !res.data || res.data.error){
+      feil.hidden=false; feil.textContent='Klarte ikke å bekrefte betalingsstatus. Prøv igjen, eller sjekk Vipps-appen.';
+      return;
+    }
+    if(res.data.status==='betalt'){
+      knapp.hidden=true;
+      ok.hidden=false;
+      ok.querySelector('p').textContent='Betalingen er bekreftet av Vipps.';
+      await lastMineOppdrag(); await lastFatt();
+    } else if(res.data.status==='kansellert'){
+      feil.hidden=false; feil.textContent='Betalingen ble avbrutt eller kansellert i Vipps.';
+    } else {
+      feil.hidden=false; feil.textContent='Vipps har ikke bekreftet betalingen ennå. Prøv "Betal med Vipps" på nytt om et øyeblikk.';
+    }
+  });
+})();
 
 // --- Meldinger ---
 var mFane='mine';
@@ -2545,9 +2858,9 @@ function kortHtml(x,i){
       '<div class="navn-rad"><span class="navn">'+escapeHtml(x.n)+'</span>'+
         (x.pro?'<span class="merke pro">PRO</span>':'<span class="merke">PRIVAT</span>')+'</div>'+
       '<div class="meta k-meta">'+
-        '<span class="m-r">'+stjerner(x.r)+' <b>'+x.r.toFixed(1).replace('.',',')+'</b> <i>('+x.ant+')</i></span>'+
+        '<span class="m-r">'+vurderingHtml(x.r,x.ant)+'</span>'+
         '<span class="m-p">'+x.pris+' kr/t</span>'+
-        '<span class="m-km">'+x.km.toFixed(1).replace('.',',')+' km</span>'+
+        (x.km!=null ? '<span class="m-km">'+x.km.toFixed(1).replace('.',',')+' km</span>' : '')+
       '</div>'+
       '<div class="tags">'+x.t.map(function(t){return '<span class="tag">'+escapeHtml(t)+'</span>'}).join('')+'</div>'+
       '<div class="kort-cta"><button class="btn sm" type="button" data-inv="'+escapeHtml(x.n)+'">'+
@@ -2750,20 +3063,39 @@ document.getElementById('h-flere').addEventListener('click',function(){
 
 tegnMeldinger(); tegnDash(); tegnKonto(); tegnMine(); tegnHjelper();
 
-// --- Gjenopprett innlogging fra Supabase-sesjonen (overlever refresh) ---
+// --- Gjenopprett innlogging fra Supabase-sesjonen, og last delte data ---
 if(sb){
   document.getElementById('reg-ikke-koblet').hidden=true;
   document.getElementById('konto-ikke-koblet').innerHTML=
-    '<b>Delvis koblet opp.</b> Innlogging er ekte (Supabase Auth) og overlever oppdatering av siden. '+
-    'Oppdrag, hjelpere og meldinger er fortsatt eksempeldata som ikke deles mellom brukere ennå.';
+    '<b>Koblet til Supabase.</b> Innlogging, oppdrag, hjelpere, meldinger og bilder er ekte og deles '+
+    'mellom brukere. Vipps-betaling er fortsatt bare en skisse (se NOBON-SETUP.md).';
 
-  sb.auth.getSession().then(function(res){
+  // Kategorier og hjelpere er offentlige - last dem uansett innloggingsstatus.
+  lastHjelpere();
+  lastJobb();
+
+  var forrigeBrukerId=null;
+  async function ettersyncBruker(){
+    if(BRUKER && BRUKER.id!==forrigeBrukerId){
+      forrigeBrukerId=BRUKER.id;
+      await Promise.all([lastMineOppdrag(), lastFatt(), lastJobb()]);
+    } else if(!BRUKER && forrigeBrukerId!==null){
+      forrigeBrukerId=null;
+      MINE=[]; FATT=[];
+      tegnMine(); tegnMeldinger(); tegnDash(); tegnKonto();
+      lastJobb();
+    }
+  }
+
+  sb.auth.getSession().then(async function(res){
     BRUKER=brukerFraSupabase(res.data.session && res.data.session.user);
     tegnDash(); tegnKonto(); tegnMine();
+    await ettersyncBruker();
   });
-  sb.auth.onAuthStateChange(function(_event, session){
+  sb.auth.onAuthStateChange(async function(_event, session){
     BRUKER=brukerFraSupabase(session && session.user);
     tegnDash(); tegnKonto(); tegnMine();
+    await ettersyncBruker();
   });
 }
 </script>
