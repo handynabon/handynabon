@@ -977,11 +977,46 @@ footer a{text-decoration:underline;text-underline-offset:2px}
       <button class="btn teal" type="button" id="mk-handling">Lag en bruker</button>
       <button class="btn ghost" type="button" id="mk-hjelperprofil" hidden>Rediger hjelperprofil</button>
       <button class="btn ghost" type="button" id="mk-passord" hidden>Endre passord</button>
+      <button class="btn ghost" type="button" id="mk-epost" hidden>Endre e-post</button>
       <button class="btn ghost" type="button" onclick="visSide('finn-hjelp')">Til forsiden</button>
+    </div>
+    <div style="margin-top:22px" id="mk-fare" hidden>
+      <button class="txt-btn" type="button" id="mk-slett" style="color:#C0392B">Slett kontoen min</button>
     </div>
   </div>
 </section>
 </div><!-- /min-konto -->
+
+<dialog id="dlg-epost">
+  <div class="dlg">
+    <button class="lukk" type="button" data-lukk aria-label="Lukk">✕</button>
+    <h3 style="margin-bottom:6px">Endre e-post</h3>
+    <p style="color:var(--muted);font-weight:500;font-size:.88rem;margin-bottom:18px">Du må bekrefte den nye e-postadressen før den tas i bruk.</p>
+    <form id="ep-skjema" novalidate>
+      <div class="rad"><label class="f" for="ep-ny">Ny e-post</label>
+        <input class="inn" id="ep-ny" type="email" placeholder="ny@epost.no" autocomplete="email"></div>
+      <p class="feil" id="ep-feil" hidden></p>
+      <div class="dlg-bunn"><button class="btn teal" type="submit">Send bekreftelse</button>
+        <button class="btn ghost" type="button" data-lukk>Avbryt</button></div>
+    </form>
+  </div>
+</dialog>
+
+<dialog id="dlg-slett">
+  <div class="dlg">
+    <button class="lukk" type="button" data-lukk aria-label="Lukk">✕</button>
+    <h3 style="margin-bottom:6px">Slett kontoen din?</h3>
+    <p style="color:var(--muted);font-weight:500;font-size:.88rem;margin-bottom:18px">
+      Dette kan ikke angres. Kontoen din, profilen og oppdragene dine forsvinner.
+      Skriv <b>SLETT</b> for å bekrefte.</p>
+    <form id="slett-skjema" novalidate>
+      <div class="rad"><input class="inn" id="slett-bekreft" type="text" placeholder="Skriv SLETT" autocomplete="off"></div>
+      <p class="feil" id="slett-feil" hidden></p>
+      <div class="dlg-bunn"><button class="btn" type="submit" style="background:#C0392B">Slett for godt</button>
+        <button class="btn ghost" type="button" data-lukk>Avbryt</button></div>
+    </form>
+  </div>
+</dialog>
 
 <dialog id="dlg-hjelperprofil">
   <div class="dlg">
@@ -1070,6 +1105,29 @@ footer a{text-decoration:underline;text-underline-offset:2px}
       <div class="godta-boks">
         <p id="od-tildelt-tekst">—</p>
         <button class="btn teal" type="button" id="od-betal">Gjør opp med Vipps</button>
+      </div>
+    </div>
+
+    <div id="od-vurdering" hidden style="margin-top:20px">
+      <div class="godta-boks">
+        <div id="ov-skjema">
+          <p style="margin-bottom:10px;font-weight:700">Hvordan gikk det med <span id="ov-navn">—</span>?</p>
+          <div class="styr" id="ov-stjerner" style="margin-bottom:12px">
+            <button class="pill" type="button" data-stj="1" aria-pressed="false">1 ★</button>
+            <button class="pill" type="button" data-stj="2" aria-pressed="false">2 ★</button>
+            <button class="pill" type="button" data-stj="3" aria-pressed="false">3 ★</button>
+            <button class="pill" type="button" data-stj="4" aria-pressed="false">4 ★</button>
+            <button class="pill" type="button" data-stj="5" aria-pressed="false">5 ★</button>
+          </div>
+          <textarea id="ov-kommentar" class="inn" placeholder="Kommentar (valgfritt)" style="margin-bottom:10px;min-height:70px;resize:vertical"></textarea>
+          <p class="feil" id="ov-feil" hidden></p>
+          <button class="btn teal" type="button" id="ov-send">Send vurdering</button>
+        </div>
+        <div id="ov-ferdig" hidden>
+          <p style="font-weight:700;margin-bottom:4px">Du har vurdert <span id="ov-navn2">—</span></p>
+          <p><span class="stjerne" id="ov-visstjerner"></span></p>
+          <p id="ov-viskommentar" style="color:var(--muted);font-weight:500;font-size:.9rem;margin-top:6px"></p>
+        </div>
       </div>
     </div>
   </div>
@@ -2191,7 +2249,8 @@ function tegnKonto(){
   var av=document.getElementById('mk-ini'), navn=document.getElementById('mk-navn'),
       rolle=document.getElementById('mk-rolle'), fakta=document.getElementById('mk-fakta'),
       knapp=document.getElementById('mk-handling'),
-      hpKnapp=document.getElementById('mk-hjelperprofil'), pwKnapp=document.getElementById('mk-passord');
+      hpKnapp=document.getElementById('mk-hjelperprofil'), pwKnapp=document.getElementById('mk-passord'),
+      epKnapp=document.getElementById('mk-epost'), fare=document.getElementById('mk-fare');
   if(!BRUKER){
     avKnapp.disabled=true;
     av.textContent='N'; av.hidden=false;
@@ -2202,7 +2261,7 @@ function tegnKonto(){
     fakta.innerHTML=''; fakta.hidden=true;
     knapp.textContent='Lag en bruker';
     knapp.onclick=function(){ visSide('lag-bruker') };
-    hpKnapp.hidden=true; pwKnapp.hidden=true;
+    hpKnapp.hidden=true; pwKnapp.hidden=true; epKnapp.hidden=true; fare.hidden=true;
     return;
   }
   fakta.hidden=false;
@@ -2223,6 +2282,8 @@ function tegnKonto(){
   knapp.onclick=function(){ if(sb) sb.auth.signOut(); BRUKER=null; tegnDash(); tegnKonto(); visSide('finn-hjelp') };
   hpKnapp.hidden = !(sb && BRUKER.roller.indexOf('hjelper')>-1);
   pwKnapp.hidden = !sb;
+  epKnapp.hidden = !sb;
+  fare.hidden = !sb;
 }
 
 // --- Rediger hjelperprofil ---
@@ -2290,6 +2351,58 @@ document.getElementById('pw-skjema').addEventListener('submit',async function(e)
   f.hidden=true;
   dlgPw.close();
   visSide('min-konto');
+});
+
+// --- Endre e-post ---
+var dlgEp=document.getElementById('dlg-epost');
+document.getElementById('mk-epost').addEventListener('click',function(){
+  document.getElementById('ep-ny').value='';
+  document.getElementById('ep-feil').hidden=true;
+  dlgEp.showModal();
+});
+document.getElementById('ep-skjema').addEventListener('submit',async function(e){
+  e.preventDefault();
+  var f=document.getElementById('ep-feil');
+  var ny=document.getElementById('ep-ny').value.trim();
+  f.hidden=false;
+  if(!/\S+@\S+\.\S+/.test(ny)){ f.textContent='Skriv inn en gyldig e-postadresse.'; return }
+  var knapp=this.querySelector('button[type="submit"]');
+  knapp.disabled=true; knapp.textContent='Sender …';
+  var res=await sb.auth.updateUser({ email: ny });
+  knapp.disabled=false; knapp.textContent='Send bekreftelse';
+  if(res.error){ f.textContent='Noe gikk galt: '+res.error.message; return; }
+  f.hidden=false;
+  f.style.cssText='background:#EDF7F6;border-color:#3FBCB5;color:#1F8E88';
+  f.textContent='Sjekk innboksen din på '+ny+' for å bekrefte den nye adressen.';
+});
+
+// --- Slett konto ---
+var dlgSlett=document.getElementById('dlg-slett');
+document.getElementById('mk-slett').addEventListener('click',function(){
+  document.getElementById('slett-bekreft').value='';
+  document.getElementById('slett-feil').hidden=true;
+  dlgSlett.showModal();
+});
+document.getElementById('slett-skjema').addEventListener('submit',async function(e){
+  e.preventDefault();
+  var f=document.getElementById('slett-feil');
+  f.hidden=false;
+  if(document.getElementById('slett-bekreft').value.trim()!=='SLETT'){
+    f.textContent='Skriv SLETT (med store bokstaver) for å bekrefte.'; return;
+  }
+  var knapp=this.querySelector('button[type="submit"]');
+  knapp.disabled=true; knapp.textContent='Sletter …';
+  var res=await sb.functions.invoke('slett-konto');
+  knapp.disabled=false; knapp.textContent='Slett for godt';
+  if(res.error || (res.data && res.data.error)){
+    f.textContent='Klarte ikke å slette kontoen: '+((res.data && res.data.error) || 'ukjent feil');
+    return;
+  }
+  dlgSlett.close();
+  await sb.auth.signOut();
+  BRUKER=null; MINE=[]; FATT=[];
+  tegnDash(); tegnKonto(); tegnMine(); tegnMeldinger();
+  visSide('finn-hjelp');
 });
 
 function tegnMine(){
@@ -2427,8 +2540,8 @@ function visOppdrag(id){
   document.getElementById('od-tekst').textContent=j.d;
 
   var st=document.getElementById('od-status');
-  st.textContent = j.status==='tildelt' ? 'Tildelt '+j.valgt : 'Åpent';
-  st.className = 'status' + (j.status==='tildelt' ? ' tildelt' : '');
+  st.textContent = j.status==='ferdig' ? 'Ferdig' : j.status==='tildelt' ? 'Tildelt '+j.valgt : 'Åpent';
+  st.className = 'status' + (j.status==='tildelt'||j.status==='ferdig' ? ' tildelt' : '');
 
   var n=j.sokere.length;
   document.getElementById('od-antall').textContent =
@@ -2462,9 +2575,57 @@ function visOppdrag(id){
       j.valgt+' har fått oppdraget. Gjør opp når jobben er ferdig og du er fornøyd.';
   } else td.hidden=true;
 
+  var ov=document.getElementById('od-vurdering');
+  if(sb && BRUKER && j.status==='ferdig' && j.hjelper_id){ ov.hidden=false; visVurdering(j); }
+  else ov.hidden=true;
+
   visSide('oppdrag-detalj');
   document.title=j.t+' | Nobon';
 }
+
+// --- Vurdering (etter ferdig oppdrag) ---
+var ovStjerner=0;
+async function visVurdering(j){
+  document.getElementById('ov-navn').textContent=j.valgt||'hjelperen';
+  document.getElementById('ov-navn2').textContent=j.valgt||'hjelperen';
+  var res=await sb.from('vurderinger').select('*').eq('oppdrag_id',j.id).eq('hjelper_id',j.hjelper_id).maybeSingle();
+  var skjema=document.getElementById('ov-skjema'), ferdig=document.getElementById('ov-ferdig');
+  if(res.data){
+    skjema.hidden=true; ferdig.hidden=false;
+    document.getElementById('ov-visstjerner').textContent='★'.repeat(res.data.stjerner)+'☆'.repeat(5-res.data.stjerner);
+    document.getElementById('ov-viskommentar').textContent=res.data.kommentar||'';
+  } else {
+    skjema.hidden=false; ferdig.hidden=true;
+    ovStjerner=0;
+    document.querySelectorAll('#ov-stjerner .pill').forEach(function(b){ b.setAttribute('aria-pressed','false') });
+    document.getElementById('ov-kommentar').value='';
+    document.getElementById('ov-feil').hidden=true;
+  }
+}
+document.getElementById('ov-stjerner').addEventListener('click',function(e){
+  var b=e.target.closest('[data-stj]'); if(!b) return;
+  ovStjerner=+b.dataset.stj;
+  document.querySelectorAll('#ov-stjerner .pill').forEach(function(el){
+    el.setAttribute('aria-pressed', (+el.dataset.stj<=ovStjerner) ? 'true' : 'false');
+  });
+});
+document.getElementById('ov-send').addEventListener('click',async function(){
+  var f=document.getElementById('ov-feil');
+  f.hidden=false;
+  if(!ovStjerner){ f.textContent='Velg antall stjerner.'; return }
+  var j=jobbById(odId); if(!j) return;
+  var kommentar=document.getElementById('ov-kommentar').value.trim();
+  this.disabled=true; this.textContent='Sender …';
+  var res=await sb.from('vurderinger').insert({
+    oppdrag_id: j.id, hjelper_id: j.hjelper_id, bruker_id: BRUKER.id,
+    stjerner: ovStjerner, kommentar: kommentar||null
+  });
+  this.disabled=false; this.textContent='Send vurdering';
+  if(res.error){ f.textContent='Klarte ikke å lagre vurderingen: '+res.error.message; return; }
+  f.hidden=true;
+  await visVurdering(j);
+  lastHjelpere();   // ratingen på profilen er nå oppdatert av databasetriggeren
+});
 
 function visSamtale(jobbId, idx){
   var j=jobbById(jobbId); if(!j) return;

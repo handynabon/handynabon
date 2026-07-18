@@ -82,6 +82,18 @@ brukere eller ekte penger.
   trivielt å omgå). Spørringer mot databasen har også fått fornuftige
   øvre grenser (`.limit(...)`) så en enkelt side ikke prøver å hente
   ubegrenset mange rader.
+- **Vurderinger/anmeldelser**: når et oppdrag er merket ferdig kan
+  oppdragsgiveren gi hjelperen 1–5 stjerner og en valgfri kommentar på
+  oppdragssiden. `profiler.rating` oppdateres automatisk av en
+  databasetrigger (`oppdater_rating`) — ikke av klientkoden — så tallet er
+  alltid et ekte snitt av `vurderinger`-tabellen. Én vurdering per
+  fullført oppdrag, håndhevet av en RLS-policy (kan bare vurdere hjelperen
+  på et oppdrag du selv eier og som faktisk er `ferdig`).
+- **Endre e-post / slette konto**: lagt til i Min konto, ved siden av
+  passordbytte. Sletting går via en egen Edge Function
+  (`supabase/functions/slett-konto`) siden en vanlig klient ikke kan slette
+  sin egen `auth.users`-rad selv — det krever `service_role`. Krever at
+  brukeren skriver "SLETT" for å bekrefte (destruktiv handling).
 
 ## 3. Kjent begrensning: ekte avstand
 
@@ -135,24 +147,45 @@ penger:**
    mellomledd) — ikke bygget her. Få betaling *inn* til å virke først, som
    overleveringsnotatet sier.
 
-## 5. Fortsatt ikke gjort
+## 5. Automatisk røyktest
 
-- **Ingen utbetaling til hjelperen** (se punkt 7 over) og **ingen
-  vurderinger/anmeldelser** — `rating` blir stående som `null` ("Ny hjelper")
-  til noen bygger en anmeldelses-funksjon; det finnes ingen skjerm for det ennå.
-- **Ingen paginering** i grensesnittet — spørringene har en øvre grense
-  (se over) så de ikke er ubegrensede, men lista viser alt den får i ett
-  jafs, ikke side for side. Fint på prototype-skala, ikke ved tusenvis av rader.
-- **Ingen kontoinnstillinger for e-post eller sletting av konto** — bare
-  passordbytte er lagt til.
+`tests/smoke.cjs` er ikke en fullverdig testsuite, men en rask sjekk som
+fanger opp nøyaktig den feilklassen overleveringsnotatet advarer mot: en død
+`getElementById`-referanse (eller annen JS-feil) som "dreper HELE scriptet"
+og gjør en side blank. Den åpner `nobon.html` lokalt i Chromium (ingen
+backend eller nettilgang nødvendig — kjører i demo-modus), klikker gjennom
+hovednavigasjonen og et par flyter (kategori, swipe-visning), og feiler hvis
+noe kaster en feil eller en side blir tom.
+
+Kjør den med Playwright, som allerede er installert globalt i dette miljøet:
+
+```
+NODE_PATH=$(npm root -g) node tests/smoke.cjs
+```
+
+Kjør den etter enhver endring i `nobon.html`, spesielt etter å ha lagt til
+eller fjernet et element med en `id` — det er nøyaktig den typen feil den
+er laget for å fange.
+
+## 6. Bevisst ikke bygget
+
+- **Ingen utbetaling til hjelperen.** Nobon ville blitt et mellomledd for
+  ekte pengeoverføringer til tredjepart, som typisk krever egen
+  regulatorisk/juridisk avklaring (utover det en Vipps-betalingsavtale
+  alene dekker). Jeg har latt være å dikte opp en utbetalingsflyt for det
+  uten et klart mandat til det — få betaling *inn* til å virke og verifisert
+  først, som overleveringsnotatet selv sier.
 - **Ingen admin-/moderasjonsverktøy** for å fjerne upassende oppdrag eller
-  meldinger.
-- **Ingen automatiske tester.**
+  meldinger — det finnes ingen admin-side i prototypen å bygge videre på,
+  og omfanget (hvem er admin, hva skal de kunne gjøre) er ikke definert.
+- **Ingen paginering utover `.limit(...)`** — lista viser alt den får i ett
+  jafs opp til den øvre grensen, ikke side for side. Fint på prototype-skala.
 - **`nobon.html` er ikke hostet noe sted** — du må selv publisere den
-  (Vercel, Netlify, et vanlig webhotell, e.l.) og sette `SITE_URL` i
-  Edge Function-secrets deretter.
-- Alt merket "ikke testet" i punkt 1 og 4 over: jeg har ikke hatt tilgang
-  til et ekte Supabase- eller Vipps-miljø for å faktisk kjøre noe av dette.
+  (Vercel, Netlify, et vanlig webhotell, e.l.; den trenger ikke noe
+  byggesteg) og sette `SITE_URL` i Edge Function-secrets deretter.
+- Alt merket "ikke testet" i punkt 1 og 4: jeg har ikke hatt tilgang til et
+  ekte Supabase- eller Vipps-miljø for å faktisk kjøre noe av dette.
+  Røyktesten i punkt 5 dekker bare demo-modus (uten Supabase konfigurert).
 
 ## Filoversikt
 
@@ -163,3 +196,5 @@ penger:**
 | `supabase/functions/vipps-init` | Starter en Vipps-betaling |
 | `supabase/functions/vipps-status` | Henter autoritativ betalingsstatus fra Vipps |
 | `supabase/functions/vipps-webhook` | Mottar hendelser fra Vipps |
+| `supabase/functions/slett-konto` | Sletter en brukers konto (krever service_role) |
+| `tests/smoke.cjs` | Røyktest, se punkt 5 |

@@ -309,3 +309,63 @@ create policy "kunde og hjelper kan se egen betaling"
 drop trigger if exists betalinger_touch on public.betalinger;
 create trigger betalinger_touch before update on public.betalinger
   for each row execute function public.touch_updated_at();
+
+
+-- =========================================================
+-- 7. VURDERINGER — anmeldelser av hjelpere
+-- =========================================================
+create table if not exists public.vurderinger (
+  id           bigint generated always as identity primary key,
+  oppdrag_id   bigint not null references public.oppdrag(id) on delete cascade,
+  hjelper_id   uuid not null references public.profiler(id) on delete cascade,
+  bruker_id    uuid not null references public.profiler(id) on delete cascade,
+  stjerner     integer not null check (stjerner between 1 and 5),
+  kommentar    text check (char_length(kommentar) <= 1000),
+  created_at   timestamptz not null default now(),
+  unique (oppdrag_id, hjelper_id)   -- én vurdering per fullført oppdrag
+);
+
+alter table public.vurderinger enable row level security;
+
+drop policy if exists "vurderinger er offentlig lesbare" on public.vurderinger;
+create policy "vurderinger er offentlig lesbare"
+  on public.vurderinger for select
+  using (true);
+
+-- Bare oppdragets eier kan vurdere, og bare når oppdraget faktisk er merket
+-- ferdig med akkurat den hjelperen - hindrer at noen dikter opp en vurdering
+-- for et oppdrag de ikke eier eller en hjelper som aldri gjorde jobben.
+drop policy if exists "eier kan vurdere hjelperen på et fullført oppdrag" on public.vurderinger;
+create policy "eier kan vurdere hjelperen på et fullført oppdrag"
+  on public.vurderinger for insert
+  with check (
+    bruker_id = auth.uid()
+    and exists (
+      select 1 from public.oppdrag o
+      where o.id = oppdrag_id and o.bruker_id = auth.uid()
+        and o.hjelper_id = vurderinger.hjelper_id and o.status = 'ferdig'
+    )
+  );
+
+drop policy if exists "eier kan redigere egen vurdering" on public.vurderinger;
+create policy "eier kan redigere egen vurdering"
+  on public.vurderinger for update
+  using (bruker_id = auth.uid())
+  with check (bruker_id = auth.uid());
+
+-- Holder profiler.rating i sync med snittet av vurderingene.
+create or replace function public.oppdater_rating()
+returns trigger language plpgsql security definer set search_path = public as $$
+declare
+  target uuid := coalesce(new.hjelper_id, old.hjelper_id);
+begin
+  update public.profiler set rating = (
+    select round(avg(stjerner)::numeric, 2) from public.vurderinger where hjelper_id = target
+  ) where id = target;
+  return null;
+end;
+$$;
+drop trigger if exists vurdering_oppdater_rating on public.vurderinger;
+create trigger vurdering_oppdater_rating
+  after insert or update or delete on public.vurderinger
+  for each row execute function public.oppdater_rating();
