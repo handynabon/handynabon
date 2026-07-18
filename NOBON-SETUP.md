@@ -61,18 +61,31 @@ brukere eller ekte penger.
   lagre en tittel/melding som inneholder kjørbar HTML/JS (lagret XSS) —
   relevant nå som dette faktisk er delt mellom brukere.
 
-## 3. Kjent begrensning: hjelperprofiler er tynne
+- **Hjelperprofiler kan redigeres**: Min konto har nå en «Rediger
+  hjelperprofil»-knapp (vises for kontoer med hjelper-rollen) for å sette
+  kategori, tjenester, sted og timepris — feltene registreringsskjemaet
+  aldri spurte om. Skriver til `profiler` og laster `H` på nytt med en gang.
+- **Glemt/endre passord**: «Glemt passord?» på innloggingssiden sender en
+  e-post via `sb.auth.resetPasswordForEmail`; lenken i e-posten fører
+  tilbake til siden og åpner automatisk et «lag nytt passord»-vindu
+  (lytter på `PASSWORD_RECOVERY`-hendelsen). Innloggede brukere kan også
+  bytte passord direkte fra Min konto.
+- **Meldinger er sanntid**: en åpen samtale abonnerer på nye rader i
+  `meldinger` via Supabase Realtime (`lyttPaSamtale()`), så et svar dukker
+  opp med en gang i stedet for bare ved neste sidenavigasjon. Krever at
+  Realtime er skrudd på for tabellen — skjemaet gjør det automatisk.
+- **Grunnleggende serversikring**: lengdebegrensninger på tekstfelt
+  (tittel, beskrivelse, meldinger, navn osv.) håndheves nå som
+  databasebegrensninger, ikke bare i skjemaet i nettleseren. Storage-bøttene
+  for bilder har en filstørrelsesgrense og godtar kun bildefiler — håndhevet
+  av Supabase Storage selv, ikke bare `accept="image/*"` i skjemaet (som er
+  trivielt å omgå). Spørringer mot databasen har også fått fornuftige
+  øvre grenser (`.limit(...)`) så en enkelt side ikke prøver å hente
+  ubegrenset mange rader.
 
-Registreringsskjemaet samler bare inn navn/e-post/telefon/passord/roller —
-akkurat som i den opprinnelige prototypen. Det spør ikke om kategori,
-tjenester, timepris eller sted, så en ny, ekte "hjelper" har tomme felt for
-alt dette og dukker ikke opp meningsfullt i "Finn hjelper" før noen legger
-til en side/skjema for å redigere det (bevisst utenfor dette arbeidet — jeg
-har ikke bygget om grensesnittet utover å koble det til databasen, slik
-overleveringsnotatet ber om). Demoprofilene i `H`-arrayen vises fortsatt når
-Supabase ikke er konfigurert, så prototypen aldri ser tom ut.
+## 3. Kjent begrensning: ekte avstand
 
-Avstand (`km`) er heller ikke ekte lenger for database-baserte rader —
+Avstand (`km`) er ikke ekte for database-baserte rader —
 prototypens faste avstandstall var uansett bare pynt, og ekte geografisk
 avstand krever geokoding (adresse/postnummer → koordinater), som er utenfor
 denne oppgaven. Avstandsfilteret virker fortsatt for demodata; for ekte
@@ -121,6 +134,25 @@ penger:**
 7. Utbetaling videre til hjelperen er en egen, strengere sak (Nobon blir
    mellomledd) — ikke bygget her. Få betaling *inn* til å virke først, som
    overleveringsnotatet sier.
+
+## 5. Fortsatt ikke gjort
+
+- **Ingen utbetaling til hjelperen** (se punkt 7 over) og **ingen
+  vurderinger/anmeldelser** — `rating` blir stående som `null` ("Ny hjelper")
+  til noen bygger en anmeldelses-funksjon; det finnes ingen skjerm for det ennå.
+- **Ingen paginering** i grensesnittet — spørringene har en øvre grense
+  (se over) så de ikke er ubegrensede, men lista viser alt den får i ett
+  jafs, ikke side for side. Fint på prototype-skala, ikke ved tusenvis av rader.
+- **Ingen kontoinnstillinger for e-post eller sletting av konto** — bare
+  passordbytte er lagt til.
+- **Ingen admin-/moderasjonsverktøy** for å fjerne upassende oppdrag eller
+  meldinger.
+- **Ingen automatiske tester.**
+- **`nobon.html` er ikke hostet noe sted** — du må selv publisere den
+  (Vercel, Netlify, et vanlig webhotell, e.l.) og sette `SITE_URL` i
+  Edge Function-secrets deretter.
+- Alt merket "ikke testet" i punkt 1 og 4 over: jeg har ikke hatt tilgang
+  til et ekte Supabase- eller Vipps-miljø for å faktisk kjøre noe av dette.
 
 ## Filoversikt
 

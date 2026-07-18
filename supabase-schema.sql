@@ -11,17 +11,17 @@
 -- =========================================================
 create table if not exists public.profiler (
   id              uuid primary key references auth.users(id) on delete cascade,
-  navn            text not null,
+  navn            text not null check (char_length(navn) between 1 and 120),
   epost           text not null,
-  tlf             text,
+  tlf             text check (char_length(tlf) <= 20),
   roller          text[] not null default '{}',   -- 'kunde' og/eller 'hjelper'
   bilde_url       text,
   pro             boolean not null default false,
-  sted            text,
+  sted            text check (char_length(sted) <= 200),
   kategori        text,                            -- KAT-id, f.eks. 'handverker'
-  tags            text[] not null default '{}',    -- underkategorier hjelperen tilbyr
-  pris            numeric,                          -- kr/t
-  rating          numeric,                          -- null = ingen vurderinger ennå (steg for seg selv, ikke bygget her)
+  tags            text[] not null default '{}' check (array_length(tags,1) is null or array_length(tags,1) <= 20),    -- underkategorier hjelperen tilbyr
+  pris            numeric check (pris is null or (pris >= 0 and pris < 1000000)),                          -- kr/t
+  rating          numeric check (rating is null or (rating >= 0 and rating <= 5)),                          -- null = ingen vurderinger ennå (steg for seg selv, ikke bygget her)
   antall_oppdrag  integer not null default 0,       -- oppdatert av trigger under
   created_at      timestamptz not null default now(),
   updated_at      timestamptz not null default now()
@@ -101,13 +101,13 @@ create table if not exists public.oppdrag (
   -- (f.eks. .select('*, hjelper:profiler!hjelper_id(navn)')).
   bruker_id     uuid not null references public.profiler(id) on delete cascade,
   hjelper_id    uuid references public.profiler(id) on delete set null,
-  tittel        text not null,
+  tittel        text not null check (char_length(tittel) between 1 and 200),
   kategori      text not null,     -- KAT-id
   underkategori text,
-  sted          text not null,
-  pris          text,              -- fritekst, f.eks. "2 500 kr" eller "400 kr/t" (som i prototypen)
-  beskrivelse   text,
-  bilder        text[] not null default '{}',
+  sted          text not null check (char_length(sted) <= 200),
+  pris          text check (char_length(pris) <= 60),              -- fritekst, f.eks. "2 500 kr" eller "400 kr/t" (som i prototypen)
+  beskrivelse   text check (char_length(beskrivelse) <= 4000),
+  bilder        text[] not null default '{}' check (array_length(bilder,1) is null or array_length(bilder,1) <= 6),
   status        text not null default 'apen' check (status in ('apen','tildelt','ferdig')),
   created_at    timestamptz not null default now()
 );
@@ -190,7 +190,7 @@ create table if not exists public.meldinger (
   oppdrag_id   bigint not null references public.oppdrag(id) on delete cascade,
   hjelper_id   uuid not null references public.profiler(id) on delete cascade,
   avsender_id  uuid not null references auth.users(id),
-  tekst        text not null,
+  tekst        text not null check (char_length(tekst) between 1 and 2000),
   lest         boolean not null default false,
   created_at   timestamptz not null default now()
 );
@@ -225,17 +225,32 @@ create policy "begge parter kan markere egne meldinger som lest"
   )
   with check (true);
 
+-- Skru på Realtime for meldinger, slik at en åpen samtale i nobon.html
+-- oppdaterer seg selv med en gang (se lyttPaSamtale()) - respekterer RLS
+-- over, så folk får bare push for samtaler de faktisk har tilgang til.
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'meldinger'
+  ) then
+    alter publication supabase_realtime add table public.meldinger;
+  end if;
+end $$;
+
 
 -- =========================================================
 -- 5. STORAGE — profilbilder og oppdragsbilder (steg 3)
 -- =========================================================
-insert into storage.buckets (id, name, public)
-values ('avatarer', 'avatarer', true)
-on conflict (id) do nothing;
+-- file_size_limit er i bytes. allowed_mime_types håndheves av Supabase Storage
+-- selv (ikke bare klientkoden), så en forfalsket filendelse holder ikke.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('avatarer', 'avatarer', true, 5242880, array['image/jpeg','image/png','image/webp','image/gif'])
+on conflict (id) do update set file_size_limit=excluded.file_size_limit, allowed_mime_types=excluded.allowed_mime_types;
 
-insert into storage.buckets (id, name, public)
-values ('oppdragsbilder', 'oppdragsbilder', true)
-on conflict (id) do nothing;
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('oppdragsbilder', 'oppdragsbilder', true, 8388608, array['image/jpeg','image/png','image/webp','image/gif'])
+on conflict (id) do update set file_size_limit=excluded.file_size_limit, allowed_mime_types=excluded.allowed_mime_types;
 
 drop policy if exists "alle kan se profilbilder" on storage.objects;
 create policy "alle kan se profilbilder"

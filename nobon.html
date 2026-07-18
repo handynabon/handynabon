@@ -975,11 +975,51 @@ footer a{text-decoration:underline;text-underline-offset:2px}
     <ul class="fakta" id="mk-fakta"></ul>
     <div style="display:flex;gap:9px;flex-wrap:wrap">
       <button class="btn teal" type="button" id="mk-handling">Lag en bruker</button>
+      <button class="btn ghost" type="button" id="mk-hjelperprofil" hidden>Rediger hjelperprofil</button>
+      <button class="btn ghost" type="button" id="mk-passord" hidden>Endre passord</button>
       <button class="btn ghost" type="button" onclick="visSide('finn-hjelp')">Til forsiden</button>
     </div>
   </div>
 </section>
 </div><!-- /min-konto -->
+
+<dialog id="dlg-hjelperprofil">
+  <div class="dlg">
+    <button class="lukk" type="button" data-lukk aria-label="Lukk">✕</button>
+    <h3 style="margin-bottom:3px">Rediger hjelperprofil</h3>
+    <p style="color:var(--muted);font-weight:500;font-size:.88rem;margin-bottom:18px">Dette er det andre ser når de søker etter hjelpere i «Finn hjelper».</p>
+    <form id="hp-skjema" novalidate>
+      <div class="rad"><label class="f" for="hp-kat">Kategori</label>
+        <select class="inn" id="hp-kat"><option value="">Velg kategori</option></select></div>
+      <div class="rad"><label class="f" for="hp-tags">Tjenester (kommaseparert)</label>
+        <input class="inn" id="hp-tags" type="text" placeholder="F.eks. Flyttehjelp, Bortkjøring"></div>
+      <div class="rad"><label class="f" for="hp-sted">Sted</label>
+        <input class="inn" id="hp-sted" type="text" placeholder="F.eks. Oslo"></div>
+      <div class="rad"><label class="f" for="hp-pris">Timepris (kr/t)</label>
+        <input class="inn" id="hp-pris" type="number" min="0" placeholder="F.eks. 450"></div>
+      <p class="feil" id="hp-feil" hidden></p>
+      <div class="dlg-bunn"><button class="btn teal" type="submit">Lagre</button>
+        <button class="btn ghost" type="button" data-lukk>Avbryt</button></div>
+    </form>
+  </div>
+</dialog>
+
+<dialog id="dlg-passord">
+  <div class="dlg">
+    <button class="lukk" type="button" data-lukk aria-label="Lukk">✕</button>
+    <h3 style="margin-bottom:6px" id="pw-tittel">Endre passord</h3>
+    <p style="color:var(--muted);font-weight:500;font-size:.88rem;margin-bottom:18px" id="pw-hjelp">Skriv inn et nytt passord for kontoen din.</p>
+    <form id="pw-skjema" novalidate>
+      <div class="rad"><label class="f" for="pw-nytt">Nytt passord</label>
+        <input class="inn" id="pw-nytt" type="password" placeholder="Minst 8 tegn" autocomplete="new-password"></div>
+      <div class="rad"><label class="f" for="pw-gjenta">Gjenta nytt passord</label>
+        <input class="inn" id="pw-gjenta" type="password" placeholder="Gjenta passordet" autocomplete="new-password"></div>
+      <p class="feil" id="pw-feil" hidden></p>
+      <div class="dlg-bunn"><button class="btn teal" type="submit">Lagre nytt passord</button>
+        <button class="btn ghost" type="button" data-lukk>Avbryt</button></div>
+    </form>
+  </div>
+</dialog>
 
 <div id="mine-oppdrag" class="side" style="display:none">
 <section>
@@ -1179,6 +1219,7 @@ footer a{text-decoration:underline;text-underline-offset:2px}
         <input class="inn" id="i-pass" type="password" placeholder="Passordet ditt" required autocomplete="current-password"></div>
       <p class="feil" id="i-feil" hidden></p>
       <button class="btn teal" type="submit" style="width:100%;margin-top:6px">Logg inn</button>
+      <p style="text-align:center;margin-top:12px"><a href="#" id="glemt-pass" style="font-size:.85rem;font-weight:700;color:var(--teal-d)">Glemt passord?</a></p>
     </form>
     <p class="hint" style="text-align:center;margin-top:18px">Ny her? <a href="#" onclick="visSide('lag-bruker');return false;" style="font-weight:700">Lag en bruker</a></p>
   </div>
@@ -1333,7 +1374,7 @@ function profilTilHjelper(p){
 }
 async function lastHjelpere(){
   if(!sb) return;
-  var res=await sb.from('profiler').select('*').contains('roller',['hjelper']);
+  var res=await sb.from('profiler').select('*').contains('roller',['hjelper']).limit(200);
   if(res.error){ console.error('Klarte ikke å laste hjelpere:', res.error.message); return; }
   H=res.data.map(profilTilHjelper);
   tegnKatRad();
@@ -1493,6 +1534,7 @@ var hopper=false;        // sant mens vi går bakover, så vi ikke lagrer det so
 
 function visSide(id){
   if(id!=='finn-oppdrag'){ document.body.classList.remove('bla-full'); blaAktiv=false; }
+  if(id!=='samtale' && typeof stoppSamtaleLytting==='function') stoppSamtaleLytting();
   var na=document.querySelector('.side:not([style*="none"])');
   if(!hopper && na && na.id!==id) loype.push(na.id);
   document.querySelectorAll('.side').forEach(function(e){e.style.display='none'});
@@ -1565,12 +1607,12 @@ function oppdragTilJobb(row){
 }
 async function lastJobb(){
   if(!sb) return;
-  var res=await sb.from('oppdrag').select('*').eq('status','apen').order('created_at',{ascending:false});
+  var res=await sb.from('oppdrag').select('*').eq('status','apen').order('created_at',{ascending:false}).limit(200);
   if(res.error){ console.error('Klarte ikke å laste oppdrag:', res.error.message); return; }
   var megId = BRUKER ? BRUKER.id : null;
   var alt = res.data.filter(function(r){return r.bruker_id!==megId});
   if(BRUKER){
-    var interesseRes=await sb.from('interesse').select('oppdrag_id').eq('hjelper_id',BRUKER.id);
+    var interesseRes=await sb.from('interesse').select('oppdrag_id').eq('hjelper_id',BRUKER.id).limit(500);
     if(!interesseRes.error && interesseRes.data.length){
       var alleredeVist={};
       interesseRes.data.forEach(function(r){ alleredeVist[r.oppdrag_id]=true });
@@ -1883,6 +1925,7 @@ document.getElementById('o-bla').addEventListener('click',function(e){
 // --- Legg ut oppdrag ---
 var jk=document.getElementById('j-kat');
 jk.innerHTML='<option value="">Velg kategori</option>'+KAT.map(function(k){return '<option value="'+k.id+'">'+k.navn+'</option>'}).join('');
+document.getElementById('hp-kat').innerHTML='<option value="">Velg kategori</option>'+KAT.map(function(k){return '<option value="'+k.id+'">'+k.navn+'</option>'}).join('');
 var skjema=document.getElementById('skjema');
 skjema.addEventListener('submit',async function(e){
   e.preventDefault();
@@ -2032,7 +2075,7 @@ var MINE=[
 if(sb) MINE=[];
 
 async function lastMeldingerFor(oppdragId, hjelperId){
-  var res=await sb.from('meldinger').select('*').eq('oppdrag_id',oppdragId).eq('hjelper_id',hjelperId).order('created_at',{ascending:true});
+  var res=await sb.from('meldinger').select('*').eq('oppdrag_id',oppdragId).eq('hjelper_id',hjelperId).order('created_at',{ascending:true}).limit(500);
   if(res.error || !res.data) return [];
   return res.data.map(function(m){
     return { id:m.id, fra: m.avsender_id===BRUKER.id?'meg':'dem', t:m.tekst, tid:relTid(m.created_at), lest:m.lest };
@@ -2043,7 +2086,7 @@ async function markerLest(meldingIder){
   if(res.error) console.error('Klarte ikke å markere meldinger som lest:', res.error.message);
 }
 async function lastSokereFor(oppdragId){
-  var res=await sb.from('interesse').select('hjelper_id, profiler!hjelper_id(navn,pro,rating,antall_oppdrag,pris)').eq('oppdrag_id',oppdragId);
+  var res=await sb.from('interesse').select('hjelper_id, profiler!hjelper_id(navn,pro,rating,antall_oppdrag,pris)').eq('oppdrag_id',oppdragId).limit(100);
   if(res.error || !res.data) return [];
   return Promise.all(res.data.map(async function(row){
     var p=row.profiler||{};
@@ -2057,7 +2100,7 @@ async function lastSokereFor(oppdragId){
 async function lastMineOppdrag(){
   if(!sb || !BRUKER) return;
   var res=await sb.from('oppdrag').select('*, hjelper:profiler!hjelper_id(navn)')
-    .eq('bruker_id',BRUKER.id).order('created_at',{ascending:false});
+    .eq('bruker_id',BRUKER.id).order('created_at',{ascending:false}).limit(200);
   if(res.error){ console.error('Klarte ikke å laste dine oppdrag:', res.error.message); return; }
   MINE=await Promise.all(res.data.map(async function(row){
     var j=oppdragTilJobb(row);
@@ -2147,7 +2190,8 @@ function tegnKonto(){
   var avKnapp=document.getElementById('mk-av');
   var av=document.getElementById('mk-ini'), navn=document.getElementById('mk-navn'),
       rolle=document.getElementById('mk-rolle'), fakta=document.getElementById('mk-fakta'),
-      knapp=document.getElementById('mk-handling');
+      knapp=document.getElementById('mk-handling'),
+      hpKnapp=document.getElementById('mk-hjelperprofil'), pwKnapp=document.getElementById('mk-passord');
   if(!BRUKER){
     avKnapp.disabled=true;
     av.textContent='N'; av.hidden=false;
@@ -2158,6 +2202,7 @@ function tegnKonto(){
     fakta.innerHTML=''; fakta.hidden=true;
     knapp.textContent='Lag en bruker';
     knapp.onclick=function(){ visSide('lag-bruker') };
+    hpKnapp.hidden=true; pwKnapp.hidden=true;
     return;
   }
   fakta.hidden=false;
@@ -2176,7 +2221,76 @@ function tegnKonto(){
     '<li><span>Oppdrag lagt ut</span><b>'+MINE.length+'</b></li>';
   knapp.textContent='Logg ut';
   knapp.onclick=function(){ if(sb) sb.auth.signOut(); BRUKER=null; tegnDash(); tegnKonto(); visSide('finn-hjelp') };
+  hpKnapp.hidden = !(sb && BRUKER.roller.indexOf('hjelper')>-1);
+  pwKnapp.hidden = !sb;
 }
+
+// --- Rediger hjelperprofil ---
+var dlgHp=document.getElementById('dlg-hjelperprofil');
+document.getElementById('mk-hjelperprofil').addEventListener('click',async function(){
+  if(!BRUKER) return;
+  var f=document.getElementById('hp-feil'); f.hidden=true;
+  var res=await sb.from('profiler').select('kategori,tags,sted,pris').eq('id',BRUKER.id).single();
+  var p=res.data || {};
+  document.getElementById('hp-kat').value=p.kategori||'';
+  document.getElementById('hp-tags').value=(p.tags||[]).join(', ');
+  document.getElementById('hp-sted').value=p.sted||'';
+  document.getElementById('hp-pris').value=p.pris||'';
+  dlgHp.showModal();
+});
+document.getElementById('hp-skjema').addEventListener('submit',async function(e){
+  e.preventDefault();
+  var f=document.getElementById('hp-feil');
+  var kategori=document.getElementById('hp-kat').value,
+      tags=document.getElementById('hp-tags').value.split(',').map(function(t){return t.trim()}).filter(Boolean),
+      sted=document.getElementById('hp-sted').value.trim(),
+      pris=document.getElementById('hp-pris').value ? +document.getElementById('hp-pris').value : null;
+  var knapp=this.querySelector('button[type="submit"]');
+  knapp.disabled=true; knapp.textContent='Lagrer …';
+  var res=await sb.from('profiler').update({kategori:kategori||null, tags:tags, sted:sted||null, pris:pris}).eq('id',BRUKER.id);
+  knapp.disabled=false; knapp.textContent='Lagre';
+  if(res.error){ f.hidden=false; f.textContent='Klarte ikke å lagre: '+res.error.message; return; }
+  dlgHp.close();
+  await lastHjelpere();
+});
+
+// --- Endre passord (fra Min konto, eller etter "glemt passord"-lenke) ---
+var dlgPw=document.getElementById('dlg-passord');
+document.getElementById('mk-passord').addEventListener('click',function(){
+  document.getElementById('pw-tittel').textContent='Endre passord';
+  document.getElementById('pw-hjelp').textContent='Skriv inn et nytt passord for kontoen din.';
+  document.getElementById('pw-feil').hidden=true;
+  document.getElementById('pw-skjema').reset();
+  dlgPw.showModal();
+});
+document.getElementById('glemt-pass').addEventListener('click',async function(e){
+  e.preventDefault();
+  var f=document.getElementById('i-feil');
+  var ep=document.getElementById('i-epost').value.trim();
+  f.removeAttribute('style'); f.hidden=false;
+  if(!sb){ f.textContent='Passordtilbakestilling er ikke koblet til Supabase ennå.'; return; }
+  if(!/\S+@\S+\.\S+/.test(ep)){ f.textContent='Skriv inn e-posten din i feltet over først, trykk så «Glemt passord?».'; document.getElementById('i-epost').focus(); return; }
+  var res=await sb.auth.resetPasswordForEmail(ep, { redirectTo: window.location.href.split('?')[0].split('#')[0] });
+  if(res.error){ f.textContent='Noe gikk galt: '+res.error.message; return; }
+  f.style.cssText='background:#EDF7F6;border-color:#3FBCB5;color:#1F8E88';
+  f.textContent='Vi har sendt deg en lenke for å lage nytt passord, hvis '+ep+' er registrert hos oss.';
+});
+document.getElementById('pw-skjema').addEventListener('submit',async function(e){
+  e.preventDefault();
+  var f=document.getElementById('pw-feil');
+  var p1=document.getElementById('pw-nytt').value, p2=document.getElementById('pw-gjenta').value;
+  f.hidden=false;
+  if(p1.length<8){ f.textContent='Passordet må være minst 8 tegn.'; return }
+  if(p1!==p2){ f.textContent='Passordene er ikke like.'; return }
+  var knapp=this.querySelector('button[type="submit"]');
+  knapp.disabled=true; knapp.textContent='Lagrer …';
+  var res=await sb.auth.updateUser({ password: p1 });
+  knapp.disabled=false; knapp.textContent='Lagre nytt passord';
+  if(res.error){ f.textContent='Noe gikk galt: '+res.error.message; return; }
+  f.hidden=true;
+  dlgPw.close();
+  visSide('min-konto');
+});
 
 function tegnMine(){
   var l=document.getElementById('mine-liste');
@@ -2280,7 +2394,7 @@ if(sb) FATT=[];   // demoraden over har ingen ekte oppdrag-id - lastFatt() fylle
 async function lastFatt(){
   if(!sb || !BRUKER) return;
   var res=await sb.from('oppdrag').select('*, bruker:profiler!bruker_id(navn)')
-    .eq('hjelper_id',BRUKER.id).order('created_at',{ascending:false});
+    .eq('hjelper_id',BRUKER.id).order('created_at',{ascending:false}).limit(200);
   if(res.error){ console.error('Klarte ikke å laste jobbene dine:', res.error.message); return; }
   FATT=await Promise.all(res.data.map(async function(row){
     return {
@@ -2391,6 +2505,7 @@ function visSamtale(jobbId, idx){
   }
   visSide('samtale');
   document.title=sk.n+' | Nobon';
+  if(sb && BRUKER) lyttPaSamtale(jobbId, sk.id);
 }
 
 // Samtale om en jobb DU har fått - du er hjelperen, ingen godta-knapp
@@ -2432,6 +2547,7 @@ function visSamtaleFatt(i){
   }
   visSide('samtale');
   document.title=f.kunde+' | Nobon';
+  if(sb && BRUKER) lyttPaSamtale(f.id, BRUKER.id);
 }
 async function ferdigLagre(oppdragId, tekst){
   var res=await sb.from('oppdrag').update({status:'ferdig'}).eq('id',oppdragId);
@@ -2539,6 +2655,31 @@ document.getElementById('reg-fil').addEventListener('change',function(){
   g.src=regBilde;
   document.getElementById('reg-av-ini').hidden=true;
 });
+
+// Live oppdatering av en åpen samtale via Supabase Realtime, så en melding
+// fra motparten dukker opp med en gang i stedet for bare ved neste navigering.
+var samKanal=null;
+function lyttPaSamtale(oppdragId, hjelperId){
+  if(!sb) return;
+  stoppSamtaleLytting();
+  samKanal=sb.channel('meldinger-'+oppdragId+'-'+hjelperId)
+    .on('postgres_changes',
+      { event:'INSERT', schema:'public', table:'meldinger', filter:'oppdrag_id=eq.'+oppdragId },
+      function(payload){
+        var m=payload.new;
+        if(m.hjelper_id!==hjelperId || m.avsender_id===BRUKER.id) return;   // egne meldinger er alt lagt til lokalt
+        var kilde = samKilde==='fatt' ? FATT[fattIdx] : (jobbById(samId) && jobbById(samId).sokere[samIdx]);
+        if(!kilde) return;
+        kilde.meldinger.push({id:m.id, fra:'dem', t:m.tekst, tid:relTid(m.created_at), lest:false});
+        tegnBobler(); tegnMeldinger(); tegnDash();
+        var boks=document.getElementById('sam-bobler');
+        if(boks.lastElementChild) boks.lastElementChild.scrollIntoView({behavior:'smooth',block:'nearest'});
+      })
+    .subscribe();
+}
+function stoppSamtaleLytting(){
+  if(samKanal){ sb.removeChannel(samKanal); samKanal=null; }
+}
 
 var samInn=document.getElementById('sam-inn');
 function sendMelding(){
@@ -3096,6 +3237,14 @@ if(sb){
     BRUKER=brukerFraSupabase(session && session.user);
     tegnDash(); tegnKonto(); tegnMine();
     await ettersyncBruker();
+    // Brukeren kom fra "glemt passord"-lenken i e-posten - la dem sette et nytt med en gang.
+    if(_event==='PASSWORD_RECOVERY'){
+      document.getElementById('pw-tittel').textContent='Lag nytt passord';
+      document.getElementById('pw-hjelp').textContent='Du kom hit via en lenke for glemt passord. Skriv inn et nytt passord under.';
+      document.getElementById('pw-feil').hidden=true;
+      document.getElementById('pw-skjema').reset();
+      document.getElementById('dlg-passord').showModal();
+    }
   });
 }
 </script>
