@@ -18,6 +18,8 @@ create table if not exists public.profiler (
   bilde_url       text,
   pro             boolean not null default false,
   sted            text check (char_length(sted) <= 200),
+  lat             numeric check (lat is null or (lat between -90 and 90)),   -- geokodet fra "sted" i klienten (Nominatim)
+  lng             numeric check (lng is null or (lng between -180 and 180)),
   kategori        text,                            -- KAT-id, f.eks. 'handverker'
   tags            text[] not null default '{}' check (array_length(tags,1) is null or array_length(tags,1) <= 20),    -- underkategorier hjelperen tilbyr
   pris            numeric check (pris is null or (pris >= 0 and pris < 1000000)),                          -- kr/t
@@ -142,6 +144,8 @@ create table if not exists public.oppdrag (
   kategori      text not null,     -- KAT-id
   underkategori text,
   sted          text not null check (char_length(sted) <= 200),
+  lat           numeric check (lat is null or (lat between -90 and 90)),   -- geokodet fra "sted" i klienten (Nominatim)
+  lng           numeric check (lng is null or (lng between -180 and 180)),
   pris          text check (char_length(pris) <= 60),              -- fritekst, f.eks. "2 500 kr" eller "400 kr/t" (som i prototypen)
   beskrivelse   text check (char_length(beskrivelse) <= 4000),
   bilder        text[] not null default '{}' check (array_length(bilder,1) is null or array_length(bilder,1) <= 6),

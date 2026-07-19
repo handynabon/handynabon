@@ -100,6 +100,10 @@ brukere eller ekte penger.
   legge ut oppdrag, melde interesse eller sende meldinger — håndhevet av
   RLS-policyene, ikke bare skjult i grensesnittet. Se punkt 3 under for
   hvordan du gjør en bruker til admin.
+- **Ekte avstand**: km vises nå kun når den faktisk er kjent, aldri
+  gjettet/hardkodet — se punkt 4 for hvordan geokoding og brukerposisjon
+  henger sammen. Finn oppdrag har også fått et kategori-filter (piller,
+  flervalg).
 
 ## 3. Bli admin (kreves manuelt, med vilje)
 
@@ -125,14 +129,39 @@ oppdrag, sperre en bruker) går gjennom to egne databasefunksjoner
 (`admin_slett_oppdrag`, `admin_sperr_bruker`) som sjekker admin-status på
 serveren før de gjør noe, uansett hva klienten sender.
 
-## 4. Kjent begrensning: ekte avstand
+## 4. Ekte avstand
 
-Avstand (`km`) er ikke ekte for database-baserte rader —
-prototypens faste avstandstall var uansett bare pynt, og ekte geografisk
-avstand krever geokoding (adresse/postnummer → koordinater), som er utenfor
-denne oppgaven. Avstandsfilteret virker fortsatt for demodata; for ekte
-rader vises ikke avstand, og "uansett avstand" må velges for å se dem i
-avstandsfiltrerte lister.
+Avstand er nå reell, ikke det gamle hardkodede `km`-tallet fra prototypen:
+
+- `oppdrag` og `profiler` har `lat`/`lng`-kolonner. Når noen legger ut et
+  oppdrag eller lagrer stedet sitt i hjelperprofilen, geokodes teksten
+  (`geokod(sted)`) via [Nominatim](https://nominatim.org/) (OpenStreetMap,
+  gratis, ingen nøkkel) og lagres som koordinater.
+- Når en besøkende skriver i «Hvor er du»-feltet (på forsiden eller Finn
+  hjelper), geokodes DET også (avmerket 700ms etter siste tastetrykk, og
+  cachet per stedstekst i økten) og settes som `BRUKER_POS`.
+- Så snart begge finnes, regner `avstandKm`/`avstandTil` (Haversine,
+  luftlinje) ut ekte kilometer, og `stedLinje()` viser den overalt
+  (jobbkort, swipe-kort, oppdragsdetalj, hjelperkort, søkere) — automatisk,
+  ingen ekstra kode trengs andre steder. Avstandsskyveren og
+  «sorter på avstand» bruker de samme funksjonene.
+- Er posisjonen til en av de to ukjent (f.eks. et oppdrag lagt ut før
+  `sted` ga treff hos Nominatim, eller ingen har skrevet noe i
+  «Hvor er du»), vises bare stedsnavnet — aldri et gjettet/falskt tall.
+  Slikt uten kjent avstand ekskluderes heller ikke av avstandsfilteret
+  (bare det som er trygt bekreftet UTENFOR grensen filtreres bort), og
+  synker til bunnen ved sortering på avstand.
+
+**Merk om Nominatim i produksjon:** dette kalles direkte fra nettleseren.
+Nominatim sine bruksvilkår ber om maks ~1 kall/sekund og at
+tyngre/produksjonsbruk går via egen server, ikke rett fra klienten til
+deres offentlige tjeneste. Helt greit for en prototype/lite prosjekt; hvis
+Nobon får mye trafikk, flytt `geokod()` bak en Edge Function (samme mønster
+som Vipps-kallene i `supabase/functions`) og vurder en betalt
+geokodingstjeneste.
+
+En kategori-filter-rad (piller) er også lagt til på Finn oppdrag-siden —
+viser bare kategorier som faktisk har åpne oppdrag, flervalg.
 
 ## 5. Vipps (steg 4) — skisse, ikke en ferdig løsning
 

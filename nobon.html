@@ -8,6 +8,11 @@
 <title>Finn hjelper i ditt område | Nobon</title>
 <meta name="description" content="Søk blant hjelpere i hele Norge, se erfaring og omtaler, og inviter direkte til oppdrag. Filtrer på kategori, sted og avstand.">
 <meta name="theme-color" content="#3FBCB5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Nobon">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%233FBCB5'/%3E%3Ctext x='90' y='128' font-family='Arial,sans-serif' font-size='112' font-weight='700' fill='%23fff' text-anchor='middle'%3EN%3C/text%3E%3C/svg%3E">
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%20%22Nobon%20%E2%80%93%20sm%C3%A5jobber%20i%20n%C3%A6rheten%22%2C%20%22short_name%22%3A%20%22Nobon%22%2C%20%22description%22%3A%20%22Legg%20ut%20sm%C3%A5jobber%20eller%20ta%20oppdrag.%20Norsk%20markedsplass%20for%20hjelp%20i%20hverdagen.%22%2C%20%22start_url%22%3A%20%22/%22%2C%20%22display%22%3A%20%22standalone%22%2C%20%22background_color%22%3A%20%22%23EDF7F6%22%2C%20%22theme_color%22%3A%20%22%233FBCB5%22%2C%20%22lang%22%3A%20%22nb-NO%22%2C%20%22icons%22%3A%20%5B%7B%22src%22%3A%20%22data%3Aimage/svg%2Bxml%2C%253Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20180%20180%27%253E%253Crect%20width%3D%27180%27%20height%3D%27180%27%20rx%3D%2740%27%20fill%3D%27%25233FBCB5%27/%253E%253Ctext%20x%3D%2790%27%20y%3D%27128%27%20font-family%3D%27Arial%2Csans-serif%27%20font-size%3D%27112%27%20font-weight%3D%27700%27%20fill%3D%27%2523fff%27%20text-anchor%3D%27middle%27%253EN%253C/text%253E%253C/svg%253E%22%2C%20%22sizes%22%3A%20%22180x180%22%2C%20%22type%22%3A%20%22image/svg%2Bxml%22%7D%2C%20%7B%22src%22%3A%20%22data%3Aimage/svg%2Bxml%2C%253Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20180%20180%27%253E%253Crect%20width%3D%27180%27%20height%3D%27180%27%20rx%3D%2740%27%20fill%3D%27%25233FBCB5%27/%253E%253Ctext%20x%3D%2790%27%20y%3D%27128%27%20font-family%3D%27Arial%2Csans-serif%27%20font-size%3D%27112%27%20font-weight%3D%27700%27%20fill%3D%27%2523fff%27%20text-anchor%3D%27middle%27%253EN%253C/text%253E%253C/svg%253E%22%2C%20%22sizes%22%3A%20%22512x512%22%2C%20%22type%22%3A%20%22image/svg%2Bxml%22%2C%20%22purpose%22%3A%20%22any%20maskable%22%7D%5D%7D">
 <link rel="canonical" href="/finn-hjelp">
 <meta property="og:title" content="Finn hjelper i ditt område | Nobon">
 <meta property="og:description" content="Søk blant hjelpere i hele Norge, se erfaring og omtaler, og inviter direkte til oppdrag.">
@@ -48,7 +53,7 @@ body{
 }
 h1,h2,h3{font-weight:800;line-height:1.08;letter-spacing:-.025em}
 ::selection{background:var(--teal);color:#fff}
-.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
 a{color:inherit}
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{
   outline:2.5px solid var(--ink);outline-offset:2px;border-radius:6px
@@ -141,6 +146,11 @@ section{padding:64px 0}
 
 /* hjelperkort */
 .liste{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:22px}
+.liste.jobber{grid-template-columns:repeat(2,1fr)}      /* oppdrag: 2 i bredden på desktop */
+@media (min-width:1100px){
+  .liste{grid-template-columns:repeat(3,1fr)}           /* hjelpere: 3 på brede skjermer */
+  .liste.jobber{grid-template-columns:repeat(2,1fr)}    /* oppdrag: 2 (liggende kort trenger bredde) */
+}
 .kort{min-width:0;border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;gap:15px;align-items:flex-start;
   background:#fff;box-shadow:var(--sk1);transition:border-color .15s,box-shadow .15s,transform .15s}
 .kort:hover{border-color:#C8D2D0;box-shadow:var(--sk2);transform:translateY(-1px)}
@@ -442,6 +452,18 @@ body.bla-full .bla-topp{
 .bla-lukk svg{width:18px;height:18px;stroke:var(--ink);stroke-width:2.2;fill:none;stroke-linecap:round}
 .bla-teller{font-size:.82rem;font-weight:700;color:var(--muted)}
 
+/* Kategori-filtre på finn-oppdrag */
+.kat-filtre{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;margin:0 -2px 4px;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none}
+.kat-filtre::-webkit-scrollbar{display:none}
+.kfp{flex:0 0 auto;border:1.5px solid var(--line);background:#fff;border-radius:999px;
+  padding:8px 15px;font:inherit;font-size:.86rem;font-weight:700;color:var(--muted);cursor:pointer;
+  white-space:nowrap;transition:.15s;-webkit-tap-highlight-color:transparent}
+.kfp:hover{border-color:#C8D2D0}
+.kfp[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.kfp-hake{font-weight:900;font-size:.8em}
+@media (min-width:900px){ .kat-filtre{flex-wrap:wrap;overflow:visible} }
+
 /* Visningsveksler + swipe-stabel */
 .vis-veksle{display:inline-flex;gap:3px;background:var(--mint);border-radius:999px;padding:3px;margin-bottom:20px}
 .vv{display:inline-flex;align-items:center;gap:7px;border:none;background:none;font:inherit;
@@ -609,8 +631,10 @@ footer{padding:38px 24px;text-align:center;font-size:.85rem;color:var(--muted);f
 footer a{text-decoration:underline;text-underline-offset:2px}
 .demo{background:#FFF8E6;border-top:1px solid #F0DFAE;padding:11px 24px;text-align:center;font-size:.8rem;font-weight:600;color:#6B5518}
 
+@media (max-width:760px){
+  .liste.jobber{grid-template-columns:1fr}   /* liggende oppdragskort - full bredde på mobil */
+}
 @media (max-width:900px){
-  .liste.jobber{grid-template-columns:1fr}   /* liggende kort - full bredde */
   .kat-rad{grid-template-columns:repeat(3,1fr)}
   .steg{grid-template-columns:1fr}
   .nav-links{display:none}
@@ -838,7 +862,7 @@ footer a{text-decoration:underline;text-underline-offset:2px}
   <div class="wrap">
     <div class="avst" style="margin:0 0 26px">
       <div class="avst-topp">
-        <label class="under-tit" style="margin:0" for="o-avst" id="o-avst-fra">Avstand</label>
+        <label class="under-tit" style="margin:0" for="o-avst" id="o-avst-fra">Sted</label>
         <span class="avst-verdi" id="o-avst-verdi">Hele landet</span>
       </div>
       <input type="range" id="o-avst" min="1" max="50" step="1" value="50" aria-describedby="o-avst-verdi">
@@ -854,6 +878,7 @@ footer a{text-decoration:underline;text-underline-offset:2px}
         Bla gjennom
       </button>
     </div>
+    <div class="kat-filtre" id="o-filtre" role="tablist" aria-label="Filtrer på kategori"></div>
     <div class="res-bar">
       <div class="res-tell" id="o-tell">—</div>
       <div class="styr">
@@ -1333,7 +1358,7 @@ footer a{text-decoration:underline;text-underline-offset:2px}
   <a href="#" onclick="visSide('legg-ut');return false;">Legg ut oppdrag</a> ·
   <a href="#" onclick="visSide('lag-bruker');return false;">Lag bruker</a>
 </footer>
-<p class="demo">Designdemo — hjelpere, oppdrag og meldinger er fiktive eksempeldata.</p>
+<p class="demo" id="demo-stripe">Designdemo — hjelpere, oppdrag og meldinger er fiktive eksempeldata. Blir ekte når Supabase er koblet på.</p>
 
 <dialog id="dlg-profil"><div class="dlg" id="profil-inn"></div></dialog>
 <dialog id="dlg-inviter"><div class="dlg" id="inviter-inn"></div></dialog>
@@ -1370,6 +1395,9 @@ var sb = (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase)
   : null;
 if(!sb){
   console.warn('Supabase er ikke konfigurert – sett SUPABASE_URL og SUPABASE_ANON_KEY i <script>-blokken for å skru på ekte innlogging.');
+} else {
+  // Ekte data er på – fjern demo-stripa
+  var _d=document.getElementById('demo-stripe'); if(_d) _d.remove();
 }
 
 // Supabase lagrer navn/telefon/roller som user_metadata på auth-brukeren
@@ -1443,7 +1471,8 @@ function profilTilHjelper(p){
   var timerSiden = p.updated_at ? Math.max(0,(Date.now()-new Date(p.updated_at).getTime())/36e5) : 0;
   return {
     id: p.id, n: p.navn, k: p.kategori||'', t: p.tags||[], pro: !!p.pro,
-    sted: p.sted||'', km: null, r: p.rating, ant: p.antall_oppdrag||0,
+    sted: p.sted||'', km: null, pos: (p.lat!=null && p.lng!=null) ? {lat:p.lat,lng:p.lng} : null,
+    r: p.rating, ant: p.antall_oppdrag||0,
     pris: p.pris||0, sist: timerSiden, bilde: p.bilde_url||null
   };
 }
@@ -1467,6 +1496,97 @@ var valgtKat='alle', fPro=false, fPriv=false;
 var visAlle=false;               // forsiden viser et utvalg til du ber om mer
 var FORSIDE_ANT=6;
 var MAKS=50;                 // maks paa avstandsskyveren; paa maks filtreres det ikke paa avstand
+// --- Avstand ---
+// Uten å vite hvor brukeren er, kan vi ikke vise ekte km (se lastBrukerPos()
+// lenger nede - geokoder søkefeltet "Hvor er du"). Så lenge BRUKER_POS er
+// null vises bare stedsnavn, aldri et hardkodet/falskt km-tall.
+var BRUKER_POS = null;   // {lat, lng} – settes av lastBrukerPos()
+
+// Luftlinje mellom to koordinater (Haversine), i km.
+function avstandKm(a, b){
+  if(!a || !b) return null;
+  var R=6371, dLat=(b.lat-a.lat)*Math.PI/180, dLng=(b.lng-a.lng)*Math.PI/180;
+  var s1=Math.sin(dLat/2), s2=Math.sin(dLng/2);
+  var q=s1*s1 + Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*s2*s2;
+  return R*2*Math.atan2(Math.sqrt(q), Math.sqrt(1-q));
+}
+// Returnerer avstanden til et oppdrag/hjelper HVIS vi kan regne den ut, ellers null.
+function avstandTil(x){
+  if(BRUKER_POS && x && x.pos) return avstandKm(BRUKER_POS, x.pos);
+  return null;   // ikke bare vis det hardkodede km-tallet – det er ikke ekte
+}
+// Tekst for stedslinja: "Oslo · 4 km" hvis avstand er kjent, ellers bare "Oslo".
+function stedLinje(x, skille){
+  skille = skille || ' · ';
+  var d = avstandTil(x);
+  return (x.s || x.sted || '') + (d!=null ? skille + d.toFixed(0) + ' km' : '');
+}
+// Sorterer nærmest først. Ukjent avstand (posisjon ikke kjent for en av dem)
+// havner sist, i stedet for at NaN gir en tilfeldig/ustabil rekkefølge.
+function avstandSort(a,b){
+  var da=avstandTil(a), db=avstandTil(b);
+  if(da==null && db==null) return 0;
+  if(da==null) return 1;
+  if(db==null) return -1;
+  return da-db;
+}
+
+// --- Geokoding (Nominatim/OpenStreetMap) ---
+// Gjør en stedstekst ("Oslo", "0181 Oslo") om til {lat,lng}. Gratis, ingen
+// nøkkel nødvendig. Nominatim sin bruksvilkår ber om maks ca. 1 kall/sek og
+// anbefaler tunge/produksjonskall via egen server, ikke rett fra
+// nettleseren til deres offentlige tjeneste - grei nok for denne skalaen,
+// men flytt dette bak en Edge Function (samme mønster som Vipps-kallene i
+// supabase/functions) hvis bruken vokser. Cacher svar per stedstekst i
+// økten, så samme sted ikke geokodes på nytt gang på gang.
+var _geokodCache={};
+async function geokod(sted){
+  sted=(sted||'').trim();
+  if(!sted) return null;
+  if(Object.prototype.hasOwnProperty.call(_geokodCache,sted)) return _geokodCache[sted];
+  try{
+    var url='https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=no&q='+encodeURIComponent(sted);
+    var res=await fetch(url,{ headers:{ 'Accept':'application/json' } });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    var data=await res.json();
+    var pos = (data && data[0]) ? { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) } : null;
+    _geokodCache[sted]=pos;
+    return pos;
+  } catch(e){
+    console.error('Klarte ikke å geokode "'+sted+'":', e.message);
+    return null;
+  }
+}
+// Kjør en funksjon "avmerket" - venter til brukeren har sluttet å skrive
+// før den faktisk gjør noe (unngår ett Nominatim-kall per tastetrykk).
+function avmerket(fn, ms){
+  var id=null;
+  return function(){
+    var args=arguments;
+    clearTimeout(id);
+    id=setTimeout(function(){ fn.apply(null,args) }, ms);
+  };
+}
+// Geokoder "Hvor er du"-feltet og setter BRUKER_POS, så km dukker opp
+// overalt automatisk (se avstandTil/stedLinje over). All rendering som
+// bruker disse funksjonene tegnes på nytt når posisjonen er klar.
+var _sisteStedGeokodet=null;
+var settBrukerPos=avmerket(async function(stedTekst){
+  stedTekst=(stedTekst||'').trim();
+  if(!stedTekst){ BRUKER_POS=null; _sisteStedGeokodet=null; tegnEtterPos(); return; }
+  if(stedTekst===_sisteStedGeokodet) return;
+  var pos=await geokod(stedTekst);
+  _sisteStedGeokodet=stedTekst;
+  BRUKER_POS=pos;
+  tegnEtterPos();
+}, 700);
+function tegnEtterPos(){
+  tegnJobb();
+  if(document.getElementById('finn-hjelper').style.display!=='none') tegnHjelper();
+  if(document.getElementById('kategori').style.display!=='none') tegnKat();
+  if(blaAktiv){ byggKo(); tegnStabel(); }
+}
+
 function maksTekst(){ return brukerSted() ? 'Uansett avstand' : 'Hele landet' }
 function brukerSted(){ return document.getElementById('sted').value.trim() }
 function stedTreff(x){ var b=brukerSted().toLowerCase(); return !b || (x.sted||x.s||'').toLowerCase().indexOf(b)>-1 }
@@ -1532,7 +1652,9 @@ document.getElementById('sted').addEventListener('input',function(){
     document.getElementById('k-avst-fra').textContent = brukerSted() ? 'Avstand fra '+brukerSted() : 'Avstand';
     tegnKat();
   }
+  byggKatFiltre();
   tegnJobb();
+  settBrukerPos(this.value);
 });
 
 // --- Profil og invitasjon ---
@@ -1558,7 +1680,7 @@ function visProfil(n){
      '<li><span>Kategori</span><b>'+escapeHtml(KATNAVN[x.k])+'</b></li>'+
      '<li><span>Tjenester</span><b>'+escapeHtml(x.t.join(', '))+'</b></li>'+
      '<li><span>Timepris</span><b>'+x.pris+' kr/t</b></li>'+
-     (x.km!=null ? '<li><span>Avstand</span><b>'+x.km.toFixed(1)+' km</b></li>' : '')+
+     (avstandTil(x)!=null ? '<li><span>Avstand</span><b>'+avstandTil(x).toFixed(1)+' km</b></li>' : '')+
      '<li><span>Type</span><b>'+(x.pro?'PRO – registrert foretak':'Privat hjelper')+'</b></li>'+
      '<li><span>Sist aktiv</span><b>'+escapeHtml(sistTekst(x.sist).replace('Sett for ',''))+'</b></li>'+
    '</ul>'+
@@ -1676,6 +1798,7 @@ function oppdragTilJobb(row){
   return {
     id: row.id, t: row.tittel, k: row.kategori, u: row.underkategori||'', s: row.sted,
     b: row.pris||'', d: row.beskrivelse||'', km: null,
+    pos: (row.lat!=null && row.lng!=null) ? {lat:row.lat,lng:row.lng} : null,
     n: Math.max(0,(Date.now()-new Date(row.created_at).getTime())/36e5),
     bilder: row.bilder||[], status: row.status, valgt: null, bruker_id: row.bruker_id,
     hjelper_id: row.hjelper_id, sokere: []
@@ -1696,6 +1819,7 @@ async function lastJobb(){
     }
   }
   JOBB=alt.map(oppdragTilJobb);
+  byggKatFiltre();
   tegnJobb();
   if(document.getElementById('kategori').style.display!=='none') tegnKat();
 }
@@ -1720,12 +1844,28 @@ function relTid(iso){
   return Math.round(min/1440)+' d';
 }
 var oAvst=MAKS;
+// Aktivt kategori-filter på finn-oppdrag (null = alle)
+var oKats=[];   // valgte kategori-filtre (flervalg, tom = alle)
+function byggKatFiltre(){
+  var c=document.getElementById('o-filtre'); if(!c) return;
+  // Bare kategorier som faktisk har oppdrag
+  var finnes={}; JOBB.forEach(function(x){ finnes[x.k]=true; });
+  var piller=['<button class="kfp" type="button" role="tab" data-kat="" aria-selected="'+(oKats.length===0?'true':'false')+'">Alle</button>'];
+  KAT.forEach(function(k){
+    if(!finnes[k.id]) return;
+    var pa = oKats.indexOf(k.id)>-1;
+    piller.push('<button class="kfp" type="button" role="tab" data-kat="'+k.id+'" aria-selected="'+(pa?'true':'false')+'">'+
+      (pa?'<span class="kfp-hake" aria-hidden="true">✓</span> ':'')+k.navn+'</button>');
+  });
+  c.innerHTML=piller.join('');
+}
+
 function tegnJobb(){
-  var d=JOBB.filter(function(x){return stedTreff(x) && (oAvst>=MAKS || x.km<=oAvst)});
+  var d=JOBB.filter(function(x){var dk=avstandTil(x); return stedTreff(x) && (oAvst>=MAKS || dk==null || dk<=oAvst) && (oKats.length===0 || oKats.indexOf(x.k)>-1)});
   var s=document.getElementById('o-sort').value;
   d.sort(function(a,b){
     if(s==='ny') return a.n-b.n;
-    if(s==='avstand') return a.km-b.km;
+    if(s==='avstand') return avstandSort(a,b);
     return (parseInt(b.b.replace(/\D/g,''))||0)-(parseInt(a.b.replace(/\D/g,''))||0);
   });
   document.getElementById('o-avst-fra').textContent = brukerSted() ? 'Avstand fra '+brukerSted() : 'Avstand';
@@ -1754,12 +1894,12 @@ var blaAktiv=false;
 
 function byggKo(){
   // Samme filtrering som lista: sted + avstand + sortering
-  blaKo = JOBB.filter(function(x){return stedTreff(x) && (oAvst>=MAKS || x.km<=oAvst)});
+  blaKo = JOBB.filter(function(x){var dk=avstandTil(x); return stedTreff(x) && (oAvst>=MAKS || dk==null || dk<=oAvst) && (oKats.length===0 || oKats.indexOf(x.k)>-1)});
   blaHist=[]; blaInteressert=[];
   var st=document.getElementById('o-sort').value;
   blaKo.sort(function(a,b){
     if(st==='ny') return a.n-b.n;
-    if(st==='avstand') return a.km-b.km;
+    if(st==='avstand') return avstandSort(a,b);
     return (parseInt(b.b.replace(/\D/g,''))||0)-(parseInt(a.b.replace(/\D/g,''))||0);
   });
 }
@@ -1778,7 +1918,7 @@ function swKortHtml(x){
     '<span class="sw-stempel nei">Neste</span>'+
     '<div class="sw-inn">'+
       '<h3>'+escapeHtml(x.t)+'</h3>'+
-      '<div class="sw-rad r-sted"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg><span>'+escapeHtml(x.s)+(x.km!=null?' · '+x.km.toFixed(0)+' km':'')+'</span></div>'+
+      '<div class="sw-rad r-sted"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg><span>'+escapeHtml(stedLinje(x))+'</span></div>'+
       '<div class="sw-rad r-pris"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/></svg><span>'+escapeHtml(x.b||'Tilbud ønskes')+'</span></div>'+
       '<div class="sw-rad r-kat"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg><span>'+escapeHtml(x.u)+'</span></div>'+
       '<p>'+escapeHtml(x.d)+'</p>'+
@@ -1934,7 +2074,7 @@ function visJobbDetalj(x, fraSwipe){
   }
   document.getElementById('jd-alder').textContent='Lagt ut '+tidKort(x.n)+' siden';
   document.getElementById('jd-tittel').textContent=x.t;
-  document.getElementById('jd-sted').textContent=x.s+(x.km!=null?' · '+x.km.toFixed(0)+' km':'');
+  document.getElementById('jd-sted').textContent=stedLinje(x);
   document.getElementById('jd-pris').textContent=x.b||'Tilbud ønskes';
   document.getElementById('jd-kat').textContent=x.u;
   document.getElementById('jd-tekst').textContent=x.d;
@@ -2037,9 +2177,11 @@ skjema.addEventListener('submit',async function(e){
 
   if(sb){
     var bilder=await lastOppOppdragsbilder();
+    var oppdragPos=await geokod(sted);
     var res=await sb.from('oppdrag').insert({
       bruker_id: BRUKER.id, tittel: tittel, kategori: kategori, underkategori: underkategori,
-      sted: sted, pris: pris, beskrivelse: tekst, bilder: bilder
+      sted: sted, lat: oppdragPos?oppdragPos.lat:null, lng: oppdragPos?oppdragPos.lng:null,
+      pris: pris, beskrivelse: tekst, bilder: bilder
     }).select().single();
     knapp.disabled=false; knapp.textContent='Legg ut oppdrag';
     if(res.error){
@@ -2162,13 +2304,14 @@ async function markerLest(meldingIder){
   if(res.error) console.error('Klarte ikke å markere meldinger som lest:', res.error.message);
 }
 async function lastSokereFor(oppdragId){
-  var res=await sb.from('interesse').select('hjelper_id, profiler!hjelper_id(navn,pro,rating,antall_oppdrag,pris)').eq('oppdrag_id',oppdragId).limit(100);
+  var res=await sb.from('interesse').select('hjelper_id, profiler!hjelper_id(navn,pro,rating,antall_oppdrag,pris,lat,lng)').eq('oppdrag_id',oppdragId).limit(100);
   if(res.error || !res.data) return [];
   return Promise.all(res.data.map(async function(row){
     var p=row.profiler||{};
     return {
       id: row.hjelper_id, n: p.navn||'Ukjent hjelper', pro: !!p.pro, r: p.rating,
-      ant: p.antall_oppdrag||0, km: null, pris: p.pris||0,
+      ant: p.antall_oppdrag||0, km: null, pos: (p.lat!=null && p.lng!=null) ? {lat:p.lat,lng:p.lng} : null,
+      pris: p.pris||0,
       meldinger: await lastMeldingerFor(oppdragId, row.hjelper_id)
     };
   }));
@@ -2329,7 +2472,11 @@ document.getElementById('hp-skjema').addEventListener('submit',async function(e)
       pris=document.getElementById('hp-pris').value ? +document.getElementById('hp-pris').value : null;
   var knapp=this.querySelector('button[type="submit"]');
   knapp.disabled=true; knapp.textContent='Lagrer …';
-  var res=await sb.from('profiler').update({kategori:kategori||null, tags:tags, sted:sted||null, pris:pris}).eq('id',BRUKER.id);
+  var hpPos=sted?await geokod(sted):null;
+  var res=await sb.from('profiler').update({
+    kategori:kategori||null, tags:tags, sted:sted||null,
+    lat:hpPos?hpPos.lat:null, lng:hpPos?hpPos.lng:null, pris:pris
+  }).eq('id',BRUKER.id);
   knapp.disabled=false; knapp.textContent='Lagre';
   if(res.error){ f.hidden=false; f.textContent='Klarte ikke å lagre: '+res.error.message; return; }
   dlgHp.close();
@@ -2544,7 +2691,7 @@ function jobbKort(x, knapp){
     '</div>'+
     '<div class="jinn">'+
       '<h3>'+escapeHtml(x.t)+'</h3>'+
-      jrad('sted', escapeHtml(x.s)+(x.km!=null?' | '+x.km.toFixed(0)+' km':''), 'j-sted')+
+      jrad('sted', escapeHtml(stedLinje(x, ' | ')), 'j-sted')+
       jrad('pris', escapeHtml(x.b) || 'Tilbud ønskes', 'j-pris')+
       (x.nar ? jrad('tid', escapeHtml(x.nar), 'j-tid') : '')+
       '<div class="j-und">'+escapeHtml(x.u)+'</div>'+
@@ -2625,7 +2772,7 @@ function visOppdrag(id){
               (u?'<span class="uleste">'+u+' ny'+(u===1?'':'e')+'</span>':'')+
               (j.valgt===sk.n?'<span class="merke pro">VALGT</span>':'')+'</div>'+
             '<div class="meta" style="margin:3px 0 0">'+vurderingHtml(sk.r,sk.ant)+' oppdrag'+
-              (sk.km!=null ? ' &middot; '+sk.km.toFixed(1)+' km' : '')+'</div>'+
+              (avstandTil(sk)!=null ? ' &middot; '+avstandTil(sk).toFixed(1)+' km' : '')+'</div>'+
             '<p class="siste">'+escapeHtml(siste.t)+'</p>'+
             '<div class="soker-cta">'+
               '<button class="btn sm" type="button" data-sam="'+i+'">'+(u?'Les og svar':'Snakk med '+escapeHtml(sk.n.split(' ')[0]))+'</button>'+
@@ -3203,12 +3350,25 @@ document.addEventListener('click',function(e){
 });
 
 document.getElementById('o-sort').addEventListener('change',function(){ tegnJobb(); if(blaAktiv){byggKo();tegnStabel();} });
+document.getElementById('o-filtre').addEventListener('click',function(e){
+  var pille=e.target.closest('.kfp'); if(!pille) return;
+  var kat=pille.dataset.kat;
+  if(!kat){ oKats=[]; }                      // "Alle" nullstiller
+  else {
+    var i=oKats.indexOf(kat);
+    if(i>-1) oKats.splice(i,1); else oKats.push(kat);   // veksle av/på
+  }
+  byggKatFiltre();
+  tegnJobb();
+  if(blaAktiv){ byggKo(); tegnStabel(); }
+});
 document.getElementById('o-avst').addEventListener('input',function(){
   oAvst=parseInt(this.value);
   document.getElementById('o-avst-verdi').textContent = oAvst>=MAKS ? maksTekst() : 'Innenfor '+oAvst+' km';
   tegnJobb();
   if(blaAktiv){ byggKo(); tegnStabel(); }
 });
+byggKatFiltre();
 tegnJobb();
 
 // --- Kategoriside ---
@@ -3227,7 +3387,7 @@ function kortHtml(x,i){
       '<div class="meta k-meta">'+
         '<span class="m-r">'+vurderingHtml(x.r,x.ant)+'</span>'+
         '<span class="m-p">'+x.pris+' kr/t</span>'+
-        (x.km!=null ? '<span class="m-km">'+x.km.toFixed(1).replace('.',',')+' km</span>' : '')+
+        (avstandTil(x)!=null ? '<span class="m-km">'+avstandTil(x).toFixed(1).replace('.',',')+' km</span>' : '')+
       '</div>'+
       '<div class="tags">'+x.t.map(function(t){return '<span class="tag">'+escapeHtml(t)+'</span>'}).join('')+'</div>'+
       '<div class="kort-cta"><button class="btn sm" type="button" data-inv="'+escapeHtml(x.n)+'">'+
@@ -3238,7 +3398,7 @@ function kortHtml(x,i){
 }
 function jobbHtml(x){ return jobbKort(x,'meld') }
 
-function innenfor(x){ return stedTreff(x) && (kAvst>=MAKS || x.km<=kAvst) }
+function innenfor(x){ var dk=avstandTil(x); return stedTreff(x) && (kAvst>=MAKS || dk==null || dk<=kAvst) }
 function kFiltrerJobb(){
   var d=JOBB.filter(function(x){return x.k===kAktiv && innenfor(x)});
   if(kUnder!=='alle') d=d.filter(function(x){return x.u===kUnder});
@@ -3270,7 +3430,7 @@ function tegnKat(){
     var d=kFiltrerJobb();
     d.sort(function(a,b){
       if(st==='ny') return a.n-b.n;
-      if(st==='avstand') return a.km-b.km;
+      if(st==='avstand') return avstandSort(a,b);
       var pa=parseInt(a.b.replace(/\D/g,''))||0, pb=parseInt(b.b.replace(/\D/g,''))||0;
       return pb-pa;
     });
@@ -3281,7 +3441,7 @@ function tegnKat(){
   } else {
     var d=kFiltrerHjelpere();
     d.sort(function(a,b){
-      if(st==='avstand') return a.km-b.km;
+      if(st==='avstand') return avstandSort(a,b);
       if(st==='karakter') return b.r-a.r || b.ant-a.ant;
       if(st==='sist') return a.sist-b.sist;
       return b.ant-a.ant;
@@ -3388,7 +3548,7 @@ function tegnHjelper(){
 
   var st=document.getElementById('h-sort').value;
   d.sort(function(a,b){
-    if(st==='avstand') return a.km-b.km;
+    if(st==='avstand') return avstandSort(a,b);
     if(st==='karakter') return b.r-a.r || b.ant-a.ant;
     if(st==='sist') return a.sist-b.sist;
     return b.ant-a.ant;
@@ -3412,7 +3572,7 @@ function tegnHjelper(){
       '<button class="btn teal" type="button" data-gaa="legg-ut">Legg ut oppdrag</button></div>';
 }
 
-document.getElementById('h-sted').addEventListener('input',function(){ hAlle=false; tegnHjelper() });
+document.getElementById('h-sted').addEventListener('input',function(){ hAlle=false; tegnHjelper(); settBrukerPos(this.value); });
 hSel.addEventListener('change',function(){ hKat=hSel.value; hAlle=false; tegnHjelper() });
 document.getElementById('h-sort').addEventListener('change',tegnHjelper);
 document.getElementById('h-flere').addEventListener('click',function(){
